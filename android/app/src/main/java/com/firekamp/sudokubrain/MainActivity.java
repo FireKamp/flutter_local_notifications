@@ -1,4 +1,4 @@
-package com.firekamp.sudoku_brain;
+package com.firekamp.sudokubrain;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

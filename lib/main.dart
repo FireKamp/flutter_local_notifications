@@ -1,26 +1,25 @@
-import 'package:flutter/material.dart';
+import 'dart:collection';
 
-void main() => runApp(MyApp());
+import 'package:flutter/material.dart';
+import 'package:sudoku_brain/utils/Constants.dart';
+
+import 'Board.dart';
+
+void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return new MaterialApp(
+      title: '',
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Color(kPrimaryColor),
+        scaffoldBackgroundColor: Color(kPrimaryColor),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: 'SudokuBrain',
+      ),
     );
   }
 }
@@ -28,84 +27,232 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  HomePageState createState() => new HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class HomePageState extends State<MyHomePage> {
+  bool isShowRowBorder = false;
+  bool isShowColumnBorder = false;
+  bool isCellPressed = false;
 
-  void _incrementCounter() {
+  int row = 0;
+  int col = 0;
+
+  static String toImg(int s) {
+//    return 'set2/' + s.toString() + '.png';
+  }
+
+  List<List<int>> imgList = [
+    [0, 0, 0, 2, 6, 0, 7, 0, 1],
+    [6, 8, 0, 0, 7, 0, 0, 9, 0],
+    [1, 9, 0, 0, 0, 4, 5, 0, 0],
+    [8, 2, 0, 1, 0, 0, 0, 4, 0],
+    [0, 0, 4, 6, 0, 2, 9, 0, 0],
+    [0, 5, 0, 0, 0, 3, 0, 2, 8],
+    [0, 0, 9, 3, 0, 0, 0, 7, 4],
+    [0, 4, 0, 0, 5, 0, 0, 3, 6],
+    [7, 0, 3, 0, 1, 8, 0, 0, 0],
+  ];
+
+  List<List<int>> initList = [
+    [0, 0, 0, 2, 6, 0, 7, 0, 1],
+    [6, 8, 0, 0, 7, 0, 0, 9, 0],
+    [1, 9, 0, 0, 0, 4, 5, 0, 0],
+    [8, 2, 0, 1, 0, 0, 0, 4, 0],
+    [0, 0, 4, 6, 0, 2, 9, 0, 0],
+    [0, 5, 0, 0, 0, 3, 0, 2, 8],
+    [0, 0, 9, 3, 0, 0, 0, 7, 4],
+    [0, 4, 0, 0, 5, 0, 0, 3, 6],
+    [7, 0, 3, 0, 1, 8, 0, 0, 0],
+  ];
+
+  static int count = 0;
+  static int cursor = 0;
+  HashSet<RowCol> conflicts = new HashSet<RowCol>();
+
+  void changeConflicts() {
+    conflicts = Conflict.getConflicts(imgList);
+  }
+
+  static void changeCursor(i) {
+    cursor = i;
+  }
+
+  // Resets the whole board.
+  void reset() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      imgList = new List<List<int>>.generate(
+          9, (i) => new List<int>.from(initList[i]));
+      changeConflicts();
     });
+  }
+
+  Color getHighlightColor(int r, int c) {
+    bool isConflict = conflicts.contains(new RowCol(r, c));
+    bool isChangable = initList[r][c] == 0;
+
+    if(r==row && c==col){
+      return Color(kBoardCellSelected);
+    }
+
+    if (isConflict && !isChangable)
+      return Colors.red[900];
+    else if (isConflict)
+      return Colors.red[100];
+    else if (!isChangable)
+      return Color(kBoardPreFilled);
+    else
+      return Color(kBoardCellEmpty);
+  }
+
+  List<TableRow> getTableRowLst() {
+    List<TableRow> lst = new List<TableRow>();
+    for (int r = 0; r < 9; r++) {
+      lst.add(getTableRow(r));
+    }
+    return lst;
+  }
+
+  TableRow getTableRow(r) {
+    if (r == 3 || r == 6) {
+      isShowRowBorder = true;
+    } else {
+      isShowRowBorder = false;
+    }
+    List<Widget> lst = new List<Widget>();
+    for (int c = 0; c < 9; c++) {
+      if (c == 3 || c == 6) {
+        isShowColumnBorder = true;
+      } else {
+        isShowColumnBorder = false;
+      }
+
+      lst.add(new Container(
+        height: 36.0,
+        color: getHighlightColor(r, c),
+        child: Column(
+          children: <Widget>[
+            Visibility(
+              visible: isShowRowBorder,
+              child: Divider(
+                color: Color(kPrimaryColor),
+                height: 1.0,
+                thickness: 2.0,
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                print('board cell:[$r][$c]');
+                if (initList[r][c] == 0) {
+                  setState(() {
+                    row = r;
+                    col = c;
+                  });
+                }
+              },
+              child: Row(
+                children: <Widget>[
+                  Visibility(
+                    visible: isShowColumnBorder,
+                    child: Container(
+                      height: 35.0,
+                      width: 2.0,
+                      color: Color(kPrimaryColor),
+                    ),
+                  ),
+                  Text(
+                    imgList[r][c]==0? '':'${imgList[r][c]}',
+                    style: TextStyle(
+                        fontSize: 20.0, color: Color(kBoardTextColor)),
+                  )
+                ],
+              ),
+            ),
+
+          ],
+        ),
+      ));
+    }
+    return new TableRow(children: lst);
+  }
+
+  List<TableRow> getKeyRowlst() {
+    List<TableRow> lst = new List<TableRow>();
+    lst.add(getKeyRow(0));
+    lst.add(getKeyRow(5));
+    return lst;
+  }
+
+  TableRow getKeyRow(int c) {
+    List<Widget> lst = new List<Widget>();
+    for (int i = 0; i <= 4; i++) {
+      Color containerColor = Color(kPrimaryColor);
+      if (cursor == i + c) containerColor = Color(kNumPadBorder);
+      lst.add(
+        new Container(
+          color: containerColor,
+          child: InkWell(
+            onTap: () {
+              print((i + c).toString());
+              setState(() {
+                changeCursor(i + c);
+
+                imgList[row][col] = i + c;
+                changeConflicts();
+              });
+            },
+            child: Center(
+              child: Text(
+                '${(i + c).toString()}',
+                style: TextStyle(fontSize: 30.0),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return new TableRow(children: lst);
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: Color(kPrimaryColor),
+          body: Column(children: [
+            Container(
+              height: 40.0,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Icon(Icons.settings, size: 25.0),
+                  Text('00:00',style: TextStyle(fontSize: 19.0),),
+                  Icon(Icons.pause, size: 30.0),
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Table(
+                children: getTableRowLst(), // main board
+                border: new TableBorder.all(color: Color(kPrimaryColor)),
+              ),
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+            Padding(
+                padding: new EdgeInsets.only(top: 40.0),
+                child: new Table(
+                  children: getKeyRowlst(),
+                  border: new TableBorder.all(
+                    color: Color(kNumPadBorder),
+                  ),
+                ))
+          ])),
     );
   }
 }
