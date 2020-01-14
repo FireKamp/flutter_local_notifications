@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 import 'Board.dart';
@@ -35,45 +37,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<MyHomePage> {
-  bool isShowRowBorder = false;
-  bool isShowColumnBorder = false;
-  bool isCellPressed = false;
-  bool listChanged=false;
+
+
+  //Widgets
+  Timer _timer;
+
 
   int row = 0;
   int col = 0;
 
-  List<List<int>> imgList = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ];
-
-  List<List<int>> _initList = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ];
-
-  static String toImg(int s) {
-//    return 'set2/' + s.toString() + '.png';
-  }
+  String timerText='00:00';
 
   static int count = 0;
   static int cursor = 0;
+
+  bool isShowRowBorder = false;
+  bool isShowColumnBorder = false;
+
+  List<List<int>> imgList = constantList;
+  List<List<int>> _initList = constantList;
   HashSet<RowCol> conflicts = new HashSet<RowCol>();
+
+
+
+
 
   void changeConflicts() {
     conflicts = Conflict.getConflicts(imgList);
@@ -81,6 +68,8 @@ class HomePageState extends State<MyHomePage> {
 
   static void changeCursor(i) {
     cursor = i;
+
+
   }
 
   // Resets the whole board.
@@ -94,19 +83,19 @@ class HomePageState extends State<MyHomePage> {
 
   Color getHighlightColor(int r, int c) {
     bool isConflict = conflicts.contains(new RowCol(r, c));
-    bool isChangable = _initList[r][c] == 0;
-
-    print('initList[$r][$c]=${_initList[r][c]}---- ${imgList[r][c]}');
+    bool isChangeAble = _initList[r][c] == 0;
 
     if (r == row && c == col) {
       return Color(kBoardCellSelected);
     }
 
-    if (isConflict && !isChangable)
+
+
+    if (isConflict && !isChangeAble)
       return Colors.red[900];
     else if (isConflict)
       return Colors.red[100];
-    else if (!isChangable)
+    else if (!isChangeAble)
       return Color(kBoardPreFilled);
     else
       return Color(kBoardCellEmpty);
@@ -200,11 +189,15 @@ class HomePageState extends State<MyHomePage> {
           child: InkWell(
             onTap: () {
               print((i + c).toString());
+
               setState(() {
                 changeCursor(i + c);
 
                 imgList[row][col] = i + c;
                 changeConflicts();
+
+                print('test: $_initList');
+                print('img: $imgList');
               });
             },
             child: Center(
@@ -224,42 +217,62 @@ class HomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     print('initState');
-    readJson();
-//    WidgetsBinding.instance.addPostFrameCallback((_) => readJson());
+
+
+    //Reading data from json File
+    readJson().then((value) {
+
+      setState(() {
+        imgList=List.from(value);
+        print('imgList: $imgList');
+
+      });
+    }, onError: (error) {
+      print(error);
+    });
+
+
+    //===============
+
+    readJson().then((value) {
+      _initList=List.from(value);
+
+      print('_initList: $_initList');
+
+    }, onError: (error) {
+      print(error);
+    });
+
+    //==========
+
+    _timer=Timer.periodic(Duration(seconds: 1), (timer) {
+
+      final df = new DateFormat('mm:ss');
+      setState(() {
+        timerText=df.format(new DateTime.fromMillisecondsSinceEpoch(timer.tick*1000));
+      });
+
+
+    });
+
   }
 
-  void readJson() async {
+  Future<List<List<int>>> readJson() async {
     print('readJson');
 
     String data =
-        await DefaultAssetBundle.of(context).loadString("assets/brain.json");
+    await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 //    print('data: $data');
 
     var decodedData = jsonDecode(data);
     List list = decodedData['easy'];
     print('list: $list');
 
-//    imgList.clear();
-//    initList.clear();
-
     List<List<int>> ques = [];
-
     for (int i = 0; i < list.length; i++) {
       ques.add(list[i].cast<int>());
     }
-    print('listChanged: $listChanged');
-    if(!listChanged){
-      listChanged=true;
-       _initList =ques;
-
-    }
-    imgList = ques;
-
-    setState(() {
-
-
-    });
-    print('imgList: $imgList');
+    return ques;
   }
 
   @override
@@ -276,12 +289,29 @@ class HomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Icon(Icons.settings, size: 25.0),
+                  InkWell(
+                      onTap: () {
+                        print('settings');
+
+                        setState(() {
+                          imgList[0][0]=6;
+                        });
+
+
+
+
+                      }, child: Icon(Icons.settings, size: 25.0)),
                   Text(
-                    '00:00',
+                    '$timerText',
                     style: TextStyle(fontSize: 19.0),
                   ),
-                  Icon(Icons.pause, size: 30.0),
+                  InkWell(onTap: (){
+                    print('Pause');
+                    if(_timer!=null){
+                      _timer.cancel();
+                    }
+
+                  },child: Icon(Icons.pause, size: 30.0)),
                 ],
               ),
             ),
