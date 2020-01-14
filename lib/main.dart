@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -37,37 +38,38 @@ class HomePageState extends State<MyHomePage> {
   bool isShowRowBorder = false;
   bool isShowColumnBorder = false;
   bool isCellPressed = false;
+  bool listChanged=false;
 
   int row = 0;
   int col = 0;
 
+  List<List<int>> imgList = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ];
+
+  List<List<int>> _initList = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+  ];
+
   static String toImg(int s) {
 //    return 'set2/' + s.toString() + '.png';
   }
-
-  List<List<int>> imgList = [
-    [0, 0, 0, 2, 6, 0, 7, 0, 1],
-    [6, 8, 0, 0, 7, 0, 0, 9, 0],
-    [1, 9, 0, 0, 0, 4, 5, 0, 0],
-    [8, 2, 0, 1, 0, 0, 0, 4, 0],
-    [0, 0, 4, 6, 0, 2, 9, 0, 0],
-    [0, 5, 0, 0, 0, 3, 0, 2, 8],
-    [0, 0, 9, 3, 0, 0, 0, 7, 4],
-    [0, 4, 0, 0, 5, 0, 0, 3, 6],
-    [7, 0, 3, 0, 1, 8, 0, 0, 0],
-  ];
-
-  List<List<int>> initList = [
-    [0, 0, 0, 2, 6, 0, 7, 0, 1],
-    [6, 8, 0, 0, 7, 0, 0, 9, 0],
-    [1, 9, 0, 0, 0, 4, 5, 0, 0],
-    [8, 2, 0, 1, 0, 0, 0, 4, 0],
-    [0, 0, 4, 6, 0, 2, 9, 0, 0],
-    [0, 5, 0, 0, 0, 3, 0, 2, 8],
-    [0, 0, 9, 3, 0, 0, 0, 7, 4],
-    [0, 4, 0, 0, 5, 0, 0, 3, 6],
-    [7, 0, 3, 0, 1, 8, 0, 0, 0],
-  ];
 
   static int count = 0;
   static int cursor = 0;
@@ -83,18 +85,20 @@ class HomePageState extends State<MyHomePage> {
 
   // Resets the whole board.
   void reset() {
-    setState(() {
-      imgList = new List<List<int>>.generate(
-          9, (i) => new List<int>.from(initList[i]));
-      changeConflicts();
-    });
+//    setState(() {
+//      imgList = new List<List<int>>.generate(
+//          9, (i) => new List<int>.from(initList[i]));
+//      changeConflicts();
+//    });
   }
 
   Color getHighlightColor(int r, int c) {
     bool isConflict = conflicts.contains(new RowCol(r, c));
-    bool isChangable = initList[r][c] == 0;
+    bool isChangable = _initList[r][c] == 0;
 
-    if(r==row && c==col){
+    print('initList[$r][$c]=${_initList[r][c]}---- ${imgList[r][c]}');
+
+    if (r == row && c == col) {
       return Color(kBoardCellSelected);
     }
 
@@ -146,7 +150,7 @@ class HomePageState extends State<MyHomePage> {
             InkWell(
               onTap: () {
                 print('board cell:[$r][$c]');
-                if (initList[r][c] == 0) {
+                if (_initList[r][c] == 0) {
                   setState(() {
                     row = r;
                     col = c;
@@ -164,14 +168,13 @@ class HomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Text(
-                    imgList[r][c]==0? '':'${imgList[r][c]}',
+                    imgList[r][c] == 0 ? '' : '${imgList[r][c]}',
                     style: TextStyle(
                         fontSize: 20.0, color: Color(kBoardTextColor)),
                   )
                 ],
               ),
             ),
-
           ],
         ),
       ));
@@ -218,7 +221,51 @@ class HomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    print('initState');
+    readJson();
+//    WidgetsBinding.instance.addPostFrameCallback((_) => readJson());
+  }
+
+  void readJson() async {
+    print('readJson');
+
+    String data =
+        await DefaultAssetBundle.of(context).loadString("assets/brain.json");
+//    print('data: $data');
+
+    var decodedData = jsonDecode(data);
+    List list = decodedData['easy'];
+    print('list: $list');
+
+//    imgList.clear();
+//    initList.clear();
+
+    List<List<int>> ques = [];
+
+    for (int i = 0; i < list.length; i++) {
+      ques.add(list[i].cast<int>());
+    }
+    print('listChanged: $listChanged');
+    if(!listChanged){
+      listChanged=true;
+       _initList =ques;
+
+    }
+    imgList = ques;
+
+    setState(() {
+
+
+    });
+    print('imgList: $imgList');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('build');
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color(kPrimaryColor),
@@ -230,7 +277,10 @@ class HomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Icon(Icons.settings, size: 25.0),
-                  Text('00:00',style: TextStyle(fontSize: 19.0),),
+                  Text(
+                    '00:00',
+                    style: TextStyle(fontSize: 19.0),
+                  ),
                   Icon(Icons.pause, size: 30.0),
                 ],
               ),
