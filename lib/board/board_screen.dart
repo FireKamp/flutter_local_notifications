@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/board/bloc.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
-import 'main_board_bloc.dart';
+
 import '../Board.dart';
+import 'main_board_bloc.dart';
 
 class MainBoard extends StatefulWidget {
-
   static final String id = 'main_board';
 
   @override
@@ -18,7 +19,6 @@ class MainBoard extends StatefulWidget {
 }
 
 class _MainBoardState extends State<MainBoard> {
-
   MainBoardBloc _mainBoardBloc;
 
   //Widgets
@@ -27,7 +27,7 @@ class _MainBoardState extends State<MainBoard> {
   int row = 0;
   int col = 0;
 
-  String timerText='00:00';
+  String timerText = '00:00';
 
   static int count = 0;
   static int cursor = 0;
@@ -39,27 +39,21 @@ class _MainBoardState extends State<MainBoard> {
   List<List<int>> _initList = constantList;
   HashSet<RowCol> conflicts = new HashSet<RowCol>();
 
-
-
-
-
   void changeConflicts() {
     conflicts = Conflict.getConflicts(imgList);
   }
 
   static void changeCursor(i) {
     cursor = i;
-
-
   }
 
   // Resets the whole board.
   void reset() {
-//    setState(() {
-//      imgList = new List<List<int>>.generate(
-//          9, (i) => new List<int>.from(initList[i]));
-//      changeConflicts();
-//    });
+    setState(() {
+      imgList = new List<List<int>>.generate(
+          9, (i) => new List<int>.from(_initList[i]));
+      changeConflicts();
+    });
   }
 
   Color getHighlightColor(int r, int c) {
@@ -69,8 +63,6 @@ class _MainBoardState extends State<MainBoard> {
     if (r == row && c == col) {
       return Color(kBoardCellSelected);
     }
-
-
 
     if (isConflict && !isChangeAble)
       return Colors.red[900];
@@ -198,7 +190,7 @@ class _MainBoardState extends State<MainBoard> {
     print('readJson');
 
     String data =
-    await DefaultAssetBundle.of(context).loadString("assets/brain.json");
+        await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 //    print('data: $data');
 
     var decodedData = jsonDecode(data);
@@ -216,60 +208,47 @@ class _MainBoardState extends State<MainBoard> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+
     // init main board bloc here
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
-    //Reading data from json File
-    readJson().then((value) {
-
-      setState(() {
-        imgList=List.from(value);
-        print('imgList: $imgList');
-
-      });
-    }, onError: (error) {
-      print(error);
-    });
+    _mainBoardBloc.add(BoardInitISCalled(context: context));
 
 
-    //===============
 
-    readJson().then((value) {
-      _initList=List.from(value);
-
-      print('_initList: $_initList');
-
-    }, onError: (error) {
-      print(error);
-    });
-
-    //==========
-
-    _timer=Timer.periodic(Duration(seconds: 1), (timer) {
-
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       final df = new DateFormat('mm:ss');
       setState(() {
-        timerText=df.format(new DateTime.fromMillisecondsSinceEpoch(timer.tick*1000));
+        timerText = df
+            .format(new DateTime.fromMillisecondsSinceEpoch(timer.tick * 1000));
       });
-
-
     });
-
   }
-
 
   @override
   Widget build(BuildContext context) {
+    print('build');
+
     return BlocListener(
       bloc: BlocProvider.of<MainBoardBloc>(context),
       listener: (BuildContext context, state) {
+        print('BlocListener');
+
         if (state is InitialMainBoardState) {
-//        if screen state changes then update UI here
-//          TODO
+          print('state: ${state.error}');
+        } else if (state is FetchingLevel) {
+          print('FetchingLevel');
+        } else if (state is LevelFetched) {
+          print('LevelFetched: ${state.boardList}');
+
+          imgList = List.from(state.boardList);
+          _initList = List.from(json.decode(state.boardList.toString()).cast<int>());
+          print('imgList: $imgList');
+
         }
       },
-      child: BlocBuilder<MainBoardBloc, MainBoardState>(
-        builder: (context, state) {
+      child:
+          BlocBuilder<MainBoardBloc, MainBoardState>(builder: (context, state) {
+        print('BlocBuilder');
         return SafeArea(
           child: Scaffold(
               backgroundColor: Color(kPrimaryColor),
@@ -285,24 +264,22 @@ class _MainBoardState extends State<MainBoard> {
                             print('settings');
 
                             setState(() {
-                              imgList[0][0]=6;
+                              imgList[0][0] = 6;
                             });
-
-
-
-
-                          }, child: Icon(Icons.settings, size: 25.0)),
+                          },
+                          child: Icon(Icons.settings, size: 25.0)),
                       Text(
                         '$timerText',
                         style: TextStyle(fontSize: 19.0),
                       ),
-                      InkWell(onTap: (){
-                        print('Pause');
-                        if(_timer!=null){
-                          _timer.cancel();
-                        }
-
-                      },child: Icon(Icons.pause, size: 30.0)),
+                      InkWell(
+                          onTap: () {
+                            print('Pause');
+                            if (_timer != null) {
+                              _timer.cancel();
+                            }
+                          },
+                          child: Icon(Icons.pause, size: 30.0)),
                     ],
                   ),
                 ),
@@ -325,8 +302,7 @@ class _MainBoardState extends State<MainBoard> {
                     ))
               ])),
         );
-        }
-      ),
+      }),
     );
   }
 }
