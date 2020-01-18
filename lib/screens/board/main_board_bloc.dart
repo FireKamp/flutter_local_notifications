@@ -13,7 +13,14 @@ import '../../Board.dart';
 
 class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   Timer _timer;
-  int currentTimerValue = 0;
+  int _currentTimerValue = 0;
+  bool _isPaused = false;
+
+  StreamController<String> _timerController = StreamController<String>();
+
+  StreamSink<String> get _tickValue => _timerController.sink;
+
+  Stream<String> get outCounter => _timerController.stream;
 
   @override
   MainBoardState get initialState => InitialMainBoardState();
@@ -38,12 +45,14 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is UpdateRowCol) {
       final list = _changeRowCol(event.row, event.col, event.list);
       if (list != null) yield UpdateRowColState(row: list[0], col: list[1]);
-    } else if (event is TimerTick) {
+    } else if (event is StartTimer) {
       _startTimer();
+      _isPaused = false;
+      yield (PauseTimerState(isPaused: _isPaused));
     } else if (event is PauseTimer) {
       _stopTimer();
-    } else if (event is RestartTimer) {
-      _startTimer();
+      _isPaused = true;
+      yield (PauseTimerState(isPaused: _isPaused));
     }
   }
 
@@ -53,13 +62,22 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     }
   }
 
-  Stream<MainBoardBloc> _startTimer() {
+  void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      currentTimerValue = currentTimerValue + 1;
+      _currentTimerValue = _currentTimerValue + 1;
       final df = new DateFormat('mm:ss');
       String _timerText = df.format(
-          new DateTime.fromMillisecondsSinceEpoch((currentTimerValue) * 1000));
+          new DateTime.fromMillisecondsSinceEpoch((_currentTimerValue) * 1000));
+      _handleLogic(_timerText);
     });
+  }
+
+  void _handleLogic(data) {
+    _tickValue.add(data);
+  }
+
+  void dispose() {
+    _timerController.close();
   }
 }
 
@@ -81,11 +99,12 @@ Future<List<List<int>>> _readJson(BuildContext context) async {
   List<List<int>> ans = [];
   for (int i = 0; i < list.length; i++) {
     ques.add(list[i].cast<int>());
+  }
+  for (int i = 0; i < ques.length; i++) {
     ans.add(list[i].cast<int>());
   }
 
   finalList.add(ques);
-  finalList.add(ans);
   return ques;
 }
 

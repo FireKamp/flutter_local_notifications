@@ -58,7 +58,11 @@ class UpdateRowColState extends MainBoardState {
 // ========================= TIMER ============================= //
 class StartTimerState extends MainBoardState {}
 
-class PauseTimerState extends MainBoardState {}
+class PauseTimerState extends MainBoardState {
+  final bool isPaused;
+
+  PauseTimerState({this.isPaused});
+}
 
 class RestartTimerState extends MainBoardState {}
 

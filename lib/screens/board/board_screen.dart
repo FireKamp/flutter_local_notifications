@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudoku_brain/components/play_pause_widget.dart';
+import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 import '../../Board.dart';
@@ -23,14 +25,10 @@ class _MainBoardState extends State<MainBoard> {
 
   int _row = 0;
   int _col = 0;
-  int currentTimerValue = 0;
 
-  String _timerText = '00:00';
-
-  static int count = 0;
   int _cursor = 0;
 
-  bool isTimerPaused = false;
+  bool _isTimerPaused = false;
 
   List<List<int>> _boardList = constantList;
   List<List<int>> _initBoardList = constantList;
@@ -38,12 +36,12 @@ class _MainBoardState extends State<MainBoard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // init main screens.board bloc here
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
     _mainBoardBloc.add(BoardInitISCalled(context: context));
+    _mainBoardBloc.add(StartTimer());
 
     readJson().then((value) {
       // TODO remove this method later
@@ -53,8 +51,6 @@ class _MainBoardState extends State<MainBoard> {
     }, onError: (error) {
       print(error);
     });
-
-    _mainBoardBloc.add(TimerTick(tickValue: currentTimerValue));
   }
 
   @override
@@ -68,7 +64,6 @@ class _MainBoardState extends State<MainBoard> {
           print('FetchingLevel');
         } else if (state is LevelFetched) {
           print('LevelFetched: ${state.boardList}');
-
           _boardList = List.from(state.boardList);
 //          _initList.clear(); TODO: copy list to another list without same reference
 //          _initList.addAll(state.boardList.map((element) => element).toList());
@@ -86,9 +81,8 @@ class _MainBoardState extends State<MainBoard> {
           print('UpdateRowColState');
           _row = state.row;
           _col = state.col;
-        } else if (state is TimerTickState) {
-          _timerText = state.tickValue;
-          print('TimerTickState: $_timerText');
+        } else if (state is PauseTimerState) {
+          _isTimerPaused = state.isPaused;
         }
       },
       child:
@@ -109,27 +103,10 @@ class _MainBoardState extends State<MainBoard> {
                             print('settings');
                           },
                           child: Icon(Icons.settings, size: 25.0)),
-                      Text(
-                        '$_timerText',
-                        style: TextStyle(fontSize: 19.0),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            print('Pause');
-                            if (isTimerPaused) {
-                              _mainBoardBloc
-                                  .add(TimerTick(tickValue: currentTimerValue));
-                              isTimerPaused = false;
-                            } else {
-                              _mainBoardBloc.add(PauseTimer());
-                              isTimerPaused = true;
-                            }
-                          },
-                          child: Icon(
-                              isTimerPaused == true
-                                  ? Icons.play_arrow
-                                  : Icons.pause,
-                              size: 30.0)),
+                      CounterWidget(mainBoardBloc: _mainBoardBloc),
+                      PlayPauseWidget(
+                          isTimerPaused: _isTimerPaused,
+                          mainBoardBloc: _mainBoardBloc),
                     ],
                   ),
                 ),
@@ -137,10 +114,7 @@ class _MainBoardState extends State<MainBoard> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  child: Table(
-                    children: getTableRowLst(), // main board
-                    border: new TableBorder.all(color: Color(kPrimaryColor)),
-                  ),
+                  child: buildTable(),
                 ),
                 Padding(
                     padding: new EdgeInsets.only(top: 40.0),
@@ -153,6 +127,13 @@ class _MainBoardState extends State<MainBoard> {
               ])),
         );
       }),
+    );
+  }
+
+  Table buildTable() {
+    return Table(
+      children: getTableBoardRow(), // main board
+      border: new TableBorder.all(color: Color(kPrimaryColor)),
     );
   }
 
@@ -184,7 +165,7 @@ class _MainBoardState extends State<MainBoard> {
       return Color(kBoardCellEmpty);
   }
 
-  List<TableRow> getTableRowLst() {
+  List<TableRow> getTableBoardRow() {
     List<TableRow> lst = new List<TableRow>();
     for (int r = 0; r < 9; r++) {
       lst.add(getTableRow(r));
