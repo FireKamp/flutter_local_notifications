@@ -2,8 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
-
-import '../../Board.dart';
+import 'package:sudoku_brain/models/row_col.dart';
 
 @immutable
 abstract class MainBoardState {}

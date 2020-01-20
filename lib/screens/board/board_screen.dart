@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/play_pause_widget.dart';
 import 'package:sudoku_brain/components/timer_widget.dart';
+import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-import '../../Board.dart';
 import 'main_board_bloc.dart';
 import 'main_board_event.dart';
 import 'main_board_state.dart';

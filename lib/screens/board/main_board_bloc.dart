@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 import './bloc.dart';
