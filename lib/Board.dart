@@ -8,6 +8,7 @@ class Conflict {
     computeRowConflicts(grid, result);
     computeColConflicts(grid, result);
     computeBlockConflicts(grid, result);
+    computeFinishGame(grid);
     return result;
   }
 
@@ -16,6 +17,9 @@ class Conflict {
       HashMap<int, RowCol> usedNumToRowCol = new HashMap<int, RowCol>();
       for (int c = 0; c < 9; c++) {
         int newNum = grid[r][c];
+
+//        print('[$r][$c]=${grid[r][c]}');
+
         if (newNum == 0) continue;
         if (usedNumToRowCol.containsKey(newNum)) {
           res.add(new RowCol(r, c));
@@ -37,6 +41,19 @@ class Conflict {
           res.add(usedNumToRowCol[newNum]);
         } else
           usedNumToRowCol[newNum] = new RowCol(r, c);
+      }
+    }
+  }
+
+  // Check to finish game
+  static void computeFinishGame(List<List<int>> grid) {
+    for (int c = 0; c < 9; c++) {
+      for (int r = 0; r < 9; r++) {
+        int newNum = grid[r][c];
+        if (newNum == 0) {
+          print('Not Finished');
+         return;
+        }
       }
     }
   }
@@ -69,4 +86,3 @@ class Conflict {
     }
   }
 }
-

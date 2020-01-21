@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sudoku_brain/components/panel.dart';
 import 'package:sudoku_brain/components/play_pause_widget.dart';
 import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/models/row_col.dart';
@@ -116,6 +117,7 @@ class _MainBoardState extends State<MainBoard> {
                   ),
                   child: buildTable(),
                 ),
+
                 Padding(
                     padding: new EdgeInsets.only(top: 40.0),
                     child: new Table(
