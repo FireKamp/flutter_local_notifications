@@ -10,7 +10,7 @@ import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 import './bloc.dart';
-import '../../Board.dart';
+import '../../utils/Board.dart';
 
 class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   Timer _timer;

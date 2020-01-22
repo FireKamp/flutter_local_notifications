@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'models/row_col.dart';
+import '../models/row_col.dart';
 
 class Conflict {
   static HashSet<RowCol> getConflicts(List<List<int>> grid) {
@@ -52,7 +52,7 @@ class Conflict {
         int newNum = grid[r][c];
         if (newNum == 0) {
           print('Not Finished');
-         return;
+          return;
         }
       }
     }

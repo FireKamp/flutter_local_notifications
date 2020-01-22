@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudoku_brain/components/panel.dart';
+import 'package:sudoku_brain/components/num_pad.dart';
 import 'package:sudoku_brain/components/play_pause_widget.dart';
 import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/models/row_col.dart';
@@ -96,7 +97,6 @@ class _MainBoardState extends State<MainBoard> {
                 Container(
                   height: 40.0,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       InkWell(
@@ -117,15 +117,41 @@ class _MainBoardState extends State<MainBoard> {
                   ),
                   child: buildTable(),
                 ),
+                NumPad(
+                  values: [1, 2, 3, 4, 5],
+                  marginTop: 90.0,
+                  marginRight: 30.0,
+                  marginLeft: 30.0,
+                  marginBottom: 0.0,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  onValueChanged: (int val) {
+                    print('NumPad: $val');
 
-                Padding(
-                    padding: new EdgeInsets.only(top: 40.0),
-                    child: new Table(
-                      children: getKeyRowlst(),
-                      border: new TableBorder.all(
-                        color: Color(kNumPadBorder),
-                      ),
-                    ))
+                    _numPadButtonClick(val);
+                  },
+                ),
+                NumPad(
+                    values: [6, 7, 8, 9],
+                    marginTop: 15.0,
+                    marginRight: 35.0,
+                    marginLeft: 35.0,
+                    marginBottom: 0.0,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    onValueChanged: (int val) {
+                      print('NumPad: $val');
+                      _numPadButtonClick(val);
+                    }),
+                Visibility(
+                  visible: false,
+                  child: Padding(
+                      padding: new EdgeInsets.only(top: 40.0),
+                      child: new Table(
+                        children: getKeyRowlst(),
+                        border: new TableBorder.all(
+                          color: Color(kNumPadBorder),
+                        ),
+                      )),
+                )
               ])),
         );
       }),
@@ -137,6 +163,12 @@ class _MainBoardState extends State<MainBoard> {
       children: getTableBoardRow(), // main board
       border: new TableBorder.all(color: Color(kPrimaryColor)),
     );
+  }
+
+  void _numPadButtonClick(int value) {
+    changeCursor(value);
+    _mainBoardBloc.add(UpdateCellValue(val: value));
+    changeConflicts();
   }
 
 //  Methods
