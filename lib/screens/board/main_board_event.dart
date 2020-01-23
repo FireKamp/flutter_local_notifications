@@ -36,6 +36,14 @@ class UpdateRowCol extends MainBoardEvent {
   UpdateRowCol({this.row, this.col, this.list});
 }
 
+class ResetBoard extends MainBoardEvent {
+  final List<List<int>> list;
+
+  ResetBoard({this.list});
+}
+
+class FullScreen extends MainBoardEvent {}
+
 //================================== TIMER =========================================//
 class StartTimer extends MainBoardEvent {}
 

@@ -1,47 +1,82 @@
 // counter_page.dart
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/components/panel_button.dart';
+import 'package:sudoku_brain/utils/Constants.dart';
 
-class Count extends StatelessWidget {
-  final Function(int) onCountChange;
-  final Color activeColor;
-  final Color inactiveColor;
+class Panel extends StatefulWidget {
+  final Function(int) onSegmentChange;
 
-  Count(
-      {Key key,
-      @required this.onCountChange,
-      this.activeColor,
-      this.inactiveColor})
-      : super(key: key);
+  Panel({@required this.onSegmentChange});
+
+  @override
+  _PanelState createState() => _PanelState();
+}
+
+class _PanelState extends State<Panel> {
+  final List<IconData> _icons = [
+    Icons.fullscreen,
+    Icons.delete,
+    Icons.refresh,
+    Icons.lightbulb_outline,
+    Icons.edit
+  ];
+
+  List<Color> _selectedImageColor = [
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white
+  ];
+
+  int _segmentedControlValue = -1;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      margin: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-      padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.update,
-              color: activeColor,
-            ),
-            onPressed: () {
-              onCountChange(2);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.remove),
-            onPressed: () {
-              onCountChange(3);
-            },
-          ),
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(140.0),
+      child: Container(
+        color: Color(kPanelBg),
+        margin: EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 10.0),
+        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: generateIcons(),
+        ),
       ),
     );
   }
+
+  List<Widget> generateIcons() {
+    List<Widget> list = [];
+
+    for (int i = 0; i < _icons.length; i++) {
+      list.add(
+        PanelButton(
+          value: i,
+          icon: _icons[i],
+          color: _selectedImageColor[i],
+          onClick: (int val) {
+            _segmentedControlValue = i;
+            print('val: $val');
+            setState(() {
+              widget.onSegmentChange(val);
+              changeSelectionColor();
+            });
+          },
+        ),
+      );
+    }
+    return list;
+  }
+
+  void changeSelectionColor() {
+    for (int i = 0; i < _selectedImageColor.length; i++) {
+      if (_segmentedControlValue == i) {
+        _selectedImageColor[i] = Color(kBoardCellSelected);
+      } else {
+        _selectedImageColor[i] = Colors.white;
+      }
+    }
+  }
 }
-
-

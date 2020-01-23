@@ -1,6 +1,7 @@
 
 // Colors
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 const kPrimaryColor = 0xFF220E4A;
 const kBoardTextColor = 0xFF737272;
@@ -9,6 +10,10 @@ const kBoardCellEmpty = 0xFFFFF3D2;
 const kBoardBorder = 0xFFE2E6E7;
 const kBoardPreFilled = 0xFFFCD0A3;
 const kNumPadBorder = 0xFFABDCFF;
+const kPanelBg = 0xFF38356e;
+const transparent = Color(0xca000000);
+
+
 
 
 // init list

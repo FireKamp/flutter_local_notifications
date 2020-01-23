@@ -47,11 +47,23 @@ class UpdateCellState extends MainBoardState {
   UpdateCellState({this.val});
 }
 
+class FullScreenState extends MainBoardState {
+  final bool isFull;
+
+  FullScreenState({this.isFull});
+}
+
 class UpdateRowColState extends MainBoardState {
   final int row;
   final int col;
 
   UpdateRowColState({this.row, this.col});
+}
+
+class ResetState extends MainBoardState {
+  final List<List<int>> boardList;
+
+  ResetState({this.boardList});
 }
 
 // ========================= TIMER ============================= //

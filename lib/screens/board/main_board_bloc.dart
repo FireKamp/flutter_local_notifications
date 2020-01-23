@@ -16,12 +16,14 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   Timer _timer;
   int _currentTimerValue = 0;
   bool _isPaused = false;
+  bool _isFullScreen = true;
 
-  StreamController<String> _timerController = StreamController<String>();
+  StreamController<String> _timerController =
+      StreamController<String>.broadcast();
 
   StreamSink<String> get _tickValue => _timerController.sink;
 
-  Stream<String> get outCounter => _timerController.stream;
+  Stream<String> get outCounter => _timerController.stream.asBroadcastStream();
 
   @override
   MainBoardState get initialState => InitialMainBoardState();
@@ -54,6 +56,12 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       _stopTimer();
       _isPaused = true;
       yield (PauseTimerState(isPaused: _isPaused));
+    } else if (event is ResetBoard) {
+      final list = reset(event.list);
+      yield ResetState(boardList: list);
+    } else if (event is FullScreen) {
+      final full = fullScreen();
+      yield FullScreenState(isFull: full);
     }
   }
 
@@ -79,6 +87,17 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
   void dispose() {
     _timerController.close();
+    _tickValue.close();
+  }
+
+  bool fullScreen() {
+    if (_isFullScreen) {
+      _isFullScreen = false;
+    } else {
+      _isFullScreen = true;
+    }
+
+    return _isFullScreen;
   }
 }
 
@@ -136,6 +155,12 @@ List<int> _changeRowCol(int row, int col, List<List<int>> list) {
 }
 
 //
+List<List<int>> reset(List<List<int>> _initBoardList) {
+  List<List<int>> list = new List<List<int>>.generate(
+      9, (i) => new List<int>.from(_initBoardList[i]));
+
+  return list;
+}
 
 //
 Color getHighlightColorBloc(int selRow, int selCol, int row, int col,

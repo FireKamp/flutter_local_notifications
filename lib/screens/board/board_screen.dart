@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/num_pad.dart';
+import 'package:sudoku_brain/components/panel.dart';
 import 'package:sudoku_brain/components/play_pause_widget.dart';
 import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/models/row_col.dart';
@@ -29,6 +30,8 @@ class _MainBoardState extends State<MainBoard> {
   int _col = 0;
 
   int _cursor = 0;
+
+  double _animatedHeight = 40.0;
 
   bool _isTimerPaused = false;
 
@@ -85,6 +88,16 @@ class _MainBoardState extends State<MainBoard> {
           _col = state.col;
         } else if (state is PauseTimerState) {
           _isTimerPaused = state.isPaused;
+        } else if (state is ResetState) {
+          _boardList = List.from(state.boardList);
+          changeConflicts();
+        } else if (state is FullScreenState) {
+          print('state.isFull ${state.isFull}');
+//          _isFullScreen = state.isFull;
+
+          _animatedHeight != 0.0
+              ? _animatedHeight = 0.0
+              : _animatedHeight = 40.0;
         }
       },
       child:
@@ -94,32 +107,81 @@ class _MainBoardState extends State<MainBoard> {
           child: Scaffold(
               backgroundColor: Color(kPrimaryColor),
               body: Column(children: [
+                AnimatedContainer(
+                  height: _animatedHeight,
+                  duration: const Duration(milliseconds: 150),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        InkWell(
+                            onTap: () {
+                              print('settings');
+                            },
+                            child: Icon(Icons.settings, size: 25.0)),
+                        CounterWidget(mainBoardBloc: _mainBoardBloc),
+                        PlayPauseWidget(
+                            isTimerPaused: _isTimerPaused,
+                            mainBoardBloc: _mainBoardBloc),
+                      ],
+                    ),
+                  ),
+                ),
                 Container(
-                  height: 40.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Stack(
                     children: <Widget>[
-                      InkWell(
-                          onTap: () {
-                            print('settings');
-                          },
-                          child: Icon(Icons.settings, size: 25.0)),
-                      CounterWidget(mainBoardBloc: _mainBoardBloc),
-                      PlayPauseWidget(
-                          isTimerPaused: _isTimerPaused,
-                          mainBoardBloc: _mainBoardBloc),
+                      Positioned(
+                        child: Container(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: buildTable(),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        child: Visibility(
+                          visible: _isTimerPaused,
+                          child: Container(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            color: transparent,
+                            child: Center(
+                                child: Text(
+                              'PAUSE',
+                              style: TextStyle(
+                                  fontSize: 40.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.yellow),
+                            )),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: buildTable(),
+                Panel(
+                  onSegmentChange: (int segmentValue) {
+                    print('segmentValue: $segmentValue');
+
+                    switch (segmentValue) {
+                      case 0:
+                        _mainBoardBloc.add(FullScreen());
+                        break;
+                      case 1:
+                        _numPadButtonClick(0);
+                        break;
+                      case 2:
+                        _mainBoardBloc.add(ResetBoard(list: _initBoardList));
+                        break;
+                    }
+                  },
                 ),
                 NumPad(
                   values: [1, 2, 3, 4, 5],
-                  marginTop: 90.0,
+                  marginTop: 20.0,
                   marginRight: 30.0,
                   marginLeft: 30.0,
                   marginBottom: 0.0,
@@ -141,17 +203,6 @@ class _MainBoardState extends State<MainBoard> {
                       print('NumPad: $val');
                       _numPadButtonClick(val);
                     }),
-                Visibility(
-                  visible: false,
-                  child: Padding(
-                      padding: new EdgeInsets.only(top: 40.0),
-                      child: new Table(
-                        children: getKeyRowlst(),
-                        border: new TableBorder.all(
-                          color: Color(kNumPadBorder),
-                        ),
-                      )),
-                )
               ])),
         );
       }),
@@ -254,41 +305,6 @@ class _MainBoardState extends State<MainBoard> {
     return new TableRow(children: lst);
   }
 
-  List<TableRow> getKeyRowlst() {
-    List<TableRow> lst = new List<TableRow>();
-    lst.add(getKeyRow(0));
-    lst.add(getKeyRow(5));
-    return lst;
-  }
-
-  TableRow getKeyRow(int c) {
-    List<Widget> lst = new List<Widget>();
-    for (int i = 0; i <= 4; i++) {
-      Color containerColor = Color(kPrimaryColor);
-      if (_cursor == i + c) containerColor = Color(kNumPadBorder);
-      lst.add(
-        new Container(
-          color: containerColor,
-          child: InkWell(
-            onTap: () {
-              print((i + c).toString());
-              changeCursor(i + c);
-              _mainBoardBloc.add(UpdateCellValue(val: i + c));
-              changeConflicts();
-            },
-            child: Center(
-              child: Text(
-                '${(i + c).toString()}',
-                style: TextStyle(fontSize: 30.0),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    return new TableRow(children: lst);
-  }
-
   // TODO: remove it later
   Future<List<List<int>>> readJson() async {
     print('readJson');
@@ -306,14 +322,5 @@ class _MainBoardState extends State<MainBoard> {
       ques.add(list[i].cast<int>());
     }
     return ques;
-  }
-
-  // Resets the whole screens.board. TODO: move it to bloc class
-  void reset() {
-    setState(() {
-      _boardList = new List<List<int>>.generate(
-          9, (i) => new List<int>.from(_initBoardList[i]));
-      changeConflicts();
-    });
   }
 }
