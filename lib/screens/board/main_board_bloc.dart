@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   int _currentTimerValue = 0;
   bool _isPaused = false;
   bool _isFullScreen = true;
+  List<List<int>> _solution;
 
   StreamController<String> _timerController =
       StreamController<String>.broadcast();
@@ -34,11 +36,18 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   ) async* {
     if (event is BoardInitISCalled) {
       yield FetchingLevel();
-      final list = await _readJson(event.context);
+      final list = await _readJson(event.context, 'easy');
+      _solution = await _readJson(event.context, 'easy_solution');
+      print('_solution" $_solution');
       yield LevelFetched(boardList: list);
     } else if (event is ChangeConflictsCalled) {
       final conflicts = _changeConflicts(event.list);
+      final gameFinished = _gameFinished(event.list);
       yield ConflictsChanged(conflicts: conflicts);
+      if (gameFinished) {
+        final isWon = compareLists(event.list);
+        yield GameFinishedState(isWon: isWon);
+      }
     } else if (event is CursorChanged) {
       final cursor = _changeCursor(event.val);
       yield CursorChangedState(val: cursor);
@@ -99,32 +108,33 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
     return _isFullScreen;
   }
+
+  bool compareLists(List<List<int>> list) {
+    print('compareLists');
+    Function deepEq = const DeepCollectionEquality().equals;
+    bool res = deepEq(list, _solution);
+    print(res); // => true
+    return res;
+  }
 }
 
 // Read data from JSON File
-Future<List<List<int>>> _readJson(BuildContext context) async {
+Future<List<List<int>>> _readJson(BuildContext context, String objName) async {
   print('readJson');
-
-  List<List<List<int>>> finalList = List();
 
   String data =
       await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 //    print('data: $data');
 
   var decodedData = jsonDecode(data);
-  List list = decodedData['easy'];
+  List list = decodedData['$objName'];
   print('list: $list');
 
   List<List<int>> ques = [];
-  List<List<int>> ans = [];
   for (int i = 0; i < list.length; i++) {
     ques.add(list[i].cast<int>());
   }
-  for (int i = 0; i < ques.length; i++) {
-    ans.add(list[i].cast<int>());
-  }
 
-  finalList.add(ques);
   return ques;
 }
 
@@ -132,6 +142,11 @@ Future<List<List<int>>> _readJson(BuildContext context) async {
 HashSet<RowCol> _changeConflicts(List<List<int>> boardList) {
   HashSet<RowCol> _conflicts = Conflict.getConflicts(boardList);
   return _conflicts;
+}
+
+bool _gameFinished(List<List<int>> boardList) {
+  bool isFinished = Conflict.computeFinishGame(boardList);
+  return isFinished;
 }
 
 // Change cursor

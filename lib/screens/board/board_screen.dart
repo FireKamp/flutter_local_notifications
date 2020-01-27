@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,12 @@ class MainBoard extends StatefulWidget {
 class _MainBoardState extends State<MainBoard> {
   MainBoardBloc _mainBoardBloc;
 
-  int _row = 0;
-  int _col = 0;
-
+  int _row = -1;
+  int _col = -1;
   int _cursor = 0;
+  int _cursorCopy = -1;
+
+  String _dynamicText;
 
   double _animatedHeight = 40.0;
 
@@ -69,6 +72,7 @@ class _MainBoardState extends State<MainBoard> {
           print('FetchingLevel');
         } else if (state is LevelFetched) {
           print('LevelFetched: ${state.boardList}');
+//          _boardList = List.from(dummyList);
           _boardList = List.from(state.boardList);
 //          _initList.clear(); TODO: copy list to another list without same reference
 //          _initList.addAll(state.boardList.map((element) => element).toList());
@@ -78,6 +82,10 @@ class _MainBoardState extends State<MainBoard> {
           _conflicts = state.conflicts;
         } else if (state is CursorChangedState) {
           _cursor = state.val;
+          _cursorCopy = state.val;
+          if (state.val == 0) {
+            _cursorCopy = -1;
+          }
           print('cursor: $_cursor');
         } else if (state is UpdateCellState) {
           _boardList[_row][_col] = state.val;
@@ -88,6 +96,7 @@ class _MainBoardState extends State<MainBoard> {
           _col = state.col;
         } else if (state is PauseTimerState) {
           _isTimerPaused = state.isPaused;
+          _dynamicText = 'PAUSE';
         } else if (state is ResetState) {
           _boardList = List.from(state.boardList);
           changeConflicts();
@@ -98,6 +107,15 @@ class _MainBoardState extends State<MainBoard> {
           _animatedHeight != 0.0
               ? _animatedHeight = 0.0
               : _animatedHeight = 40.0;
+        } else if (state is GameFinishedState) {
+          print('game finished hurry');
+          print('game won: ${state.isWon}');
+          _isTimerPaused = true;
+          if (state.isWon) {
+            _dynamicText = 'You Won!';
+          } else {
+            _dynamicText = 'You Lost!';
+          }
         }
       },
       child:
@@ -150,7 +168,7 @@ class _MainBoardState extends State<MainBoard> {
                             color: transparent,
                             child: Center(
                                 child: Text(
-                              'PAUSE',
+                              '$_dynamicText',
                               style: TextStyle(
                                   fontSize: 40.0,
                                   fontWeight: FontWeight.bold,
@@ -235,19 +253,52 @@ class _MainBoardState extends State<MainBoard> {
   Color getHighlightColor(int r, int c) {
     bool isConflict = _conflicts.contains(new RowCol(r, c));
     bool isChangeAble = _initBoardList[r][c] == 0;
+    bool isToHighlight = _boardList[r][c] == _cursorCopy;
 
     if (r == _row && c == _col) {
       return Color(kBoardCellSelected);
     }
 
-    if (isConflict && !isChangeAble)
-      return Colors.red[900];
-    else if (isConflict)
+    if (r == _row && !isConflict) {
+      return Colors.blue[100];
+    } else if (r == _row && isConflict) {
       return Colors.red[100];
-    else if (!isChangeAble)
+    }
+
+    if (c == _col && !isConflict) {
+      return Colors.blue[100];
+    } else if (c == _col && isConflict) {
+      return Colors.red[100];
+    }
+
+    if (isConflict && !isChangeAble)
+      return Colors.red[100];
+    else if (isConflict)
+      return Color(kBoardCellEmpty);
+    else if (isToHighlight)
       return Color(kBoardPreFilled);
     else
       return Color(kBoardCellEmpty);
+  }
+
+
+
+  Color getTextColor(int r, int c) {
+    bool isConflict = _conflicts.contains(new RowCol(r, c));
+    bool isChangeAble = _initBoardList[r][c] == 0;
+
+    if (r == _row && c == _col && !isConflict) {
+      return Colors.black;
+    }
+
+    if (isConflict && !isChangeAble)
+      return Colors.black;
+    else if (isConflict)
+      return Colors.red;
+    else if (!isChangeAble)
+      return Colors.black;
+    else
+      return Colors.black;
   }
 
   List<TableRow> getTableBoardRow() {
@@ -280,6 +331,7 @@ class _MainBoardState extends State<MainBoard> {
                   thickness: 2.0,
                 ),
               ),
+              Spacer(),
               Row(
                 children: <Widget>[
                   Visibility(
@@ -290,13 +342,19 @@ class _MainBoardState extends State<MainBoard> {
                       color: Color(kPrimaryColor),
                     ),
                   ),
+                  Spacer(),
                   Text(
                     _boardList[r][c] == 0 ? '' : '${_boardList[r][c]}',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 20.0, color: Color(kBoardTextColor)),
-                  )
+                      fontSize: 20.0,
+                      color: getTextColor(r, c),
+                    ),
+                  ),
+                  Spacer(),
                 ],
               ),
+              Spacer(),
             ],
           ),
         ),

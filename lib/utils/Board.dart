@@ -8,7 +8,6 @@ class Conflict {
     computeRowConflicts(grid, result);
     computeColConflicts(grid, result);
     computeBlockConflicts(grid, result);
-    computeFinishGame(grid);
     return result;
   }
 
@@ -46,16 +45,17 @@ class Conflict {
   }
 
   // Check to finish game
-  static void computeFinishGame(List<List<int>> grid) {
+  static bool computeFinishGame(List<List<int>> grid) {
+    bool isGameFinished = true;
     for (int c = 0; c < 9; c++) {
       for (int r = 0; r < 9; r++) {
         int newNum = grid[r][c];
         if (newNum == 0) {
-          print('Not Finished');
-          return;
+          isGameFinished = false;
         }
       }
     }
+    return isGameFinished;
   }
 
   static void computeBlockConflicts(List<List<int>> grid, HashSet<RowCol> res) {

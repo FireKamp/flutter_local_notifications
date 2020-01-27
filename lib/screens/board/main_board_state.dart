@@ -35,6 +35,12 @@ class ConflictsChanged extends MainBoardState {
   ConflictsChanged({this.conflicts});
 }
 
+class GameFinishedState extends MainBoardState {
+  final bool isWon;
+
+  GameFinishedState({this.isWon});
+}
+
 class CursorChangedState extends MainBoardState {
   final int val;
 
