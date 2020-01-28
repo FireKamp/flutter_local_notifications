@@ -14,8 +14,8 @@ class NumPadButton extends StatelessWidget {
         onClick(value);
       },
       child: Container(
-          width: 40.0,
-          height: 40.0,
+          width: MediaQuery.of(context).size.width * 0.11,
+          height: MediaQuery.of(context).size.height * 0.06,
           decoration: new BoxDecoration(
               color: Colors.transparent,
               border: Border.all(width: 2.0, color: Color(kNumPadBorder))),

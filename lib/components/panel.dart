@@ -73,7 +73,7 @@ class _PanelState extends State<Panel> {
   void changeSelectionColor() {
     for (int i = 0; i < _selectedImageColor.length; i++) {
       if (_segmentedControlValue == i) {
-        _selectedImageColor[i] = Color(kBoardCellSelected);
+        _selectedImageColor[i] = kBoardCellSelected;
       } else {
         _selectedImageColor[i] = Colors.white;
       }

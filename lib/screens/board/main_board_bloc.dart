@@ -184,7 +184,7 @@ Color getHighlightColorBloc(int selRow, int selCol, int row, int col,
   bool isChangeAble = initBoardList[row][col] == 0;
 
   if (row == selCol && col == selCol) {
-    return Color(kBoardCellSelected);
+    return kBoardCellSelected;
   }
 
   if (isConflict && !isChangeAble)

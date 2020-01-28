@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class _MainBoardState extends State<MainBoard> {
 
   String _dynamicText;
 
-  double _animatedHeight = 40.0;
+  double _animatedHeight = 50.0;
 
   bool _isTimerPaused = false;
 
@@ -98,6 +97,7 @@ class _MainBoardState extends State<MainBoard> {
           _isTimerPaused = state.isPaused;
           _dynamicText = 'PAUSE';
         } else if (state is ResetState) {
+          _cursorCopy = -1;
           _boardList = List.from(state.boardList);
           changeConflicts();
         } else if (state is FullScreenState) {
@@ -164,7 +164,7 @@ class _MainBoardState extends State<MainBoard> {
                           visible: _isTimerPaused,
                           child: Container(
                             width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.5,
+                            height: MediaQuery.of(context).size.height * 0.55,
                             color: transparent,
                             child: Center(
                                 child: Text(
@@ -184,16 +184,18 @@ class _MainBoardState extends State<MainBoard> {
                   onSegmentChange: (int segmentValue) {
                     print('segmentValue: $segmentValue');
 
-                    switch (segmentValue) {
-                      case 0:
-                        _mainBoardBloc.add(FullScreen());
-                        break;
-                      case 1:
-                        _numPadButtonClick(0);
-                        break;
-                      case 2:
-                        _mainBoardBloc.add(ResetBoard(list: _initBoardList));
-                        break;
+                    if (!_isTimerPaused) {
+                      switch (segmentValue) {
+                        case 0:
+                          _mainBoardBloc.add(FullScreen());
+                          break;
+                        case 1:
+                          _numPadButtonClick(0);
+                          break;
+                        case 2:
+                          _mainBoardBloc.add(ResetBoard(list: _initBoardList));
+                          break;
+                      }
                     }
                   },
                 ),
@@ -207,7 +209,7 @@ class _MainBoardState extends State<MainBoard> {
                   onValueChanged: (int val) {
                     print('NumPad: $val');
 
-                    _numPadButtonClick(val);
+                    if (!_isTimerPaused) _numPadButtonClick(val);
                   },
                 ),
                 NumPad(
@@ -219,7 +221,7 @@ class _MainBoardState extends State<MainBoard> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     onValueChanged: (int val) {
                       print('NumPad: $val');
-                      _numPadButtonClick(val);
+                      if (!_isTimerPaused) _numPadButtonClick(val);
                     }),
               ])),
         );
@@ -230,7 +232,7 @@ class _MainBoardState extends State<MainBoard> {
   Table buildTable() {
     return Table(
       children: getTableBoardRow(), // main board
-      border: new TableBorder.all(color: Color(kPrimaryColor)),
+      border: new TableBorder.all(color: kBorderTest, width: 1.0),
     );
   }
 
@@ -256,17 +258,17 @@ class _MainBoardState extends State<MainBoard> {
     bool isToHighlight = _boardList[r][c] == _cursorCopy;
 
     if (r == _row && c == _col) {
-      return Color(kBoardCellSelected);
+      return kBoardCellSelected;
     }
 
     if (r == _row && !isConflict) {
-      return Colors.blue[100];
+      return lightBlue;
     } else if (r == _row && isConflict) {
       return Colors.red[100];
     }
 
     if (c == _col && !isConflict) {
-      return Colors.blue[100];
+      return lightBlue;
     } else if (c == _col && isConflict) {
       return Colors.red[100];
     }
@@ -280,8 +282,6 @@ class _MainBoardState extends State<MainBoard> {
     else
       return Color(kBoardCellEmpty);
   }
-
-
 
   Color getTextColor(int r, int c) {
     bool isConflict = _conflicts.contains(new RowCol(r, c));
@@ -319,7 +319,8 @@ class _MainBoardState extends State<MainBoard> {
               .add(UpdateRowCol(row: r, col: c, list: _initBoardList));
         },
         child: new Container(
-          height: 36.0,
+          height: MediaQuery.of(context).size.height * 0.06,
+          width: MediaQuery.of(context).size.width * 0.05,
           color: getHighlightColor(r, c),
           child: Column(
             children: <Widget>[
@@ -328,7 +329,7 @@ class _MainBoardState extends State<MainBoard> {
                 child: Divider(
                   color: Color(kPrimaryColor),
                   height: 1.0,
-                  thickness: 2.0,
+                  thickness: 3.0,
                 ),
               ),
               Spacer(),
@@ -337,8 +338,8 @@ class _MainBoardState extends State<MainBoard> {
                   Visibility(
                     visible: isShowColBorder(c),
                     child: Container(
-                      height: 35.0,
-                      width: 2.0,
+                      height: MediaQuery.of(context).size.height * 0.0585,
+                      width: 3.0,
                       color: Color(kPrimaryColor),
                     ),
                   ),
