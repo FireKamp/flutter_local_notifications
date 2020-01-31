@@ -9,6 +9,7 @@ import 'package:sudoku_brain/components/num_pad.dart';
 import 'package:sudoku_brain/components/panel.dart';
 import 'package:sudoku_brain/components/play_pause_widget.dart';
 import 'package:sudoku_brain/components/timer_widget.dart';
+import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
@@ -37,8 +38,8 @@ class _MainBoardState extends State<MainBoard> {
 
   bool _isTimerPaused = false;
 
-  List<List<int>> _boardList = constantList;
-  List<List<int>> _initBoardList = constantList;
+  List<List<BoardData>> _boardList = [];
+  List<List<BoardData>> _initBoardList = [];
   HashSet<RowCol> _conflicts = new HashSet<RowCol>();
 
   @override
@@ -87,7 +88,7 @@ class _MainBoardState extends State<MainBoard> {
           }
           print('cursor: $_cursor');
         } else if (state is UpdateCellState) {
-          _boardList[_row][_col] = state.val;
+          _boardList[_row][_col].value = state.val;
           print('_boardList: ${state.val}');
         } else if (state is UpdateRowColState) {
           print('UpdateRowColState');
@@ -136,6 +137,7 @@ class _MainBoardState extends State<MainBoard> {
                         InkWell(
                             onTap: () {
                               print('settings');
+                              readJson();
                             },
                             child: Icon(Icons.settings, size: 25.0)),
                         CounterWidget(mainBoardBloc: _mainBoardBloc),
@@ -253,39 +255,47 @@ class _MainBoardState extends State<MainBoard> {
   }
 
   Color getHighlightColor(int r, int c) {
-    bool isConflict = _conflicts.contains(new RowCol(r, c));
-    bool isChangeAble = _initBoardList[r][c] == 0;
-    bool isToHighlight = _boardList[r][c] == _cursorCopy;
+    if(_boardList.isNotEmpty && _initBoardList.isNotEmpty){
 
-    if (r == _row && c == _col) {
-      return kBoardCellSelected;
-    }
+      bool isConflict = _conflicts.contains(new RowCol(r, c));
+      bool isChangeAble = _initBoardList[r][c].value == 0;
+      bool isToHighlight = _boardList[r][c].value == _cursorCopy;
 
-    if (r == _row && !isConflict) {
-      return lightBlue;
-    } else if (r == _row && isConflict) {
-      return Colors.red[100];
-    }
+      if (r == _row && c == _col) {
+        return kBoardCellSelected;
+      }
 
-    if (c == _col && !isConflict) {
-      return lightBlue;
-    } else if (c == _col && isConflict) {
-      return Colors.red[100];
-    }
+      if (r == _row && !isConflict) {
+        return lightBlue;
+      } else if (r == _row && isConflict) {
+        return Colors.red[100];
+      }
 
-    if (isConflict && !isChangeAble)
-      return Colors.red[100];
-    else if (isConflict)
+      if (c == _col && !isConflict) {
+        return lightBlue;
+      } else if (c == _col && isConflict) {
+        return Colors.red[100];
+      }
+
+      if (isConflict && !isChangeAble)
+        return Colors.red[100];
+      else if (isConflict)
+        return Color(kBoardCellEmpty);
+      else if (isToHighlight)
+        return Color(kBoardPreFilled);
+      else
+        return Color(kBoardCellEmpty);
+
+    }else{
       return Color(kBoardCellEmpty);
-    else if (isToHighlight)
-      return Color(kBoardPreFilled);
-    else
-      return Color(kBoardCellEmpty);
+    }
+
   }
 
   Color getTextColor(int r, int c) {
+    if(_boardList.isNotEmpty && _initBoardList.isNotEmpty){
     bool isConflict = _conflicts.contains(new RowCol(r, c));
-    bool isChangeAble = _initBoardList[r][c] == 0;
+    bool isChangeAble = _initBoardList[r][c].value == 0;
 
     if (r == _row && c == _col && !isConflict) {
       return Colors.black;
@@ -299,6 +309,9 @@ class _MainBoardState extends State<MainBoard> {
       return Colors.black;
     else
       return Colors.black;
+    }else{
+      return Colors.black;
+    }
   }
 
   List<TableRow> getTableBoardRow() {
@@ -319,8 +332,8 @@ class _MainBoardState extends State<MainBoard> {
               .add(UpdateRowCol(row: r, col: c, list: _initBoardList));
         },
         child: new Container(
-          height: MediaQuery.of(context).size.height * 0.06,
-          width: MediaQuery.of(context).size.width * 0.05,
+          height: (MediaQuery.of(context).size.height / 2) / 9,
+          width: (MediaQuery.of(context).size.width / 2) / 9,
           color: getHighlightColor(r, c),
           child: Column(
             children: <Widget>[
@@ -338,14 +351,15 @@ class _MainBoardState extends State<MainBoard> {
                   Visibility(
                     visible: isShowColBorder(c),
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.0585,
+                      height:
+                          ((MediaQuery.of(context).size.height / 2) / 9) - 1,
                       width: 3.0,
                       color: Color(kPrimaryColor),
                     ),
                   ),
                   Spacer(),
                   Text(
-                    _boardList[r][c] == 0 ? '' : '${_boardList[r][c]}',
+                    '',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.0,
@@ -365,7 +379,7 @@ class _MainBoardState extends State<MainBoard> {
   }
 
   // TODO: remove it later
-  Future<List<List<int>>> readJson() async {
+  Future<List<List<BoardData>>> readJson() async {
     print('readJson');
 
     String data =
@@ -376,10 +390,26 @@ class _MainBoardState extends State<MainBoard> {
     List list = decodedData['easy'];
     print('list: $list');
 
-    List<List<int>> ques = [];
+    List<List<BoardData>> ques = [];
     for (int i = 0; i < list.length; i++) {
       ques.add(list[i].cast<int>());
     }
+
+    List<List<BoardData>> test = [];
+    for (int i = 0; i < list.length; i++) {
+      List innerList = list[i];
+      List<BoardData> dataList = [];
+      for (int j = 0; j < innerList.length; j++) {
+        dataList.add(BoardData(value: innerList[j], mode: PlayMode.PLAY));
+      }
+      test.add(dataList);
+    }
+
+    print('================ List ===============');
+    print('list: ${test[1][1].value}');
+    print('list: ${test[0][0].mode}');
+    print('================ List ===============');
+
     return ques;
   }
 }

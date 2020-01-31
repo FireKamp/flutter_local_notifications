@@ -7,8 +7,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
-import 'package:sudoku_brain/utils/Constants.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -37,7 +37,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     if (event is BoardInitISCalled) {
       yield FetchingLevel();
       final list = await _readJson(event.context, 'easy');
-      _solution = await _readJson(event.context, 'easy_solution');
+//      _solution = await _readJson(event.context, 'easy_solution');
       print('_solution" $_solution');
       yield LevelFetched(boardList: list);
     } else if (event is ChangeConflictsCalled) {
@@ -45,8 +45,8 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       final gameFinished = _gameFinished(event.list);
       yield ConflictsChanged(conflicts: conflicts);
       if (gameFinished) {
-        final isWon = compareLists(event.list);
-        yield GameFinishedState(isWon: isWon);
+//        final isWon = compareLists(event.list);
+//        yield GameFinishedState(isWon: isWon);
       }
     } else if (event is CursorChanged) {
       final cursor = _changeCursor(event.val);
@@ -66,8 +66,8 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       _isPaused = true;
       yield (PauseTimerState(isPaused: _isPaused));
     } else if (event is ResetBoard) {
-      final list = reset(event.list);
-      yield ResetState(boardList: list);
+//      final list = reset(event.list);
+//      yield ResetState(boardList: list);
     } else if (event is FullScreen) {
       final full = fullScreen();
       yield FullScreenState(isFull: full);
@@ -119,7 +119,8 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 }
 
 // Read data from JSON File
-Future<List<List<int>>> _readJson(BuildContext context, String objName) async {
+Future<List<List<BoardData>>> _readJson(
+    BuildContext context, String objName) async {
   print('readJson');
 
   String data =
@@ -130,7 +131,7 @@ Future<List<List<int>>> _readJson(BuildContext context, String objName) async {
   List list = decodedData['$objName'];
   print('list: $list');
 
-  List<List<int>> ques = [];
+  List<List<BoardData>> ques = [];
   for (int i = 0; i < list.length; i++) {
     ques.add(list[i].cast<int>());
   }
@@ -139,12 +140,12 @@ Future<List<List<int>>> _readJson(BuildContext context, String objName) async {
 }
 
 // Change conflicts
-HashSet<RowCol> _changeConflicts(List<List<int>> boardList) {
+HashSet<RowCol> _changeConflicts(List<List<BoardData>> boardList) {
   HashSet<RowCol> _conflicts = Conflict.getConflicts(boardList);
   return _conflicts;
 }
 
-bool _gameFinished(List<List<int>> boardList) {
+bool _gameFinished(List<List<BoardData>> boardList) {
   bool isFinished = Conflict.computeFinishGame(boardList);
   return isFinished;
 }
@@ -160,9 +161,9 @@ int _changeCellValue(int val) {
 }
 
 //
-List<int> _changeRowCol(int row, int col, List<List<int>> list) {
+List<int> _changeRowCol(int row, int col, List<List<BoardData>> list) {
   List<int> retList = List();
-  if (list[row][col] == 0) {
+  if (list[row][col].value == 0) {
     retList.add(row);
     retList.add(col);
   }
@@ -170,31 +171,11 @@ List<int> _changeRowCol(int row, int col, List<List<int>> list) {
 }
 
 //
-List<List<int>> reset(List<List<int>> _initBoardList) {
-  List<List<int>> list = new List<List<int>>.generate(
-      9, (i) => new List<int>.from(_initBoardList[i]));
-
-  return list;
-}
-
+List<List<BoardData>> reset(List<List<int>> _initBoardList) {
+//  List<List<int>> list = new List<List<int>>.generate(
+//      9, (i) => new List<int>.from(_initBoardList[i]));
 //
-Color getHighlightColorBloc(int selRow, int selCol, int row, int col,
-    HashSet<RowCol> conflicts, List<List<int>> initBoardList) {
-  bool isConflict = conflicts.contains(new RowCol(row, col));
-  bool isChangeAble = initBoardList[row][col] == 0;
-
-  if (row == selCol && col == selCol) {
-    return kBoardCellSelected;
-  }
-
-  if (isConflict && !isChangeAble)
-    return Colors.red[900];
-  else if (isConflict)
-    return Colors.red[100];
-  else if (!isChangeAble)
-    return Color(kBoardPreFilled);
-  else
-    return Color(kBoardCellEmpty);
+//  return list;
 }
 
 // showRow Border or Not

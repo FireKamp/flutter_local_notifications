@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 
 @immutable
@@ -16,7 +17,7 @@ class InitialMainBoardState extends MainBoardState {
 class FetchingLevel extends MainBoardState {}
 
 class LevelFetched extends MainBoardState {
-  final List<List<int>> boardList;
+  final List<List<BoardData>> boardList;
 
   LevelFetched({this.boardList});
 }
@@ -67,7 +68,7 @@ class UpdateRowColState extends MainBoardState {
 }
 
 class ResetState extends MainBoardState {
-  final List<List<int>> boardList;
+  final List<List<BoardData>> boardList;
 
   ResetState({this.boardList});
 }

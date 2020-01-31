@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:sudoku_brain/models/board_data.dart';
 
 @immutable
 abstract class MainBoardEvent {}
@@ -11,7 +12,7 @@ class BoardInitISCalled extends MainBoardEvent {
 }
 
 class ChangeConflictsCalled extends MainBoardEvent {
-  final List<List<int>> list;
+  final List<List<BoardData>> list;
 
   ChangeConflictsCalled({this.list});
 }
@@ -31,13 +32,13 @@ class UpdateCellValue extends MainBoardEvent {
 class UpdateRowCol extends MainBoardEvent {
   final int row;
   final int col;
-  final List<List<int>> list;
+  final List<List<BoardData>> list;
 
   UpdateRowCol({this.row, this.col, this.list});
 }
 
 class ResetBoard extends MainBoardEvent {
-  final List<List<int>> list;
+  final List<List<BoardData>> list;
 
   ResetBoard({this.list});
 }

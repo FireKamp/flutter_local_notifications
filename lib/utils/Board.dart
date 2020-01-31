@@ -1,9 +1,11 @@
 import 'dart:collection';
 
+import 'package:sudoku_brain/models/board_data.dart';
+
 import '../models/row_col.dart';
 
 class Conflict {
-  static HashSet<RowCol> getConflicts(List<List<int>> grid) {
+  static HashSet<RowCol> getConflicts(List<List<BoardData>> grid) {
     HashSet<RowCol> result = new HashSet<RowCol>();
     computeRowConflicts(grid, result);
     computeColConflicts(grid, result);
@@ -11,11 +13,12 @@ class Conflict {
     return result;
   }
 
-  static void computeRowConflicts(List<List<int>> grid, HashSet<RowCol> res) {
+  static void computeRowConflicts(
+      List<List<BoardData>> grid, HashSet<RowCol> res) {
     for (int r = 0; r < 9; r++) {
       HashMap<int, RowCol> usedNumToRowCol = new HashMap<int, RowCol>();
       for (int c = 0; c < 9; c++) {
-        int newNum = grid[r][c];
+        int newNum = grid[r][c].value;
 
 //        print('[$r][$c]=${grid[r][c]}');
 
@@ -29,11 +32,12 @@ class Conflict {
     }
   }
 
-  static void computeColConflicts(List<List<int>> grid, HashSet<RowCol> res) {
+  static void computeColConflicts(
+      List<List<BoardData>> grid, HashSet<RowCol> res) {
     for (int c = 0; c < 9; c++) {
       HashMap<int, RowCol> usedNumToRowCol = new HashMap<int, RowCol>();
       for (int r = 0; r < 9; r++) {
-        int newNum = grid[r][c];
+        int newNum = grid[r][c].value;
         if (newNum == 0) continue;
         if (usedNumToRowCol.containsKey(newNum)) {
           res.add(new RowCol(r, c));
@@ -45,11 +49,11 @@ class Conflict {
   }
 
   // Check to finish game
-  static bool computeFinishGame(List<List<int>> grid) {
+  static bool computeFinishGame(List<List<BoardData>> grid) {
     bool isGameFinished = true;
     for (int c = 0; c < 9; c++) {
       for (int r = 0; r < 9; r++) {
-        int newNum = grid[r][c];
+        int newNum = grid[r][c].value;
         if (newNum == 0) {
           isGameFinished = false;
         }
@@ -58,7 +62,8 @@ class Conflict {
     return isGameFinished;
   }
 
-  static void computeBlockConflicts(List<List<int>> grid, HashSet<RowCol> res) {
+  static void computeBlockConflicts(
+      List<List<BoardData>> grid, HashSet<RowCol> res) {
     blockConf(0, 0, grid, res);
     blockConf(0, 3, grid, res);
     blockConf(0, 6, grid, res);
@@ -71,11 +76,11 @@ class Conflict {
   }
 
   static void blockConf(
-      int row, int col, List<List<int>> grid, HashSet<RowCol> res) {
+      int row, int col, List<List<BoardData>> grid, HashSet<RowCol> res) {
     HashMap<int, RowCol> usedNumToRowCol = new HashMap<int, RowCol>();
     for (int r = row; r < row + 3; r++) {
       for (int c = col; c < col + 3; c++) {
-        int newNum = grid[r][c];
+        int newNum = grid[r][c].value;
         if (newNum == 0) continue;
         if (usedNumToRowCol.containsKey(newNum)) {
           res.add(new RowCol(r, c));

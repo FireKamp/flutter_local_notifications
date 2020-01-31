@@ -51,6 +51,4 @@ List<List<int>> dummyList = [
 ];
 
 // Enums
-//enum SelectionType{
-//
-//}
+enum PlayMode { PENCIL, PLAY }
