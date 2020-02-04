@@ -98,6 +98,8 @@ class _MainBoardState extends State<MainBoard> {
           _isTimerPaused = state.isPaused;
           _dynamicText = 'PAUSE';
         } else if (state is ResetState) {
+          print('ResetState');
+          print('ResetState: ${state.boardList}');
           _cursorCopy = -1;
           _boardList = List.from(state.boardList);
           changeConflicts();
@@ -195,7 +197,8 @@ class _MainBoardState extends State<MainBoard> {
                           _numPadButtonClick(0);
                           break;
                         case 2:
-                          _mainBoardBloc.add(ResetBoard(list: _initBoardList));
+                          _mainBoardBloc.add(ResetBoard(
+                              list: _initBoardList, buildContext: context));
                           break;
                       }
                     }
@@ -255,8 +258,7 @@ class _MainBoardState extends State<MainBoard> {
   }
 
   Color getHighlightColor(int r, int c) {
-    if(_boardList.isNotEmpty && _initBoardList.isNotEmpty){
-
+    if (_boardList.isNotEmpty && _initBoardList.isNotEmpty) {
       bool isConflict = _conflicts.contains(new RowCol(r, c));
       bool isChangeAble = _initBoardList[r][c].value == 0;
       bool isToHighlight = _boardList[r][c].value == _cursorCopy;
@@ -285,31 +287,29 @@ class _MainBoardState extends State<MainBoard> {
         return Color(kBoardPreFilled);
       else
         return Color(kBoardCellEmpty);
-
-    }else{
+    } else {
       return Color(kBoardCellEmpty);
     }
-
   }
 
   Color getTextColor(int r, int c) {
-    if(_boardList.isNotEmpty && _initBoardList.isNotEmpty){
-    bool isConflict = _conflicts.contains(new RowCol(r, c));
-    bool isChangeAble = _initBoardList[r][c].value == 0;
+    if (_initBoardList.isNotEmpty) {
+      bool isConflict = _conflicts.contains(new RowCol(r, c));
+      bool isChangeAble = _initBoardList[r][c].value == 0;
 
-    if (r == _row && c == _col && !isConflict) {
-      return Colors.black;
-    }
+      if (r == _row && c == _col && !isConflict) {
+        return Colors.black;
+      }
 
-    if (isConflict && !isChangeAble)
-      return Colors.black;
-    else if (isConflict)
-      return Colors.red;
-    else if (!isChangeAble)
-      return Colors.black;
-    else
-      return Colors.black;
-    }else{
+      if (isConflict && !isChangeAble)
+        return Colors.black;
+      else if (isConflict)
+        return Colors.red;
+      else if (!isChangeAble)
+        return Colors.black;
+      else
+        return Colors.black;
+    } else {
       return Colors.black;
     }
   }
@@ -359,7 +359,7 @@ class _MainBoardState extends State<MainBoard> {
                   ),
                   Spacer(),
                   Text(
-                    '',
+                    getText(r, c),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 20.0,
@@ -388,12 +388,7 @@ class _MainBoardState extends State<MainBoard> {
 
     var decodedData = jsonDecode(data);
     List list = decodedData['easy'];
-    print('list: $list');
-
-    List<List<BoardData>> ques = [];
-    for (int i = 0; i < list.length; i++) {
-      ques.add(list[i].cast<int>());
-    }
+    print('main list: $list');
 
     List<List<BoardData>> test = [];
     for (int i = 0; i < list.length; i++) {
@@ -410,6 +405,18 @@ class _MainBoardState extends State<MainBoard> {
     print('list: ${test[0][0].mode}');
     print('================ List ===============');
 
-    return ques;
+    return test;
+  }
+
+  String getText(int r, int c) {
+    if (_boardList.isEmpty) {
+      return '';
+    } else {
+      if (_boardList[r][c].value == 0) {
+        return '';
+      } else {
+        return '${_boardList[r][c].value}';
+      }
+    }
   }
 }

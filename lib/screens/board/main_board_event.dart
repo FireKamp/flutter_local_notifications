@@ -39,8 +39,10 @@ class UpdateRowCol extends MainBoardEvent {
 
 class ResetBoard extends MainBoardEvent {
   final List<List<BoardData>> list;
+  final BuildContext buildContext;
 
-  ResetBoard({this.list});
+
+  ResetBoard({this.list,this.buildContext});
 }
 
 class FullScreen extends MainBoardEvent {}

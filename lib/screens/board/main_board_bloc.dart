@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
+import 'package:sudoku_brain/utils/Constants.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -66,8 +67,8 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       _isPaused = true;
       yield (PauseTimerState(isPaused: _isPaused));
     } else if (event is ResetBoard) {
-//      final list = reset(event.list);
-//      yield ResetState(boardList: list);
+      final list = await _readJson(event.buildContext, 'easy');
+      yield ResetState(boardList: list);
     } else if (event is FullScreen) {
       final full = fullScreen();
       yield FullScreenState(isFull: full);
@@ -131,12 +132,17 @@ Future<List<List<BoardData>>> _readJson(
   List list = decodedData['$objName'];
   print('list: $list');
 
-  List<List<BoardData>> ques = [];
+  List<List<BoardData>> test = [];
   for (int i = 0; i < list.length; i++) {
-    ques.add(list[i].cast<int>());
+    List innerList = list[i];
+    List<BoardData> dataList = [];
+    for (int j = 0; j < innerList.length; j++) {
+      dataList.add(BoardData(value: innerList[j], mode: PlayMode.PLAY));
+    }
+    test.add(dataList);
   }
 
-  return ques;
+  return test;
 }
 
 // Change conflicts
@@ -171,11 +177,11 @@ List<int> _changeRowCol(int row, int col, List<List<BoardData>> list) {
 }
 
 //
-List<List<BoardData>> reset(List<List<int>> _initBoardList) {
-//  List<List<int>> list = new List<List<int>>.generate(
-//      9, (i) => new List<int>.from(_initBoardList[i]));
-//
-//  return list;
+List<List<BoardData>> reset(List<List<BoardData>> _initBoardList) {
+  List<List<BoardData>> list = new List<List<BoardData>>.generate(
+      9, (i) => new List<BoardData>.from(_initBoardList[i]));
+
+  return list;
 }
 
 // showRow Border or Not
