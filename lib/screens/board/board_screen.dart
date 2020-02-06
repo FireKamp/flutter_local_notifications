@@ -358,13 +358,19 @@ class _MainBoardState extends State<MainBoard> {
                     ),
                   ),
                   Spacer(),
-                  Text(
-                    getText(r, c),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: getTextColor(r, c),
+                  Visibility(
+                    visible: false,
+                    child: Text(
+                      getText(r, c),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: getTextColor(r, c),
+                      ),
                     ),
+                  ),
+                  Expanded(
+                    child: _buildItemsList(),
                   ),
                   Spacer(),
                 ],
@@ -418,5 +424,29 @@ class _MainBoardState extends State<MainBoard> {
         return '${_boardList[r][c].value}';
       }
     }
+  }
+
+//  =========
+  Widget _buildItemsList() {
+    Widget itemCards;
+    List items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    return GridView.count(
+      primary: false,
+      padding: const EdgeInsets.all(20),
+      crossAxisSpacing: 5,
+      mainAxisSpacing: 5,
+      crossAxisCount: 2,
+      scrollDirection: Axis.vertical,
+      children: <Widget>[
+        Container(
+          child: const Text('abc'),
+          color: Colors.teal[100],
+        ),
+        Container(
+          child: const Text('400'),
+          color: Colors.teal[200],
+        )
+      ],
+    );
   }
 }

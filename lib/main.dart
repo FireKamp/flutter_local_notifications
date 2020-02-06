@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/board/main_board_bloc.dart';
+import 'package:sudoku_brain/test.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(Test());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
