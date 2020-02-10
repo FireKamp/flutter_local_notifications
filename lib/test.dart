@@ -25,8 +25,8 @@ class _GridState extends State<Grid> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
           color: Colors.white,
@@ -35,31 +35,96 @@ class _GridState extends State<Grid> {
           child: GridView.count(
             primary: false,
             crossAxisCount: 3,
-
             children: <Widget>[
               Container(
-                width: 50.0,
-                height: 50.0,
-                child: const Text('1',textAlign: TextAlign.center,style: TextStyle(color: Colors.black,fontSize: 10.0),),
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '1',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
                 color: Colors.teal[100],
               ),
               Container(
-                width: 50.0,
-                height: 50.0,
-                child: const Text('400'),
-                color: Colors.teal[200],
-              ),
-              Container(
-                width: 50.0,
-                height: 50.0,
-                child: const Text('cdf'),
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '2',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
                 color: Colors.teal[100],
               ),
               Container(
-                width: 50.0,
-                height: 50.0,
-                child: const Text('400'),
-                color: Colors.teal[200],
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '3',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '4',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '5',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '6',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '7',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '8',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
+              ),
+              Container(
+                width: 30.0,
+                height: 30.0,
+                child: const Text(
+                  '9',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 10.0),
+                ),
+                color: Colors.teal[100],
               ),
             ],
           ),

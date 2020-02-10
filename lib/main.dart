@@ -5,7 +5,7 @@ import 'package:sudoku_brain/screens/board/main_board_bloc.dart';
 import 'package:sudoku_brain/test.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-void main() => runApp(Test());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

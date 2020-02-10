@@ -37,6 +37,7 @@ class _MainBoardState extends State<MainBoard> {
   double _animatedHeight = 50.0;
 
   bool _isTimerPaused = false;
+  bool _isPencilON = false;
 
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
@@ -88,7 +89,17 @@ class _MainBoardState extends State<MainBoard> {
           }
           print('cursor: $_cursor');
         } else if (state is UpdateCellState) {
-          _boardList[_row][_col].value = state.val;
+          if (_isPencilON) {
+            bool isConflict = _conflicts.contains(new RowCol(_row, _col));
+            print('isConflict: $isConflict');
+            _boardList[_row][_col].mode = PlayMode.PENCIL;
+            _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
+          } else {
+            _boardList[_row][_col].mode = PlayMode.PLAY;
+            _boardList[_row][_col].value = state.val;
+          }
+          print('mode: ${_boardList[_row][_col].mode}');
+
           print('_boardList: ${state.val}');
         } else if (state is UpdateRowColState) {
           print('UpdateRowColState');
@@ -200,6 +211,17 @@ class _MainBoardState extends State<MainBoard> {
                           _mainBoardBloc.add(ResetBoard(
                               list: _initBoardList, buildContext: context));
                           break;
+                        case 3:
+                          _mainBoardBloc.add(Hint(row: _row, col: _col));
+                          break;
+                        case 4:
+                          if (_isPencilON) {
+                            _isPencilON = false;
+                          } else {
+                            _isPencilON = true;
+                          }
+
+                          break;
                       }
                     }
                   },
@@ -242,9 +264,13 @@ class _MainBoardState extends State<MainBoard> {
   }
 
   void _numPadButtonClick(int value) {
-    changeCursor(value);
-    _mainBoardBloc.add(UpdateCellValue(val: value));
-    changeConflicts();
+    if (_isPencilON) {
+      _mainBoardBloc.add(UpdateCellValue(val: value));
+    } else {
+      changeCursor(value);
+      _mainBoardBloc.add(UpdateCellValue(val: value));
+      changeConflicts();
+    }
   }
 
 //  Methods
@@ -261,6 +287,7 @@ class _MainBoardState extends State<MainBoard> {
     if (_boardList.isNotEmpty && _initBoardList.isNotEmpty) {
       bool isConflict = _conflicts.contains(new RowCol(r, c));
       bool isChangeAble = _initBoardList[r][c].value == 0;
+
       bool isToHighlight = _boardList[r][c].value == _cursorCopy;
 
       if (r == _row && c == _col) {
@@ -283,7 +310,7 @@ class _MainBoardState extends State<MainBoard> {
         return Colors.red[100];
       else if (isConflict)
         return Color(kBoardCellEmpty);
-      else if (isToHighlight)
+      else if (isToHighlight && !_isPencilON)
         return Color(kBoardPreFilled);
       else
         return Color(kBoardCellEmpty);
@@ -359,7 +386,8 @@ class _MainBoardState extends State<MainBoard> {
                   ),
                   Spacer(),
                   Visibility(
-                    visible: false,
+                    visible:
+                        _boardList[r][c].mode == PlayMode.PENCIL ? false : true,
                     child: Text(
                       getText(r, c),
                       textAlign: TextAlign.center,
@@ -369,8 +397,12 @@ class _MainBoardState extends State<MainBoard> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: _buildItemsList(),
+                  Visibility(
+                    visible:
+                        _boardList[r][c].mode == PlayMode.PENCIL ? true : false,
+                    child: _buildItemsList(_boardList.isNotEmpty
+                        ? _boardList[r][c].pencilValues
+                        : null),
                   ),
                   Spacer(),
                 ],
@@ -427,26 +459,38 @@ class _MainBoardState extends State<MainBoard> {
   }
 
 //  =========
-  Widget _buildItemsList() {
-    Widget itemCards;
-    List items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    return GridView.count(
-      primary: false,
-      padding: const EdgeInsets.all(20),
-      crossAxisSpacing: 5,
-      mainAxisSpacing: 5,
-      crossAxisCount: 2,
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-        Container(
-          child: const Text('abc'),
-          color: Colors.teal[100],
-        ),
-        Container(
-          child: const Text('400'),
-          color: Colors.teal[200],
-        )
-      ],
-    );
+  Widget _buildItemsList(List<int> pencilValues) {
+    List items = [1, 2, 3, 0, 5, 6, 0, 8, 9];
+    if (pencilValues != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 30.0,
+            height: 30.0,
+            child: GridView.count(
+                primary: false,
+                crossAxisCount: 3,
+                children: List.generate(pencilValues.length, (index) {
+                  return Container(
+                    width: 30.0,
+                    height: 30.0,
+                    child: Text(
+                      '${pencilValues[index] == 0 ? '' : pencilValues[index]}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 10.0),
+                    ),
+                  );
+                })),
+          ),
+        ],
+      );
+    } else {
+      return Container(
+        width: 30.0,
+        height: 30.0,
+      );
+    }
   }
 }
