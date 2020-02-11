@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/board/main_board_bloc.dart';
-import 'package:sudoku_brain/test.dart';
+import 'package:sudoku_brain/screens/home/bloc.dart';
+import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 void main() => runApp(MyApp());
@@ -14,11 +15,15 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: '',
       theme: ThemeData.dark().copyWith(
-        primaryColor: Color(kPrimaryColor),
-        scaffoldBackgroundColor: Color(kPrimaryColor),
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: kPrimaryColor,
       ),
-      initialRoute: MainBoard.id,
+      initialRoute: HomeScreen.id,
       routes: {
+        HomeScreen.id: (context) => BlocProvider<HomeBloc>(
+              create: (BuildContext context) => HomeBloc(),
+              child: HomeScreen(),
+            ),
         MainBoard.id: (context) => BlocProvider<MainBoardBloc>(
               create: (BuildContext context) => MainBoardBloc(),
               child: MainBoard(),

@@ -1,7 +1,7 @@
 // Colors
 import 'package:flutter/material.dart';
 
-const kPrimaryColor = 0xFF220E4A;
+const kPrimaryColor = Color(0xFF220E4A);
 const kBoardTextColor = 0xFF737272;
 const kBoardCellEmpty = 0xFFFFF3D2;
 const kBoardBorder = 0xFFE2E6E7;

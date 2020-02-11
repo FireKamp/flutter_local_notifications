@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PanelButton extends StatelessWidget {
+class PanelButton extends StatefulWidget {
   final int value;
   final Function(int) onClick;
   final IconData icon;
@@ -13,14 +13,19 @@ class PanelButton extends StatelessWidget {
       @required this.onClick});
 
   @override
+  _PanelButtonState createState() => _PanelButtonState();
+}
+
+class _PanelButtonState extends State<PanelButton> {
+  @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
-        icon,
-        color: color,
+        widget.icon,
+        color: widget.color,
       ),
       onPressed: () {
-        onClick(value);
+        widget.onClick(widget.value);
       },
     );
   }

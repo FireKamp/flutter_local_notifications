@@ -137,7 +137,7 @@ class _MainBoardState extends State<MainBoard> {
         print('BlocBuilder');
         return SafeArea(
           child: Scaffold(
-              backgroundColor: Color(kPrimaryColor),
+              backgroundColor: kPrimaryColor,
               body: Column(children: [
                 AnimatedContainer(
                   height: _animatedHeight,
@@ -196,8 +196,9 @@ class _MainBoardState extends State<MainBoard> {
                   ),
                 ),
                 Panel(
-                  onSegmentChange: (int segmentValue) {
+                  onSegmentChange: (int segmentValue, bool isSelected) {
                     print('segmentValue: $segmentValue');
+                    print('isSelected: $isSelected');
 
                     if (!_isTimerPaused) {
                       switch (segmentValue) {
@@ -215,12 +216,7 @@ class _MainBoardState extends State<MainBoard> {
                           _mainBoardBloc.add(Hint(row: _row, col: _col));
                           break;
                         case 4:
-                          if (_isPencilON) {
-                            _isPencilON = false;
-                          } else {
-                            _isPencilON = true;
-                          }
-
+                          _isPencilON = isSelected;
                           break;
                       }
                     }
@@ -367,7 +363,7 @@ class _MainBoardState extends State<MainBoard> {
               Visibility(
                 visible: isShowRowBorder(r),
                 child: Divider(
-                  color: Color(kPrimaryColor),
+                  color: kPrimaryColor,
                   height: 1.0,
                   thickness: 3.0,
                 ),
@@ -381,13 +377,16 @@ class _MainBoardState extends State<MainBoard> {
                       height:
                           ((MediaQuery.of(context).size.height / 2) / 9) - 1,
                       width: 3.0,
-                      color: Color(kPrimaryColor),
+                      color: kPrimaryColor,
                     ),
                   ),
                   Spacer(),
                   Visibility(
-                    visible:
-                        _boardList[r][c].mode == PlayMode.PENCIL ? false : true,
+                    visible: (_boardList.isEmpty
+                        ? false
+                        : _boardList[r][c].mode == PlayMode.PENCIL
+                            ? false
+                            : true),
                     child: Text(
                       getText(r, c),
                       textAlign: TextAlign.center,
@@ -398,8 +397,11 @@ class _MainBoardState extends State<MainBoard> {
                     ),
                   ),
                   Visibility(
-                    visible:
-                        _boardList[r][c].mode == PlayMode.PENCIL ? true : false,
+                    visible: (_boardList.isEmpty
+                        ? false
+                        : _boardList[r][c].mode == PlayMode.PENCIL
+                            ? true
+                            : false),
                     child: _buildItemsList(_boardList.isNotEmpty
                         ? _boardList[r][c].pencilValues
                         : null),

@@ -8,8 +8,8 @@ class Test extends StatelessWidget {
     return MaterialApp(
       title: '',
       theme: ThemeData.dark().copyWith(
-        primaryColor: Color(kPrimaryColor),
-        scaffoldBackgroundColor: Color(kPrimaryColor),
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: kPrimaryColor,
       ),
       home: Grid(),
     );

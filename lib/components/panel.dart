@@ -1,10 +1,10 @@
 // counter_page.dart
 import 'package:flutter/material.dart';
-import 'package:sudoku_brain/components/panel_button.dart';
+import 'package:sudoku_brain/components/switch_button.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 class Panel extends StatefulWidget {
-  final Function(int) onSegmentChange;
+  final Function(int, bool) onSegmentChange;
 
   Panel({@required this.onSegmentChange});
 
@@ -13,24 +13,6 @@ class Panel extends StatefulWidget {
 }
 
 class _PanelState extends State<Panel> {
-  final List<IconData> _icons = [
-    Icons.fullscreen,
-    Icons.delete,
-    Icons.refresh,
-    Icons.lightbulb_outline,
-    Icons.edit
-  ];
-
-  List<Color> _selectedImageColor = [
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white,
-    Colors.white
-  ];
-
-  int _segmentedControlValue = -1;
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -41,42 +23,46 @@ class _PanelState extends State<Panel> {
         padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: generateIcons(),
+          children: <Widget>[
+            SwitchButton(
+              value: 0,
+              iconActive: Icons.fullscreen_exit,
+              iconInActive: Icons.fullscreen,
+              onClick: (int val, bool isSel) {
+                widget.onSegmentChange(val, isSel);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                widget.onSegmentChange(1, false);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                widget.onSegmentChange(2, false);
+              },
+            ),
+            SwitchButton(
+              value: 3,
+              iconActive: Icons.lightbulb_outline,
+              iconInActive: Icons.lightbulb_outline,
+              onClick: (int val, bool isSel) {
+                widget.onSegmentChange(val, isSel);
+              },
+            ),
+            SwitchButton(
+              value: 4,
+              iconActive: Icons.edit,
+              iconInActive: Icons.edit,
+              onClick: (int val, bool isSel) {
+                widget.onSegmentChange(val, isSel);
+              },
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  List<Widget> generateIcons() {
-    List<Widget> list = [];
-
-    for (int i = 0; i < _icons.length; i++) {
-      list.add(
-        PanelButton(
-          value: i,
-          icon: _icons[i],
-          color: _selectedImageColor[i],
-          onClick: (int val) {
-            _segmentedControlValue = i;
-            print('val: $val');
-            setState(() {
-              widget.onSegmentChange(val);
-              changeSelectionColor();
-            });
-          },
-        ),
-      );
-    }
-    return list;
-  }
-
-  void changeSelectionColor() {
-    for (int i = 0; i < _selectedImageColor.length; i++) {
-      if (_segmentedControlValue == i) {
-        _selectedImageColor[i] = kBoardCellSelected;
-      } else {
-        _selectedImageColor[i] = Colors.white;
-      }
-    }
   }
 }
