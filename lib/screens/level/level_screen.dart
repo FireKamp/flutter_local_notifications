@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-class HomeScreen extends StatelessWidget {
-  static final String id = 'home_screen';
+class LevelScreen extends StatelessWidget {
+  static final String id = 'level_screen';
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +17,23 @@ class HomeScreen extends StatelessWidget {
               image: AssetImage('assets/images/ic_logo.png'),
             ),
             RaisedGradientButton(
-                text: 'CONTINUE',
-                icon: Icons.blur_circular,
+                text: 'EASY',
+                gradient: LinearGradient(
+                  colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
+                ),
+                onPressed: () {
+                  print('button clicked');
+                }),
+            RaisedGradientButton(
+                text: 'MEDIUM',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
                 ),
                 onPressed: () {
                   print('button clicked');
-                }), RaisedGradientButton(
-                text: 'NEW GAME',
-                icon: Icons.blur_circular,
+                }),
+            RaisedGradientButton(
+                text: 'HARD',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
                 ),
@@ -34,16 +41,7 @@ class HomeScreen extends StatelessWidget {
                   print('button clicked');
                 }),
             RaisedGradientButton(
-                text: 'SETTINGS',
-                icon: Icons.blur_circular,
-                gradient: LinearGradient(
-                  colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
-                ),
-                onPressed: () {
-                  print('button clicked');
-                }), RaisedGradientButton(
-                text: 'HELP',
-                icon: Icons.blur_circular,
+                text: 'EXPERT',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
                 ),
