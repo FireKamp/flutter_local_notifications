@@ -7,7 +7,7 @@ class RaisedGradientButton extends StatelessWidget {
   final double height;
   final Function onPressed;
   final String text;
-  final IconData icon;
+  final String icon;
 
   const RaisedGradientButton(
       {Key key,
@@ -49,13 +49,14 @@ class RaisedGradientButton extends StatelessWidget {
                     fontSize: 28.0),
               ),
             ),
-            leading: icon == null
-                ? null
-                : Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 65.0,
-                  ),
+            leading: new Container(
+              width: 150.0,
+              decoration: new BoxDecoration(
+                color: Color(0xFF6B4CFD),
+                shape: BoxShape.circle,
+              ),
+              child: Image(image: AssetImage(icon),),
+            ),
           ),
         ),
       ),

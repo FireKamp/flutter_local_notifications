@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: kPrimaryColor,
       ),
-      initialRoute: HelpScreen.id,
+      initialRoute: HomeScreen.id,
       routes: {
         HomeScreen.id: (context) => BlocProvider<HomeBloc>(
               create: (BuildContext context) => HomeBloc(),

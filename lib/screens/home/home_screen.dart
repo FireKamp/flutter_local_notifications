@@ -14,19 +14,20 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Image(
-              image: AssetImage('assets/images/ic_logo.png'),
+              image: AssetImage('assets/images/header.png'),
             ),
             RaisedGradientButton(
                 text: 'CONTINUE',
-                icon: Icons.blur_circular,
+                icon: 'assets/images/pencil.png',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
                 ),
                 onPressed: () {
                   print('button clicked');
-                }), RaisedGradientButton(
+                }),
+            RaisedGradientButton(
                 text: 'NEW GAME',
-                icon: Icons.blur_circular,
+                icon: 'assets/images/pencil.png',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
                 ),
@@ -35,15 +36,16 @@ class HomeScreen extends StatelessWidget {
                 }),
             RaisedGradientButton(
                 text: 'SETTINGS',
-                icon: Icons.blur_circular,
+                icon: 'assets/images/ic_setting.png',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
                 ),
                 onPressed: () {
                   print('button clicked');
-                }), RaisedGradientButton(
+                }),
+            RaisedGradientButton(
                 text: 'HELP',
-                icon: Icons.blur_circular,
+                icon: 'assets/images/ic_help.png',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
                 ),
