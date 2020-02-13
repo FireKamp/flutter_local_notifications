@@ -5,6 +5,7 @@ import 'package:sudoku_brain/utils/Constants.dart';
 
 class HelpScreen extends StatelessWidget {
   static final String id = 'help_screen';
+  final double sizedBoxHeight = 30.0;
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +14,13 @@ class HelpScreen extends StatelessWidget {
         children: <Widget>[
           TopContainer(
             text: 'HELP',
-            icon: Icons.account_circle,
+            color: kPrimaryColor,
           ),
           Expanded(
             flex: 2,
             child: Container(
               color: kPrimaryColor,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   RaisedGradientButton(
                       text: 'TUTORIAL',
@@ -30,6 +30,9 @@ class HelpScreen extends StatelessWidget {
                       onPressed: () {
                         print('button clicked');
                       }),
+                  SizedBox(
+                    height: sizedBoxHeight,
+                  ),
                   RaisedGradientButton(
                       text: 'CONTACT US',
                       gradient: LinearGradient(
@@ -38,6 +41,9 @@ class HelpScreen extends StatelessWidget {
                       onPressed: () {
                         print('button clicked');
                       }),
+                  SizedBox(
+                    height: sizedBoxHeight,
+                  ),
                   RaisedGradientButton(
                       text: 'TERMS OF USE',
                       gradient: LinearGradient(
@@ -55,5 +61,3 @@ class HelpScreen extends StatelessWidget {
     );
   }
 }
-
-
