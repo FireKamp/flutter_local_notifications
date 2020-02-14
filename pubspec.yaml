@@ -26,6 +26,8 @@ dependencies:
   intl: ^0.16.1
   flutter_bloc: ^3.1.0
   collection: ^1.14.11
+  xlive_switch: ^1.0.5
+
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +60,9 @@ flutter:
     - family: Staatliches
       fonts:
        - asset: assets/fonts/Staatliches-Regular.ttf
+    - family: Rubik
+      fonts:
+       - asset: assets/fonts/Rubik-Regular.ttf
 
 
   #   - family: Trajan Pro

@@ -2,21 +2,30 @@ import 'package:flutter/material.dart';
 
 class TopContainer extends StatelessWidget {
   final String text;
+  final String imagePath;
   final Color color;
   final Gradient gradient;
   final Gradient circleGradient;
   final double width;
   final double height;
 
-  TopContainer({this.text, this.color});
+  TopContainer(
+      {this.text,
+      this.imagePath,
+      this.color,
+      this.width,
+      this.height,
+      this.gradient,
+      this.circleGradient});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 1,
       child: Container(
-        color: color,
-
+        decoration: new BoxDecoration(
+          gradient: gradient,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -39,22 +48,21 @@ class TopContainer extends StatelessWidget {
               ],
             ),
             Container(
-              height: 100.0,
-              padding: EdgeInsets.all(10.0),
+              height: 500.0,
+              width: 130.0,
+              padding: EdgeInsets.all(30.0),
               decoration: new BoxDecoration(
-                gradient: LinearGradient(
-                  colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
-                ),
+                gradient: circleGradient,
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFFFE23A7),
+                    color: color,
                     blurRadius: 1.5,
                   ),
                 ],
                 shape: BoxShape.circle,
               ),
               child: Image.asset(
-                'assets/images/ic_help.png',
+                imagePath,
                 width: 70.0,
                 height: 70.0,
                 fit: BoxFit.fitWidth,

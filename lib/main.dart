@@ -8,6 +8,8 @@ import 'package:sudoku_brain/screens/home/bloc.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
+import 'package:sudoku_brain/screens/settings/bloc.dart';
+import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/bloc.dart';
 import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: kPrimaryColor,
       ),
-      initialRoute: TutorialScreen.id,
+      initialRoute: SettingsScreen.id,
       routes: {
         HomeScreen.id: (context) => BlocProvider<HomeBloc>(
               create: (BuildContext context) => HomeBloc(),
@@ -45,6 +47,10 @@ class MyApp extends StatelessWidget {
         TutorialScreen.id: (context) => BlocProvider<TutorialBloc>(
               create: (BuildContext context) => TutorialBloc(),
               child: TutorialScreen(),
+            ),
+        SettingsScreen.id: (context) => BlocProvider<SettingsBloc>(
+              create: (BuildContext context) => SettingsBloc(),
+              child: SettingsScreen(),
             ),
       },
     );
