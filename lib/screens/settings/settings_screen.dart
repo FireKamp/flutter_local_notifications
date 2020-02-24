@@ -16,6 +16,9 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopContainer(
+            onPressed: (){
+              Navigator.pop(context);
+            },
             text: 'SETTINGS',
             imagePath: 'assets/images/ic_setting_large.png',
             gradient: LinearGradient(

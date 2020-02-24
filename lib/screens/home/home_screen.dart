@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
+import 'package:sudoku_brain/screens/help/help_screen.dart';
+import 'package:sudoku_brain/screens/level/level_screen.dart';
+import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -42,7 +45,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Visibility(
-                    visible: true,
+                    visible: false,
                     child: RaisedGradientButton(
                         text: 'CONTINUE',
                         icon: 'assets/images/ic_board.png',
@@ -71,7 +74,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       shadowColor: Color(0xFFB9ACFF),
                       onPressed: () {
-                        print('button clicked');
+                        print('New Game');
+                        Navigator.pushNamed(context, LevelScreen.id);
                       }),
                   SizedBox(
                     height: sizedBoxHeight,
@@ -87,7 +91,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       shadowColor: Color(0xFF8DFDC4),
                       onPressed: () {
-                        print('button clicked');
+                        print('Settings');
+                        Navigator.pushNamed(context, SettingsScreen.id);
                       }),
                   SizedBox(
                     height: sizedBoxHeight,
@@ -103,7 +108,8 @@ class HomeScreen extends StatelessWidget {
                       ),
                       shadowColor: Color(0xFFFFC7E7),
                       onPressed: () {
-                        print('button clicked');
+                        print('Help');
+                        Navigator.pushNamed(context, HelpScreen.id);
                       }),
                 ],
               ),

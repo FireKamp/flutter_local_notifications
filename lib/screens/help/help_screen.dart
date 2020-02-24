@@ -13,8 +13,18 @@ class HelpScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopContainer(
+            onPressed: (){
+
+            },
+            imagePath: 'assets/images/ic_help_pick.orange/',
             text: 'HELP',
             color: kPrimaryColor,
+            gradient: LinearGradient(
+              colors: <Color>[kPrimaryColor, kPrimaryColor],
+            ),
+            circleGradient: LinearGradient(
+              colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
+            ),
           ),
           Expanded(
             flex: 2,

@@ -19,8 +19,14 @@ class LevelScreen extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   Spacer(),
-                  Image(
-                    image: AssetImage('assets/images/ic_back.png'),
+                  GestureDetector(
+                    onTap: () {
+                      print('back level');
+                      Navigator.pop(context);
+                    },
+                    child: Image(
+                      image: AssetImage('assets/images/ic_back.png'),
+                    ),
                   ),
                   Spacer(),
                   Column(

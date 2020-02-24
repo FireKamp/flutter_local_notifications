@@ -9,6 +9,8 @@ class TopContainer extends StatelessWidget {
   final double width;
   final double height;
 
+  final Function onPressed;
+
   TopContainer(
       {this.text,
       this.imagePath,
@@ -16,7 +18,8 @@ class TopContainer extends StatelessWidget {
       this.width,
       this.height,
       this.gradient,
-      this.circleGradient});
+      this.circleGradient,
+      this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,12 @@ class TopContainer extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 30.0),
-                  child: Image.asset('assets/images/ic_back.png'),
+                GestureDetector(
+                  onTap: onPressed,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 30.0),
+                    child: Image.asset('assets/images/ic_back.png'),
+                  ),
                 ),
                 Text(
                   text,
