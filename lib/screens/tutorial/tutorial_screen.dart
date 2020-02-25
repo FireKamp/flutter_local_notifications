@@ -17,7 +17,7 @@ class TutorialScreen extends StatelessWidget {
         children: <Widget>[
           TopContainer(
             text: 'HELP',
-            imagePath: 'assets/images/ic_back.png',
+            imagePath: 'assets/images/ic_help_orange.png',
             gradient: LinearGradient(
               colors: <Color>[Color(0xFFFC8D4A), Color(0xFFFE3E16)],
             ),

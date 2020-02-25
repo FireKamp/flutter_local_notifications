@@ -50,5 +50,4 @@ List<List<int>> dummyList = [
   [3, 7, 8, 6, 2, 1, 5, 9, 0]
 ];
 
-// Enums
-enum PlayMode { PENCIL, PLAY }
+

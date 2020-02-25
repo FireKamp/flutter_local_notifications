@@ -1,4 +1,4 @@
-import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 
 class BoardData {
   int value;

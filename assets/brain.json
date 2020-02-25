@@ -99,6 +99,8 @@
       0,
       0
     ]
+
+
   ],
   "difficulty": "easy",
   "easy_solution": [
@@ -202,4 +204,5 @@
       4
     ]
   ]
+
 }

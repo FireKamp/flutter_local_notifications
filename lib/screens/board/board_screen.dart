@@ -12,6 +12,7 @@ import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 
 import 'main_board_bloc.dart';
 import 'main_board_event.dart';

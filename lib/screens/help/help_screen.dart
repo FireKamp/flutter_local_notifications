@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Logs.dart';
 
 class HelpScreen extends StatelessWidget {
   static final String id = 'help_screen';
@@ -13,17 +15,14 @@ class HelpScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopContainer(
-            onPressed: (){
-
-            },
-            imagePath: 'assets/images/ic_help_pick.orange/',
+            imagePath: 'assets/images/ic_help_ pink.png',
             text: 'HELP',
             color: kPrimaryColor,
             gradient: LinearGradient(
               colors: <Color>[kPrimaryColor, kPrimaryColor],
             ),
             circleGradient: LinearGradient(
-              colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
+              colors: <Color>[Color(0xFFFFC7E7), Color(0xFFFF3AA0)],
             ),
           ),
           Expanded(
@@ -38,7 +37,8 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFFFABB69), Color(0xFFFE3E16)],
                       ),
                       onPressed: () {
-                        print('button clicked');
+                        Logs.printLogs('Tutorial Clicked');
+                        Navigator.pushNamed(context, TutorialScreen.id);
                       }),
                   SizedBox(
                     height: sizedBoxHeight,

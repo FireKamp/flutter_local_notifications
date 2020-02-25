@@ -27,6 +27,7 @@ dependencies:
   flutter_bloc: ^3.1.0
   collection: ^1.14.11
   xlive_switch: ^1.0.5
+  enum_to_string: ^1.0.9
 
 
 dev_dependencies:

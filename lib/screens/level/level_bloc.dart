@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+
 import './bloc.dart';
 
 class LevelBloc extends Bloc<LevelEvent, LevelState> {
@@ -10,6 +12,8 @@ class LevelBloc extends Bloc<LevelEvent, LevelState> {
   Stream<LevelState> mapEventToState(
     LevelEvent event,
   ) async* {
-    // TODO: Add Logic
+    if (event is LevelSelected) {
+      yield SelectedLevelState(levelTYPE: event.levelTYPE);
+    }
   }
 }

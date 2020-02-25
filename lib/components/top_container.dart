@@ -36,7 +36,9 @@ class TopContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 GestureDetector(
-                  onTap: onPressed,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     margin: EdgeInsets.only(top: 30.0),
                     child: Image.asset('assets/images/ic_back.png'),
