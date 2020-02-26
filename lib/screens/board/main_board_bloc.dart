@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +21,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   int _currentTimerValue = 0;
   bool _isPaused = false;
   bool _isFullScreen = true;
-  List<List<int>> _solution;
+  List<List<BoardData>> _solution;
 
   StreamController<String> _timerController =
       StreamController<String>.broadcast();
@@ -38,17 +39,22 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   ) async* {
     if (event is BoardInitISCalled) {
       yield FetchingLevel();
-      final list = await _readJson(event.context, 'easy');
-//      _solution = await _readJson(event.context, 'easy_solution');
+      final list = await _readJson(event.context, EnumToString.parse(event.levelTYPE).toLowerCase());
+           yield LevelFetched(boardList: list);
+
+      final listNew = await _readJson(event.context, EnumToString.parse(event.levelTYPE).toLowerCase());
+      yield InitStateFetched(boardList: listNew);
+
+      _solution = await _readJson(event.context, 'solution_${EnumToString.parse(event.levelTYPE).toLowerCase()}');
       print('_solution" $_solution');
-      yield LevelFetched(boardList: list);
+
     } else if (event is ChangeConflictsCalled) {
       final conflicts = _changeConflicts(event.list);
       final gameFinished = _gameFinished(event.list);
       yield ConflictsChanged(conflicts: conflicts);
       if (gameFinished) {
-//        final isWon = compareLists(event.list);
-//        yield GameFinishedState(isWon: isWon);
+        final isWon = compareLists(event.list);
+        yield GameFinishedState(isWon: isWon);
       }
     } else if (event is CursorChanged) {
       final cursor = _changeCursor(event.val);
@@ -111,7 +117,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     return _isFullScreen;
   }
 
-  bool compareLists(List<List<int>> list) {
+  bool compareLists(List<List<BoardData>> list) {
     print('compareLists');
     Function deepEq = const DeepCollectionEquality().equals;
     bool res = deepEq(list, _solution);

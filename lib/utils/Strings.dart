@@ -1,4 +1,4 @@
-// Text
+// Text Tutorial
 const kTutHeadOne = 'What is Sudoku';
 const kTutHeadTwo = 'How to play Sudoku';
 const kTutHeadThree = 'Is sudoku good for brain?';
@@ -19,3 +19,8 @@ const kTutorialHTPTwo =
 const kTutorialHTPThree = 'Follow Your Momentum.';
 const kTutorialGFB =
     'A brain game like sudoku, as well as crossword puzzles, taking classes, reading, and writing, can help delay dementia and Alzheimer\'s disease, and protect the brain from decline. ... And, says Snyder, while it offers good exercise and stimulation for the brain, sudoku can actually be very relaxing.';
+
+//===================
+const kWinText='You Won!';
+const kLooseText='You Lost!';
+const kPauseText='PAUSE';

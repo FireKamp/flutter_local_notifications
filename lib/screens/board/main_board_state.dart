@@ -22,6 +22,12 @@ class LevelFetched extends MainBoardState {
   LevelFetched({this.boardList});
 }
 
+class InitStateFetched extends MainBoardState {
+  final List<List<BoardData>> boardList;
+
+  InitStateFetched({this.boardList});
+}
+
 class SolutionFetched extends MainBoardState {}
 
 class ErrorFetched extends MainBoardState {

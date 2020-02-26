@@ -2,6 +2,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
+import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -31,9 +32,10 @@ class _LevelScreenState extends State<LevelScreen> {
     return BlocListener(
       bloc: BlocProvider.of<LevelBloc>(context),
       listener: (BuildContext context, state) {
-        if(state is SelectedLevelState){
+        if (state is SelectedLevelState) {
           Logs.printLogs('${EnumToString.parse(state.levelTYPE)}');
-          Navigator.pushNamed(context, MainBoard.id);
+          Navigator.pushNamed(context, MainBoard.id,
+              arguments: ScreenArguments(levelTYPE: state.levelTYPE));
         }
       },
       child: BlocBuilder<LevelBloc, LevelState>(builder: (context, state) {

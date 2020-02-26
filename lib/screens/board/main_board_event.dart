@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:sudoku_brain/models/board_data.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 
 @immutable
 abstract class MainBoardEvent {}
 
 class BoardInitISCalled extends MainBoardEvent {
   final BuildContext context;
+  final LevelTYPE levelTYPE;
 
-  BoardInitISCalled({this.context});
+  BoardInitISCalled({@required this.context, @required this.levelTYPE});
 }
 
 class ChangeConflictsCalled extends MainBoardEvent {
