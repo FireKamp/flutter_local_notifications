@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1059367218898-83fbciu2ius3g4a8acspi9e5csopp7gl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1059367218898-83fbciu2ius3g4a8acspi9e5csopp7gl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAFn_8tR8OoqORjjasaM8IEOWzGdLf_hfQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1059367218898</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.matchalagames.sudokubrain</string>
+	<key>PROJECT_ID</key>
+	<string>sudokubrain-bc1ec</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sudokubrain-bc1ec.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1059367218898:ios:a9cbbed66626d2947b870b</string>
+	<key>DATABASE_URL</key>
+	<string>https://sudokubrain-bc1ec.firebaseio.com</string>
+</dict>
+</plist>
