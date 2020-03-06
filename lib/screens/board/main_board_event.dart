@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:sudoku_brain/models/board_data.dart';
-import 'package:sudoku_brain/utils/Enums.dart';
 
 @immutable
 abstract class MainBoardEvent {}
 
 class BoardInitISCalled extends MainBoardEvent {
   final BuildContext context;
-  final LevelTYPE levelTYPE;
+  final String levelName;
+  final int index;
 
-  BoardInitISCalled({@required this.context, @required this.levelTYPE});
+  BoardInitISCalled(
+      {@required this.context, @required this.levelName, @required this.index});
 }
 
 class ChangeConflictsCalled extends MainBoardEvent {
@@ -49,8 +50,10 @@ class Hint extends MainBoardEvent {
 class ResetBoard extends MainBoardEvent {
   final List<List<BoardData>> list;
   final BuildContext buildContext;
+  final int index;
+  final String levelName;
 
-  ResetBoard({this.list, this.buildContext});
+  ResetBoard({this.list, this.buildContext, this.index, this.levelName});
 }
 
 class FullScreen extends MainBoardEvent {}

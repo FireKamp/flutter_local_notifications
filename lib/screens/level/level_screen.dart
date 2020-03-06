@@ -2,9 +2,11 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
+import 'package:sudoku_brain/components/logo_header.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
+import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
@@ -34,7 +36,7 @@ class _LevelScreenState extends State<LevelScreen> {
       listener: (BuildContext context, state) {
         if (state is SelectedLevelState) {
           Logs.printLogs('${EnumToString.parse(state.levelTYPE)}');
-          Navigator.pushNamed(context, MainBoard.id,
+          Navigator.pushNamed(context, LevelSelection.id,
               arguments: ScreenArguments(levelTYPE: state.levelTYPE));
         }
       },
@@ -46,40 +48,7 @@ class _LevelScreenState extends State<LevelScreen> {
 
             child: Column(
               children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: Row(
-                    children: <Widget>[
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          print('back level');
-                          Navigator.pop(context);
-                        },
-                        child: Image(
-                          image: AssetImage('assets/images/ic_back.png'),
-                        ),
-                      ),
-                      Spacer(),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image(
-                            image: AssetImage('assets/images/header.png'),
-                          ),
-                          SizedBox(
-                            height: 7.0,
-                          ),
-                          Image(
-                            image: AssetImage('assets/images/subheader.png'),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Spacer(),
-                    ],
-                  ),
-                ),
+                LogoHeader(),
                 Expanded(
                   flex: 5,
                   child: Column(

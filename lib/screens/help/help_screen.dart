@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:package_info/package_info.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/screens/termofuse/termofuse_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
@@ -15,7 +18,7 @@ class HelpScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopContainer(
-            imagePath: 'assets/images/ic_help_ pink.png',
+            imagePath: 'assets/images/ic_help.png',
             text: 'HELP',
             color: kPrimaryColor,
             gradient: LinearGradient(
@@ -48,8 +51,16 @@ class HelpScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFF82FFF4), Color(0xFF05AB9C)],
                       ),
-                      onPressed: () {
-                        print('button clicked');
+                      onPressed: () async {
+                        getVersionName().then((onValue) async {
+                          Logs.printLogs('onValue: $onValue');
+                          final Email email = Email(
+                            subject: 'Have questions or feedback? v $onValue',
+                            recipients: ['hello@matchalagames.com'],
+                            isHTML: false,
+                          );
+                          await FlutterEmailSender.send(email);
+                        });
                       }),
                   SizedBox(
                     height: sizedBoxHeight,
@@ -61,6 +72,10 @@ class HelpScreen extends StatelessWidget {
                       ),
                       onPressed: () {
                         print('button clicked');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TermsOfUse()),
+                        );
                       }),
                 ],
               ),
@@ -69,5 +84,11 @@ class HelpScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<String> getVersionName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    return version;
   }
 }

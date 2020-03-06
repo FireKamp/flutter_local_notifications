@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,10 @@ import 'package:sudoku_brain/components/timer_widget.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
+import 'package:sudoku_brain/utils/AdMob.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
 import 'main_board_bloc.dart';
@@ -25,15 +28,17 @@ class MainBoard extends StatefulWidget {
   _MainBoardState createState() => _MainBoardState();
 }
 
-class _MainBoardState extends State<MainBoard> {
+class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   MainBoardBloc _mainBoardBloc;
 
   int _row = -1;
   int _col = -1;
   int _cursor = 0;
   int _cursorCopy = -1;
+  int _levelIndex = 0;
 
   String _dynamicText;
+  String _levelName;
 
   double _animatedHeight = 50.0;
 
@@ -46,7 +51,9 @@ class _MainBoardState extends State<MainBoard> {
 
   @override
   void initState() {
+    AdMobIntegration.initAd();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
   }
 
@@ -176,7 +183,10 @@ class _MainBoardState extends State<MainBoard> {
                           break;
                         case 2:
                           _mainBoardBloc.add(ResetBoard(
-                              list: _initBoardList, buildContext: context));
+                              list: _initBoardList,
+                              buildContext: context,
+                              index: _levelIndex,
+                              levelName: _levelName));
                           break;
                         case 3:
                           _mainBoardBloc.add(Hint(row: _row, col: _col));
@@ -200,12 +210,12 @@ class _MainBoardState extends State<MainBoard> {
                   },
                 ),
                 NumPad(
-                    values: [6, 7, 8, 9],
+                    values: [6, 7, 8, 9, 10],
                     marginTop: 15.0,
-                    marginRight: 35.0,
-                    marginLeft: 35.0,
+                    marginRight: 30.0,
+                    marginLeft: 30.0,
                     marginBottom: 0.0,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     onValueChanged: (int val) {
                       if (!_isTimerPaused) _numPadButtonClick(val);
                     }),
@@ -430,8 +440,51 @@ class _MainBoardState extends State<MainBoard> {
 
   void initBoardData() {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    _mainBoardBloc
-        .add(BoardInitISCalled(context: context, levelTYPE: args.levelTYPE));
+    _mainBoardBloc.add(BoardInitISCalled(
+        context: context, levelName: args.levelName, index: args.index));
     _mainBoardBloc.add(StartTimer());
+
+    _levelIndex = args.index;
+    _levelName = args.levelName;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state: $state');
+    if (state == AppLifecycleState.paused) {
+//      var json = jsonEncode(_boardList, toEncodable: (e) => e.toJsonAttr());
+      var json = jsonEncode(_boardList.map((e) => e.toString()).toList());
+      print('json: $json');
+      LocalDB.setString(LocalDB.keyBoardList, json);
+    } else if (state == AppLifecycleState.resumed) {
+      LocalDB.getString(LocalDB.keyBoardList).then((value) async {
+        if (value != null && value.isNotEmpty) {
+          List data = json.decode(value);
+          print('data: ${data[0]}');
+
+          List<List<BoardData>> test = [];
+          for (int i = 0; i < data.length; i++) {
+            List innerList = data[i];
+            List<BoardData> dataList = [];
+            for (int j = 0; j < innerList.length; j++) {
+//              var value=decodedData['${innerList[j]}'];
+
+//              dataList.add(BoardData(
+//                  value: boardData.value, mode: boardData.mode));
+            }
+            test.add(dataList);
+          }
+
+          print('test: ${test[0][0].mode}');
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    AdMobIntegration.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }

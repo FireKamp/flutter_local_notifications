@@ -4,13 +4,11 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
-import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 
 import './bloc.dart';
@@ -38,16 +36,19 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     MainBoardEvent event,
   ) async* {
     if (event is BoardInitISCalled) {
-      yield FetchingLevel();
-      final list = await _readJson(event.context, EnumToString.parse(event.levelTYPE).toLowerCase());
-           yield LevelFetched(boardList: list);
+      print('BoardInitISCalled');
 
-      final listNew = await _readJson(event.context, EnumToString.parse(event.levelTYPE).toLowerCase());
+      yield FetchingLevel();
+      final list = await _readJson(event.context, event.levelName, event.index);
+      yield LevelFetched(boardList: list);
+
+      final listNew =
+          await _readJson(event.context, event.levelName, event.index);
       yield InitStateFetched(boardList: listNew);
 
-      _solution = await _readJson(event.context, 'solution_${EnumToString.parse(event.levelTYPE).toLowerCase()}');
+      _solution = await _readJson(
+          event.context, 'solution_${event.levelName}', event.index);
       print('_solution" $_solution');
-
     } else if (event is ChangeConflictsCalled) {
       final conflicts = _changeConflicts(event.list);
       final gameFinished = _gameFinished(event.list);
@@ -74,7 +75,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       _isPaused = true;
       yield (PauseTimerState(isPaused: _isPaused));
     } else if (event is ResetBoard) {
-      final list = await _readJson(event.buildContext, 'easy');
+      final list = await _readJson(event.buildContext, event.levelName, event.index);
       yield ResetState(boardList: list);
     } else if (event is FullScreen) {
       final full = fullScreen();
@@ -128,16 +129,16 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
 // Read data from JSON File
 Future<List<List<BoardData>>> _readJson(
-    BuildContext context, String objName) async {
-  print('readJson');
+    BuildContext context, String objName, int index) async {
+  print('readJson level');
 
   String data =
       await DefaultAssetBundle.of(context).loadString("assets/brain.json");
-//    print('data: $data');
+  print('objName: $objName');
 
   var decodedData = jsonDecode(data);
-  List list = decodedData['$objName'];
-  print('list: $list');
+  List list = decodedData['difficulty'][objName]['level'][index]['board'];
+  print('listOld: $list');
 
   List<List<BoardData>> test = [];
   for (int i = 0; i < list.length; i++) {

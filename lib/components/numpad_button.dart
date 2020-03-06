@@ -20,14 +20,24 @@ class NumPadButton extends StatelessWidget {
               color: Colors.transparent,
               border: Border.all(width: 2.0, color: Color(kNumPadBorder))),
           child: Center(
-            child: Text(
-              '$value',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  color: Color(kNumPadBorder),
-                  fontWeight: FontWeight.bold),
-            ),
+            child: getWidget(value),
           )),
     );
+  }
+
+  Widget getWidget(int value) {
+    if (value == 10) {
+      return Image(
+        image: AssetImage('assets/images/ic_stars.png'),
+      );
+    } else {
+      return Text(
+        '$value',
+        style: TextStyle(
+            fontSize: 20.0,
+            color: Color(kNumPadBorder),
+            fontWeight: FontWeight.bold),
+      );
+    }
   }
 }

@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/board/main_board_bloc.dart';
+import 'package:sudoku_brain/screens/gameend/bloc.dart';
+import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/help/bloc.dart';
 import 'package:sudoku_brain/screens/help/help_screen.dart';
 import 'package:sudoku_brain/screens/home/bloc.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
+import 'package:sudoku_brain/screens/levelselection/levelselection_bloc.dart';
+import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
 import 'package:sudoku_brain/screens/settings/bloc.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/bloc.dart';
@@ -51,6 +55,14 @@ class MyApp extends StatelessWidget {
         SettingsScreen.id: (context) => BlocProvider<SettingsBloc>(
               create: (BuildContext context) => SettingsBloc(),
               child: SettingsScreen(),
+            ),
+        GameEndScreen.id: (context) => BlocProvider<GameendBloc>(
+              create: (BuildContext context) => GameendBloc(),
+              child: GameEndScreen(),
+            ),
+        LevelSelection.id: (context) => BlocProvider<LevelSelectionBloc>(
+              create: (BuildContext context) => LevelSelectionBloc(),
+              child: LevelSelection(),
             ),
       },
     );
