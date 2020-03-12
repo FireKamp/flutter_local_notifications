@@ -21,6 +21,8 @@ const kTutorialGFB =
     'A brain game like sudoku, as well as crossword puzzles, taking classes, reading, and writing, can help delay dementia and Alzheimer\'s disease, and protect the brain from decline. ... And, says Snyder, while it offers good exercise and stimulation for the brain, sudoku can actually be very relaxing.';
 
 //===================
-const kWinText='You Won!';
-const kLooseText='You Lost!';
-const kPauseText='PAUSE';
+const kWinText = 'You\'ve won!';
+const kLoseText = 'You\'ve lost!';
+const kPauseText = 'PAUSE';
+const kEndText = 'END GAME';
+const kLoseBText = 'PLAY AGAIN';

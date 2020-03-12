@@ -6,7 +6,7 @@ abstract class LevelSelectionState {}
 class InitialLevelSelectionState extends LevelSelectionState {}
 
 class LevelListState extends LevelSelectionState {
-  List levelList;
+  List<bool> levelList;
 
   LevelListState({this.levelList});
 }

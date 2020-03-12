@@ -26,7 +26,6 @@ dependencies:
   intl: ^0.16.1
   flutter_bloc: ^3.1.0
   collection: ^1.14.11
-  xlive_switch: ^1.0.5
   enum_to_string: ^1.0.9
   shared_preferences: 0.5.6+2
   flutter_email_sender: 2.2.2
@@ -34,6 +33,8 @@ dependencies:
   webview_flutter: 0.3.19+8
   gradient_text: 1.0.2
   firebase_admob: 0.9.1+3
+  auto_size_text: ^2.1.0
+  custom_switch: ^0.0.1
 
 
 dev_dependencies:

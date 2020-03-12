@@ -15,10 +15,10 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Container(
         color: kPrimaryColor,
-        child: Column(
+        child: ListView(
           children: <Widget>[
-            Expanded(
-              flex: 2,
+            Container(
+              height: MediaQuery.of(context).size.height * 0.30,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -40,49 +40,46 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              flex: 5,
-              child: Column(
-                children: <Widget>[
-                  Visibility(
-                    visible: false,
-                    child: RaisedGradientButton(
-                        text: 'CONTINUE',
-                        icon: 'assets/images/ic_board.png',
-                        gradient: LinearGradient(
-                          colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
-                        ),
-                        circleGradient: LinearGradient(
-                          colors: <Color>[Color(0xFF8497FF), Color(0xFFBDDAFF)],
-                        ),
-                        shadowColor: Color(0xFF8497FF),
-                        onPressed: () {
-                          print('button clicked');
-                        }),
-                  ),
-                  SizedBox(
-                    height: sizedBoxHeight,
-                  ),
-                  RaisedGradientButton(
-                      text: 'NEW GAME',
-                      icon: 'assets/images/pencil.png',
+            Column(
+              children: <Widget>[
+                Visibility(
+                  visible: false,
+                  child: RaisedGradientButton(
+                      text: 'CONTINUE',
+                      icon: 'assets/images/ic_board.png',
                       gradient: LinearGradient(
-                        colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
+                        colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
                       ),
                       circleGradient: LinearGradient(
-                        colors: <Color>[Color(0xFFB9ACFF), Color(0xFF6B4CFD)],
+                        colors: <Color>[Color(0xFF8497FF), Color(0xFFBDDAFF)],
                       ),
-                      shadowColor: Color(0xFFB9ACFF),
+                      shadowColor: Color(0xFF8497FF),
                       onPressed: () {
-                        print('New Game');
-                        Navigator.pushNamed(context, LevelScreen.id);
+                        print('button clicked');
                       }),
-                  SizedBox(
-                    height: sizedBoxHeight,
-                  ),
-                  RaisedGradientButton(
+                ),
+                SizedBox(
+                  height: sizedBoxHeight,
+                ),
+                RaisedGradientButton(
+                    text: 'NEW GAME',
+                    icon: 'assets/images/pencil.png',
+                    gradient: LinearGradient(
+                      colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
+                    ),
+                    circleGradient: LinearGradient(
+                      colors: <Color>[Color(0xFFB9ACFF), Color(0xFF6B4CFD)],
+                    ),
+                    shadowColor: Color(0xFFB9ACFF),
+                    onPressed: () {
+                      print('New Game');
+                      Navigator.pushNamed(context, LevelScreen.id);
+                    }),
+                Visibility(
+                  visible: false,
+                  child: RaisedGradientButton(
                       text: 'SETTINGS',
-                      icon: 'assets/images/ic_setting.png',
+                      icon: 'assets/images/ic_setting_large.png',
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
                       ),
@@ -94,25 +91,25 @@ class HomeScreen extends StatelessWidget {
                         print('Settings');
                         Navigator.pushNamed(context, SettingsScreen.id);
                       }),
-                  SizedBox(
-                    height: sizedBoxHeight,
-                  ),
-                  RaisedGradientButton(
-                      text: 'HELP',
-                      icon: 'assets/images/ic_help.png',
-                      gradient: LinearGradient(
-                        colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
-                      ),
-                      circleGradient: LinearGradient(
-                        colors: <Color>[Color(0xFFFFC7E7), Color(0xFFFF3AA0)],
-                      ),
-                      shadowColor: Color(0xFFFFC7E7),
-                      onPressed: () {
-                        print('Help');
-                        Navigator.pushNamed(context, HelpScreen.id);
-                      }),
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: sizedBoxHeight,
+                ),
+                RaisedGradientButton(
+                    text: 'HELP',
+                    icon: 'assets/images/ic_help_pink.png',
+                    gradient: LinearGradient(
+                      colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
+                    ),
+                    circleGradient: LinearGradient(
+                      colors: <Color>[Color(0xFFFFC7E7), Color(0xFFFF3AA0)],
+                    ),
+                    shadowColor: Color(0xFFFFC7E7),
+                    onPressed: () {
+                      print('Help');
+                      Navigator.pushNamed(context, HelpScreen.id);
+                    }),
+              ],
             ),
           ],
         ),

@@ -1,9 +1,9 @@
+import 'package:custom_switch/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
-import 'package:xlive_switch/xlive_switch.dart';
 
 class SettingsScreen extends StatelessWidget {
   static final String id = 'settings_screen';
@@ -16,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TopContainer(
-            onPressed: (){
+            onPressed: () {
               Navigator.pop(context);
             },
             text: 'SETTINGS',
@@ -75,11 +75,12 @@ class SettingsItem extends StatelessWidget {
         SmallText(
           text: 'Turn On Sounds',
         ),
-        XlivSwitch(
-          unActiveColor: Color(0xFFD0D0D0),
+        CustomSwitch(
           activeColor: Color(0xFF0AB8AD),
           value: false,
-          onChanged: (bool val) {},
+          onChanged: (value) {
+            print("VALUE : $value");
+          },
         ),
       ],
     );

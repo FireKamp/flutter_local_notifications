@@ -28,6 +28,6 @@ class AdMobIntegration {
   }
 
   static dispose() {
-    _bannerAd.dispose();
+    if (_bannerAd != null) _bannerAd.dispose();
   }
 }

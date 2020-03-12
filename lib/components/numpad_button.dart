@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
@@ -15,10 +16,11 @@ class NumPadButton extends StatelessWidget {
       },
       child: Container(
           width: MediaQuery.of(context).size.width * 0.11,
-          height: MediaQuery.of(context).size.height * 0.06,
-          decoration: new BoxDecoration(
+          height: MediaQuery.of(context).size.height * 0.063,
+          decoration:  BoxDecoration(
+            borderRadius: BorderRadius.circular(3.0),
               color: Colors.transparent,
-              border: Border.all(width: 2.0, color: Color(kNumPadBorder))),
+              border: Border.all(width: 1.5, color: Color(kNumPadBorder))),
           child: Center(
             child: getWidget(value),
           )),
@@ -31,12 +33,13 @@ class NumPadButton extends StatelessWidget {
         image: AssetImage('assets/images/ic_stars.png'),
       );
     } else {
-      return Text(
+      return AutoSizeText(
         '$value',
         style: TextStyle(
-            fontSize: 20.0,
+          fontFamily: 'Staatliches',
+            fontSize: 23.0,
             color: Color(kNumPadBorder),
-            fontWeight: FontWeight.bold),
+            fontWeight: FontWeight.w900),
       );
     }
   }

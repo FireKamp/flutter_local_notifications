@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/board/main_board_bloc.dart';
@@ -14,11 +17,21 @@ import 'package:sudoku_brain/screens/levelselection/levelselection_bloc.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
 import 'package:sudoku_brain/screens/settings/bloc.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
+import 'package:sudoku_brain/screens/splash/bloc.dart';
+import 'package:sudoku_brain/screens/splash/splash_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/bloc.dart';
 import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runZoned(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
+      (_) => runApp(MyApp()),
+    );
+  });
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -30,8 +43,12 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: kPrimaryColor,
       ),
-      initialRoute: HomeScreen.id,
+      initialRoute: SplashScreen.id,
       routes: {
+        SplashScreen.id: (context) => BlocProvider<SplashBloc>(
+              create: (BuildContext context) => SplashBloc(),
+              child: SplashScreen(),
+            ),
         HomeScreen.id: (context) => BlocProvider<HomeBloc>(
               create: (BuildContext context) => HomeBloc(),
               child: HomeScreen(),

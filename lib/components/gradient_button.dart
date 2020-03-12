@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -28,7 +29,7 @@ class RaisedGradientButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      height: 80.0,
+      height: MediaQuery.of(context).size.height * 0.15,
       margin: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
@@ -43,37 +44,54 @@ class RaisedGradientButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onPressed,
-          child: ListTile(
-            title: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Staatliches',
-                    fontSize: 28.0),
-              ),
-            ),
-            leading: circleGradient == null
-                ? null
-                : Container(
-                    height: double.infinity,
-                    decoration: new BoxDecoration(
-                      gradient: circleGradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: shadowColor,
-                          blurRadius: 1.5,
+            onTap: onPressed,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.05,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.height * 0.13,
+                  child: circleGradient == null
+                      ? null
+                      : Container(
+                    padding: EdgeInsets.all(15.0),
+                          height: double.infinity,
+                          decoration: new BoxDecoration(
+                            gradient: circleGradient,
+                            boxShadow: [
+                              BoxShadow(
+                                color: shadowColor,
+                                blurRadius: 1.5,
+                              ),
+                            ],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image(
+                            image: AssetImage(icon),
+                          ),
                         ),
-                      ],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image(
-                      image: AssetImage(icon),
-                    ),
+                ),
+                Spacer(
+                  flex: 1,
+                ),
+                Center(
+                  child: AutoSizeText(
+                    text,
+                    maxLines: 1,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Staatliches',
+                        fontSize: 31.0),
                   ),
-          ),
-        ),
+                ),
+                Spacer(
+                  flex: 2,
+                ),
+              ],
+            )),
       ),
     );
   }

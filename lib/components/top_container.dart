@@ -40,6 +40,7 @@ class TopContainer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: Container(
+                    padding: EdgeInsets.all(20.0),
                     margin: EdgeInsets.only(top: 30.0),
                     child: Image.asset('assets/images/ic_back.png'),
                   ),

@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gradient_text/gradient_text.dart';
+import 'package:sudoku_brain/models/screen_arguments.dart';
+import 'package:sudoku_brain/screens/board/board_screen.dart';
+import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
 
-class GameEndScreen extends StatelessWidget {
+class GameEndScreen extends StatefulWidget {
   static String id = 'game_end';
-  final bool isGameEnded = false;
 
-//  GameEndScreen({this.isGameEnded});
+  @override
+  _GameEndScreenState createState() => _GameEndScreenState();
+}
+
+class _GameEndScreenState extends State<GameEndScreen> {
+  String _levelName;
+  String _bestTime = '';
+  String _lastBestTime = '';
+
+  bool _isGameEnded = true;
+  int _levelNumber;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => getData(context));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +38,7 @@ class GameEndScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * .13),
-              child: GradientText('EASY',
+              child: GradientText(_levelName == null ? '' : _levelName,
                   gradient: LinearGradient(colors: [
                     Color(0xFF71DC8F),
                     Color(0xFF0BB9AD),
@@ -32,7 +52,7 @@ class GameEndScreen extends StatelessWidget {
                   textAlign: TextAlign.center),
             ),
             CommonText(
-              text: 'Level 1',
+              text: 'Level $_levelNumber',
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -49,16 +69,18 @@ class GameEndScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   CommonText(
-                    text: isGameEnded == true ? 'Total Time' : 'Best Time',
+                    text: _isGameEnded == true
+                        ? 'Total Time       '
+                        : 'Best Time',
                   ),
                   CommonText(
-                    text: '20:45',
+                    text: _lastBestTime == null ? _bestTime : _lastBestTime,
                   ),
                 ],
               ),
             ),
             Visibility(
-              visible: isGameEnded,
+              visible: _isGameEnded == null ? false : _isGameEnded,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -66,7 +88,7 @@ class GameEndScreen extends StatelessWidget {
                     text: 'New Best Time',
                   ),
                   CommonText(
-                    text: '20:45',
+                    text: _bestTime == null ? '' : _bestTime,
                   ),
                 ],
               ),
@@ -77,7 +99,7 @@ class GameEndScreen extends StatelessWidget {
               child: RaisedButton(
                 padding: EdgeInsets.fromLTRB(30.0, 5.0, 30.0, 5.0),
                 color: Color(0xFF7EC1FF),
-                child: Text(isGameEnded == true ? 'NEXT' : 'PLAY AGAIN',
+                child: Text(_isGameEnded == true ? 'NEXT' : 'PLAY AGAIN',
                     style: TextStyle(
                         fontFamily: 'Staatliches',
                         fontSize: 30.0,
@@ -85,13 +107,45 @@ class GameEndScreen extends StatelessWidget {
                         fontWeight: FontWeight.w200,
                         decoration: TextDecoration.none),
                     textAlign: TextAlign.center),
-                onPressed: () {},
+                onPressed: () {
+                  if (!_isGameEnded) {
+                    Navigator.pushReplacementNamed(context, MainBoard.id,
+                        arguments: ScreenArguments(
+                            levelName: _levelName.toLowerCase(),
+                            index: _levelNumber - 1));
+                  } else {
+                    Navigator.pushReplacementNamed(context, LevelSelection.id,
+                        arguments: ScreenArguments(
+                            levelTYPE: _levelName == 'easy'
+                                ? LevelTYPE.EASY
+                                : (_levelName == 'medium'
+                                    ? LevelTYPE.MEDIUM
+                                    : LevelTYPE.HARD)));
+                  }
+                },
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> getData(BuildContext context) async {
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
+    _levelName = args.levelName;
+    _levelNumber = args.index;
+    _bestTime = args.bestTime;
+    _isGameEnded = args.isPlayed;
+
+    String key = '${_levelName}_$_levelNumber';
+    String test = await LocalDB.getString(key);
+    _lastBestTime = test;
+
+    if (_isGameEnded) LocalDB.setString(key, _bestTime);
+
+    setState(() {});
   }
 }
 

@@ -7,8 +7,8 @@ class LogoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 2,
+    return Container(
+      height: MediaQuery.of(context).size.height*0.30,
       child: Row(
         children: <Widget>[
           Spacer(),

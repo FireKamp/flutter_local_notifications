@@ -16,6 +16,8 @@ class InitialMainBoardState extends MainBoardState {
 
 class FetchingLevel extends MainBoardState {}
 
+class PlayAgainState extends MainBoardState {}
+
 class LevelFetched extends MainBoardState {
   final List<List<BoardData>> boardList;
 
@@ -44,8 +46,9 @@ class ConflictsChanged extends MainBoardState {
 
 class GameFinishedState extends MainBoardState {
   final bool isWon;
+  final String time;
 
-  GameFinishedState({this.isWon});
+  GameFinishedState({this.isWon, this.time});
 }
 
 class CursorChangedState extends MainBoardState {
@@ -64,6 +67,12 @@ class FullScreenState extends MainBoardState {
   final bool isFull;
 
   FullScreenState({this.isFull});
+}
+
+class HintState extends MainBoardState {
+  final bool isHintEnabled;
+
+  HintState({this.isHintEnabled});
 }
 
 class UpdateRowColState extends MainBoardState {

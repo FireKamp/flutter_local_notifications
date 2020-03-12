@@ -35,16 +35,18 @@ class UpdateCellValue extends MainBoardEvent {
 class UpdateRowCol extends MainBoardEvent {
   final int row;
   final int col;
+  final bool isPencilMode;
   final List<List<BoardData>> list;
 
-  UpdateRowCol({this.row, this.col, this.list});
+  UpdateRowCol({this.row, this.col, this.list, this.isPencilMode});
 }
 
 class Hint extends MainBoardEvent {
   final int row;
   final int col;
+  final levelDetails;
 
-  Hint({this.row, this.col});
+  Hint({this.row, this.col, this.levelDetails});
 }
 
 class ResetBoard extends MainBoardEvent {
@@ -57,6 +59,8 @@ class ResetBoard extends MainBoardEvent {
 }
 
 class FullScreen extends MainBoardEvent {}
+
+class PlayAgain extends MainBoardEvent {}
 
 //================================== TIMER =========================================//
 class StartTimer extends MainBoardEvent {}

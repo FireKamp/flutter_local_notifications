@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:package_info/package_info.dart';
-import 'package:sudoku_brain/components/gradient_button.dart';
+import 'package:sudoku_brain/components/gradient_button_wi.dart';
 import 'package:sudoku_brain/components/top_container.dart';
 import 'package:sudoku_brain/screens/termofuse/termofuse_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
@@ -34,7 +34,7 @@ class HelpScreen extends StatelessWidget {
               color: kPrimaryColor,
               child: Column(
                 children: <Widget>[
-                  RaisedGradientButton(
+                  RaisedGradientButtonWI(
                       text: 'TUTORIAL',
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFFFABB69), Color(0xFFFE3E16)],
@@ -46,7 +46,7 @@ class HelpScreen extends StatelessWidget {
                   SizedBox(
                     height: sizedBoxHeight,
                   ),
-                  RaisedGradientButton(
+                  RaisedGradientButtonWI(
                       text: 'CONTACT US',
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFF82FFF4), Color(0xFF05AB9C)],
@@ -65,7 +65,7 @@ class HelpScreen extends StatelessWidget {
                   SizedBox(
                     height: sizedBoxHeight,
                   ),
-                  RaisedGradientButton(
+                  RaisedGradientButtonWI(
                       text: 'TERMS OF USE',
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFFBEE4FF), Color(0xFF1E9FFE)],
