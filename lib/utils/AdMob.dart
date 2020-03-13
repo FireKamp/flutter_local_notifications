@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
 class AdMobIntegration {
@@ -14,7 +15,7 @@ class AdMobIntegration {
   static BannerAd _bannerAd;
 
   static initAd() {
-    FirebaseAdMob.instance.initialize(appId: _getBannerID());
+    FirebaseAdMob.instance.initialize(appId: _getAdAccountId());
     _bannerAd = _createBannerAd()
       ..load()
       ..show();
@@ -35,10 +36,22 @@ class AdMobIntegration {
   }
 
   static String _getBannerID() {
-    if (Platform.isAndroid) {
-      return kBannerAdIDAndroid;
+    if (kReleaseMode) {
+      if (Platform.isAndroid) {
+        return kBannerAdIDAndroid;
+      } else {
+        return kBannerAdIDiOS;
+      }
     } else {
-      return kBannerAdIDiOS;
+      return BannerAd.testAdUnitId;
     }
+  }
+
+  static String _getAdAccountId() {
+      if (Platform.isAndroid) {
+        return kAppIDAndroid;
+      } else {
+        return kAppIDiOS;
+      }
   }
 }
