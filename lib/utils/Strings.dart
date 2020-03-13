@@ -1,3 +1,12 @@
+// appID and banner Ad ID
+
+const kAppIDAndroid='ca-app-pub-6145080690961844~7490094473';
+const kBannerAdIDAndroid='ca-app-pub-6145080690961844/2884635057';
+const kAppIDiOS='ca-app-pub-6145080690961844~5055502822';
+const kBannerAdIDiOS='ca-app-pub-6145080690961844/4880243001';
+
+
+
 // Text Tutorial
 const kTutHeadOne = 'What is Sudoku';
 const kTutHeadTwo = 'How to play Sudoku';

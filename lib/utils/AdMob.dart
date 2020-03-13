@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:sudoku_brain/utils/Strings.dart';
 
 class AdMobIntegration {
   static String testDevice = 'MobileId';
   static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
+    testDevices: [],
     nonPersonalizedAds: true,
     keywords: <String>['Game', 'Sudoku'],
   );
@@ -11,7 +14,7 @@ class AdMobIntegration {
   static BannerAd _bannerAd;
 
   static initAd() {
-    FirebaseAdMob.instance.initialize(appId: BannerAd.testAdUnitId);
+    FirebaseAdMob.instance.initialize(appId: _getBannerID());
     _bannerAd = _createBannerAd()
       ..load()
       ..show();
@@ -19,7 +22,7 @@ class AdMobIntegration {
 
   static BannerAd _createBannerAd() {
     return BannerAd(
-        adUnitId: BannerAd.testAdUnitId,
+        adUnitId: _getBannerID(),
         size: AdSize.banner,
         targetingInfo: targetingInfo,
         listener: (MobileAdEvent event) {
@@ -28,6 +31,14 @@ class AdMobIntegration {
   }
 
   static dispose() {
-    if (_bannerAd != null) _bannerAd.dispose();
+    _bannerAd.dispose();
+  }
+
+  static String _getBannerID() {
+    if (Platform.isAndroid) {
+      return kBannerAdIDAndroid;
+    } else {
+      return kBannerAdIDiOS;
+    }
   }
 }

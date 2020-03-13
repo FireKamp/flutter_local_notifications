@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
-import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
 
@@ -19,7 +19,6 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   int _currentTimerValue = 0;
   bool _isPaused = false;
   bool _isFullScreen = true;
-  bool _isHintEnabled = false;
   List<List<BoardData>> _solution;
   String _timerText;
 
@@ -66,11 +65,6 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is UpdateRowCol) {
       final list = _changeRowCol(event.row, event.col, event.list);
       if (list != null) yield UpdateRowColState(row: list[0], col: list[1]);
-
-      if (_isHintEnabled && !event.isPencilMode) {
-        int value = getHint(event.row, event.col);
-        yield UpdateCellState(val: value);
-      }
     } else if (event is StartTimer) {
       _startTimer();
       _isPaused = false;
@@ -87,13 +81,10 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       final full = fullScreen();
       yield FullScreenState(isFull: full);
     } else if (event is Hint) {
-      if (_isHintEnabled) {
-        _isHintEnabled = false;
-      } else {
-        _isHintEnabled = true;
+      if (!event.isPencilMode) {
+        int value = getHint(event.row, event.col);
+        yield UpdateCellState(val: value);
       }
-      Logs.printLogs('hint: ${_solution[0][0]}');
-//      yield (HintState(isHintEnabled: _isHintEnabled));
     } else if (event is PlayAgain) {
       yield PlayAgainState();
     }
@@ -166,17 +157,17 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
         await DefaultAssetBundle.of(context).loadString("assets/brain.json");
     print('objName: $objName');
 
-//    var decodedData = jsonDecode(data);
-//    List list = decodedData['difficulty'][objName]['level'][index]
-//        [isSol == true ? 'solution' : 'board'];
+    var decodedData = jsonDecode(data);
+    List list = decodedData['difficulty'][objName]['level'][index]
+        [isSol == true ? 'solution' : 'board'];
 
     // just for testing. TODO: remove later
-    List list;
-    if (isSol) {
-      list = List.from(dummyList1);
-    } else {
-      list = List.from(dummyList);
-    }
+//    List list;
+//    if (isSol) {
+//      list = List.from(dummyList1);
+//    } else {
+//      list = List.from(dummyList);
+//    }
 
     print('$objName: $list');
 

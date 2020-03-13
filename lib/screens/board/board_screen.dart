@@ -55,7 +55,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void initState() {
-//    AdMobIntegration.initAd();
+    AdMobIntegration.initAd();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
@@ -67,8 +67,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     return BlocListener(
       bloc: BlocProvider.of<MainBoardBloc>(context),
       listener: (BuildContext context, state) {
-        if (state is InitialMainBoardState) {} else
-        if (state is FetchingLevel) {} else if (state is LevelFetched) {
+        if (state is InitialMainBoardState) {
+        } else if (state is FetchingLevel) {
+        } else if (state is LevelFetched) {
           _boardList = List.from(state.boardList);
         } else if (state is InitStateFetched) {
           _initBoardList = List.from(state.boardList);
@@ -112,8 +113,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     levelName: _levelName,
                     index: _levelIndex + 1,
                     bestTime: state.time,
-                    isPlayed: true
-                ));
+                    isPlayed: true));
           } else {
             _isTimerPaused = true;
             _dynamicText = kLoseText;
@@ -126,7 +126,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         }
       },
       child:
-      BlocBuilder<MainBoardBloc, MainBoardState>(builder: (context, state) {
+          BlocBuilder<MainBoardBloc, MainBoardState>(builder: (context, state) {
         return SafeArea(
           child: Scaffold(
               backgroundColor: kPrimaryColor,
@@ -167,10 +167,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                           visible: _isTimerPaused,
                           child: Container(
                             width: double.infinity,
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.55,
+                            height: MediaQuery.of(context).size.height * 0.55,
                             color: transparent,
                             child: Column(
                               children: <Widget>[
@@ -179,12 +176,12 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                                 ),
                                 Center(
                                     child: Text(
-                                      '$_dynamicText',
-                                      style: TextStyle(
-                                          fontSize: 40.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.yellow),
-                                    )),
+                                  '$_dynamicText',
+                                  style: TextStyle(
+                                      fontSize: 40.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.yellow),
+                                )),
                                 Spacer(
                                   flex: 1,
                                 ),
@@ -246,7 +243,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                           _mainBoardBloc.add(Hint(
                               row: _row,
                               col: _col,
-                              levelDetails: '$_levelName-$_levelIndex'));
+                              levelDetails: '$_levelName-$_levelIndex',
+                              isPencilMode: _isPencilON));
                           break;
                         case 4:
                           _isPencilON = isSelected;
@@ -257,18 +255,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                 ),
                 NumPad(
                   values: [1, 2, 3, 4, 5],
-                  marginTop: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.02,
-                  marginRight: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.045,
-                  marginLeft: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.045,
+                  marginTop: MediaQuery.of(context).size.height * 0.02,
+                  marginRight: MediaQuery.of(context).size.height * 0.045,
+                  marginLeft: MediaQuery.of(context).size.height * 0.045,
                   marginBottom: 0.0,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   onValueChanged: (int val) {
@@ -277,18 +266,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                 ),
                 NumPad(
                     values: [6, 7, 8, 9],
-                    marginTop: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02,
-                    marginRight: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.07,
-                    marginLeft: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.07,
+                    marginTop: MediaQuery.of(context).size.height * 0.02,
+                    marginRight: MediaQuery.of(context).size.height * 0.07,
+                    marginLeft: MediaQuery.of(context).size.height * 0.07,
                     marginBottom: 0.0,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     onValueChanged: (int val) {
@@ -399,18 +379,12 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       lst.add(InkWell(
         onTap: () {
           print('screens.board cell:[$r][$c]');
-          _mainBoardBloc.add(UpdateRowCol(
-              row: r, col: c, list: _initBoardList, isPencilMode: _isPencilON));
+          _mainBoardBloc
+              .add(UpdateRowCol(row: r, col: c, list: _initBoardList));
         },
         child: Container(
-          height: (MediaQuery
-              .of(context)
-              .size
-              .height / 2) / 8.8,
-          width: (MediaQuery
-              .of(context)
-              .size
-              .width / 2) / 8.8,
+          height: (MediaQuery.of(context).size.height / 2) / 8.8,
+          width: (MediaQuery.of(context).size.width / 2) / 8.8,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(
@@ -445,10 +419,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     visible: isShowColBorder(c),
                     child: Container(
                       height:
-                      ((MediaQuery
-                          .of(context)
-                          .size
-                          .height / 2) / 8.8) - 1,
+                          ((MediaQuery.of(context).size.height / 2) / 8.8) - 1,
                       width: 3.0,
                       color: kPrimaryColor,
                     ),
@@ -458,8 +429,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     visible: (_boardList.isEmpty
                         ? false
                         : _boardList[r][c].mode == PlayMode.PENCIL
-                        ? false
-                        : true),
+                            ? false
+                            : true),
                     child: AutoSizeText(
                       _getText(r, c),
                       textAlign: TextAlign.center,
@@ -473,8 +444,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     visible: (_boardList.isEmpty
                         ? false
                         : _boardList[r][c].mode == PlayMode.PENCIL
-                        ? true
-                        : false),
+                            ? true
+                            : false),
                     child: _buildItemsList(_boardList.isNotEmpty
                         ? _boardList[r][c].pencilValues
                         : null),
@@ -539,10 +510,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   }
 
   void initBoardData() {
-    final ScreenArguments args = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _mainBoardBloc.add(BoardInitISCalled(
         context: context, levelName: args.levelName, index: args.index));
     _mainBoardBloc.add(StartTimer());

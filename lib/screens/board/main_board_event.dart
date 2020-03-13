@@ -35,18 +35,18 @@ class UpdateCellValue extends MainBoardEvent {
 class UpdateRowCol extends MainBoardEvent {
   final int row;
   final int col;
-  final bool isPencilMode;
   final List<List<BoardData>> list;
 
-  UpdateRowCol({this.row, this.col, this.list, this.isPencilMode});
+  UpdateRowCol({this.row, this.col, this.list});
 }
 
 class Hint extends MainBoardEvent {
   final int row;
   final int col;
   final levelDetails;
+  final bool isPencilMode;
 
-  Hint({this.row, this.col, this.levelDetails});
+  Hint({this.row, this.col, this.levelDetails, this.isPencilMode});
 }
 
 class ResetBoard extends MainBoardEvent {

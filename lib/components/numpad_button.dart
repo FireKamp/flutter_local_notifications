@@ -16,9 +16,9 @@ class NumPadButton extends StatelessWidget {
       },
       child: Container(
           width: MediaQuery.of(context).size.width * 0.11,
-          height: MediaQuery.of(context).size.height * 0.063,
-          decoration:  BoxDecoration(
-            borderRadius: BorderRadius.circular(3.0),
+          height: MediaQuery.of(context).size.width * 0.11,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3.0),
               color: Colors.transparent,
               border: Border.all(width: 1.5, color: Color(kNumPadBorder))),
           child: Center(
@@ -36,7 +36,7 @@ class NumPadButton extends StatelessWidget {
       return AutoSizeText(
         '$value',
         style: TextStyle(
-          fontFamily: 'Staatliches',
+            fontFamily: 'Staatliches',
             fontSize: 23.0,
             color: Color(kNumPadBorder),
             fontWeight: FontWeight.w900),
