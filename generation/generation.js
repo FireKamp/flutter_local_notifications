@@ -1,8 +1,8 @@
 const sudoku = require('./sudoku');
 
 var startingLevel = 1;
-var difficulty = "hard";
-var numberOfLevels = 50;
+var difficulty = "very-hard";
+var numberOfLevels = 40;
 var levels = [];
 
 for (let i = 0; i < numberOfLevels; i++, startingLevel++) {

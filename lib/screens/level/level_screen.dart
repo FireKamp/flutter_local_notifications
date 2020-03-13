@@ -84,9 +84,7 @@ class _LevelScreenState extends State<LevelScreen> {
                 SizedBox(
                   height: sizedBoxHeight,
                 ),
-                Visibility(
-                  visible: false,
-                  child: RaisedGradientButtonWI(
+            RaisedGradientButtonWI(
                       text: '${EnumToString.parse(LevelTYPE.EXPERT)}',
                       gradient: LinearGradient(
                         colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
@@ -95,7 +93,6 @@ class _LevelScreenState extends State<LevelScreen> {
                         _levelBloc
                             .add(LevelSelected(levelTYPE: LevelTYPE.EXPERT));
                       }),
-                ),
               ],
             ),
 
