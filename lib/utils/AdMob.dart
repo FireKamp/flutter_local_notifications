@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
 class AdMobIntegration {
-  static String testDevice = 'MobileId';
   static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     testDevices: [],
     nonPersonalizedAds: true,
