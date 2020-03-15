@@ -75,6 +75,12 @@ class HintState extends MainBoardState {
   HintState({this.isHintEnabled});
 }
 
+class PencilState extends MainBoardState {
+  final bool isPencilEnabled;
+
+  PencilState({this.isPencilEnabled});
+}
+
 class UpdateRowColState extends MainBoardState {
   final int row;
   final int col;

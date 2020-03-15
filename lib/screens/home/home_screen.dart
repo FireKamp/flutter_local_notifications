@@ -3,6 +3,7 @@ import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/screens/help/help_screen.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Analytics.logEvent('screen_landing');
     return SafeArea(
       child: Container(
         color: kPrimaryColor,

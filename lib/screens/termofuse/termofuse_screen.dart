@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -21,14 +22,18 @@ class _TermsOfUseState extends State<TermsOfUse> {
   bool _isLoaded = false;
 
   @override
+  void initState() {
+    Analytics.logEvent('screen_terms_of_use');
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: <Widget>[
           TopContainer(
-            onPressed: () {
-              Navigator.pop(context);
-            },
             text: 'TERMS OF USE',
             imagePath: 'assets/images/ic_tou.png',
             gradient: LinearGradient(

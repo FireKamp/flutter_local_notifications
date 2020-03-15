@@ -5,8 +5,9 @@ import 'package:sudoku_brain/utils/Constants.dart';
 class NumPadButton extends StatelessWidget {
   final int value;
   final Function(int) onClick;
+  final bool isHint;
 
-  NumPadButton({@required this.value, @required this.onClick});
+  NumPadButton({@required this.value, @required this.onClick, this.isHint});
 
   @override
   Widget build(BuildContext context) {
@@ -21,26 +22,52 @@ class NumPadButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(3.0),
               color: Colors.transparent,
               border: Border.all(width: 1.5, color: Color(kNumPadBorder))),
-          child: Center(
-            child: getWidget(value),
-          )),
+          child: getWidget(value)),
     );
   }
 
   Widget getWidget(int value) {
-    if (value == 10) {
-      return Image(
-        image: AssetImage('assets/images/ic_stars.png'),
+    if (isHint) {
+      return Padding(
+        padding: EdgeInsets.only(right: 5.0),
+        child: ButtonText(
+          value: value,
+          fontWeight: FontWeight.w100,
+          fontSize: 20.0,
+          textAlign: TextAlign.right,
+        ),
       );
     } else {
-      return AutoSizeText(
-        '$value',
-        style: TextStyle(
-            fontFamily: 'Staatliches',
-            fontSize: 23.0,
-            color: Color(kNumPadBorder),
-            fontWeight: FontWeight.w900),
+      return Center(
+        child: ButtonText(
+          value: value,
+          fontWeight: FontWeight.w600,
+          fontSize: 23.0,
+          textAlign: TextAlign.center,
+        ),
       );
     }
+  }
+}
+
+class ButtonText extends StatelessWidget {
+  final int value;
+  final double fontSize;
+  final FontWeight fontWeight;
+  final TextAlign textAlign;
+
+  ButtonText({this.textAlign, this.value, this.fontWeight, this.fontSize});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      '$value',
+      textAlign: textAlign,
+      style: TextStyle(
+          fontFamily: 'Rubik',
+          fontSize: fontSize,
+          color: Color(kNumPadBorder),
+          fontWeight: fontWeight),
+    );
   }
 }

@@ -34,6 +34,7 @@ class TopContainer extends StatelessWidget {
           children: <Widget>[
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
                   onTap: () {

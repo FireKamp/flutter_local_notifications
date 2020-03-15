@@ -8,6 +8,7 @@ class NumPad extends StatelessWidget {
   final double marginRight;
   final double marginBottom;
   final double marginLeft;
+  final bool isPencilOn;
   final MainAxisAlignment mainAxisAlignment;
   final Function(int) onValueChanged;
 
@@ -18,6 +19,7 @@ class NumPad extends StatelessWidget {
       this.marginRight,
       this.marginTop,
       this.mainAxisAlignment,
+      this.isPencilOn,
       @required this.onValueChanged});
 
   @override
@@ -42,6 +44,7 @@ class NumPad extends StatelessWidget {
       list.add(
         NumPadButton(
           value: values[i],
+          isHint: isPencilOn==null?false:isPencilOn,
           onClick: (int val) {
             onValueChanged(val);
           },

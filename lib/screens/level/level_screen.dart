@@ -1,12 +1,12 @@
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/components/gradient_button_wi.dart';
 import 'package:sudoku_brain/components/logo_header.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
@@ -25,6 +25,7 @@ class _LevelScreenState extends State<LevelScreen> {
   @override
   void initState() {
     super.initState();
+    Analytics.logEvent('screen_levels');
 
     _levelBloc = BlocProvider.of<LevelBloc>(context);
   }
@@ -51,9 +52,7 @@ class _LevelScreenState extends State<LevelScreen> {
                 LogoHeader(),
                 RaisedGradientButtonWI(
                     text: '${EnumToString.parse(LevelTYPE.EASY)}',
-                    gradient: LinearGradient(
-                      colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
-                    ),
+                    gradient: kEasyLevelGrad,
                     onPressed: () {
                       print('button clicked');
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.EASY));
@@ -63,9 +62,7 @@ class _LevelScreenState extends State<LevelScreen> {
                 ),
                 RaisedGradientButtonWI(
                     text: '${EnumToString.parse(LevelTYPE.MEDIUM)}',
-                    gradient: LinearGradient(
-                      colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
-                    ),
+                    gradient: kMediumLevelGrad,
                     onPressed: () {
                       _levelBloc
                           .add(LevelSelected(levelTYPE: LevelTYPE.MEDIUM));
@@ -75,27 +72,20 @@ class _LevelScreenState extends State<LevelScreen> {
                 ),
                 RaisedGradientButtonWI(
                     text: '${EnumToString.parse(LevelTYPE.HARD)}',
-                    gradient: LinearGradient(
-                      colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
-                    ),
+                    gradient: kHardLevelGrad,
                     onPressed: () {
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.HARD));
                     }),
                 SizedBox(
                   height: sizedBoxHeight,
                 ),
-                Visibility(
-                  visible: false,
-                  child: RaisedGradientButtonWI(
-                      text: '${EnumToString.parse(LevelTYPE.EXPERT)}',
-                      gradient: LinearGradient(
-                        colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
-                      ),
-                      onPressed: () {
-                        _levelBloc
-                            .add(LevelSelected(levelTYPE: LevelTYPE.EXPERT));
-                      }),
-                ),
+                RaisedGradientButtonWI(
+                    text: '${EnumToString.parse(LevelTYPE.EXPERT)}',
+                    gradient: kExpertLevelGrad,
+                    onPressed: () {
+                      _levelBloc
+                          .add(LevelSelected(levelTYPE: LevelTYPE.EXPERT));
+                    }),
               ],
             ),
 

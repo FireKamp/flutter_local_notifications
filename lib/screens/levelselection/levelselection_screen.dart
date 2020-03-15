@@ -7,6 +7,7 @@ import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/bloc.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
 
@@ -20,11 +21,13 @@ class LevelSelection extends StatefulWidget {
 class _LevelSelectionState extends State<LevelSelection> {
   LevelSelectionBloc _levelselectionBloc;
   String _levelName;
-  List<bool> levelList;
+  List<bool> _levelList;
+  Gradient _gradient;
 
   @override
   void initState() {
     super.initState();
+    Analytics.logEvent('screen_level_details');
     _levelselectionBloc = BlocProvider.of<LevelSelectionBloc>(context);
   }
 
@@ -36,7 +39,7 @@ class _LevelSelectionState extends State<LevelSelection> {
       listener: (BuildContext context, state) {
         if (state is LevelListState) {
           Logs.printLogs('LevelListState: ${state.levelList}');
-          levelList = List.from(state.levelList);
+          _levelList = List.from(state.levelList);
         }
       },
       child: BlocBuilder<LevelSelectionBloc, LevelSelectionState>(
@@ -44,7 +47,6 @@ class _LevelSelectionState extends State<LevelSelection> {
         return SafeArea(
           child: Container(
             color: kPrimaryColor,
-
             child: Column(
               children: <Widget>[
                 LogoHeader(),
@@ -57,9 +59,7 @@ class _LevelSelectionState extends State<LevelSelection> {
                         topLeft: const Radius.circular(10.0),
                         topRight: const Radius.circular(10.0),
                       ),
-                      gradient: LinearGradient(
-                        colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
-                      ),
+                      gradient: _gradient,
                     ),
                     child: Column(
                       children: <Widget>[
@@ -75,7 +75,7 @@ class _LevelSelectionState extends State<LevelSelection> {
                                 decoration: TextDecoration.none),
                           ),
                         ),
-                        _buildItemsList(levelList),
+                        _buildItemsList(_levelList),
                       ],
                     ),
                   ),
@@ -91,7 +91,6 @@ class _LevelSelectionState extends State<LevelSelection> {
   }
 
   Widget _buildItemsList(List<bool> items) {
-//    List items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     if (items != null) {
       return Expanded(
         flex: 1,
@@ -127,18 +126,32 @@ class _LevelSelectionState extends State<LevelSelection> {
                             : Color(0xFF003D4D),
                         borderRadius: BorderRadius.circular(10.0)),
                     height: 30.0,
-                    child: Center(
-                      child: AutoSizeText(
-                        'Level ${index + 1}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w100,
-                            fontFamily: 'Viga',
-                            decoration: TextDecoration.none),
-                        maxLines: 1,
-                      ),
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(
+                            child: Center(
+                          child: AutoSizeText(
+                            'Level ${index + 1}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w100,
+                                fontFamily: 'Viga',
+                                decoration: TextDecoration.none),
+                            maxLines: 1,
+                          ),
+                        )),
+                        Positioned(
+                          right: 0.0,
+                          child: Visibility(
+                            visible: items[index],
+                            child: Image(
+                              image: AssetImage('assets/images/ic_played.png'),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 );
@@ -157,7 +170,27 @@ class _LevelSelectionState extends State<LevelSelection> {
   void getArguments() {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _levelName = EnumToString.parse(args.levelTYPE);
+    getGradient(_levelName);
     _levelselectionBloc.add(
         LevelListEvent(context: context, levelName: _levelName.toLowerCase()));
+    Analytics.logEventWithParameter(
+        'choose_level', 'level', _levelName.toLowerCase());
+  }
+
+  void getGradient(String levelName) {
+    switch (levelName) {
+      case 'EASY':
+        _gradient = kEasyLevelGrad;
+        break;
+      case 'MEDIUM':
+        _gradient = kMediumLevelGrad;
+        break;
+      case 'HARD':
+        _gradient = kHardLevelGrad;
+        break;
+      case 'EXPERT':
+        _gradient = kExpertLevelGrad;
+        break;
+    }
   }
 }

@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
-import 'package:sudoku_brain/utils/Logs.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -81,12 +80,15 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       final full = fullScreen();
       yield FullScreenState(isFull: full);
     } else if (event is Hint) {
+      yield PencilState(isPencilEnabled: event.isPencilMode);
       if (!event.isPencilMode) {
         int value = getHint(event.row, event.col);
         yield UpdateCellState(val: value);
       }
     } else if (event is PlayAgain) {
       yield PlayAgainState();
+    } else if (event is PencilMode) {
+      yield PencilState(isPencilEnabled: event.isPencilMode);
     }
   }
 
@@ -97,9 +99,6 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   }
 
   int getHint(int row, int col) {
-    Logs.printLogs('getHint: row: $row - col: $col');
-
-    Logs.printLogs('hint: ${_solution[0][0]}');
     return _solution[row][col].value;
   }
 
@@ -133,7 +132,6 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   }
 
   bool compareLists(List<List<BoardData>> list) {
-    print('compareLists');
     bool isGameWon = true;
     for (int i = 0; i < list.length; i++) {
       List innerList = list[i];
@@ -151,25 +149,20 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 // Read data from JSON File
   Future<List<List<BoardData>>> _readJson(
       BuildContext context, String objName, int index, bool isSol) async {
-    print('readJson level');
-
     String data =
         await DefaultAssetBundle.of(context).loadString("assets/brain.json");
-    print('objName: $objName');
 
     var decodedData = jsonDecode(data);
     List list = decodedData['difficulty'][objName]['level'][index]
         [isSol == true ? 'solution' : 'board'];
 
-    // just for testing. TODO: remove later
+    // just for testing. TODO: remove later just for testing
 //    List list;
 //    if (isSol) {
 //      list = List.from(dummyList1);
 //    } else {
 //      list = List.from(dummyList);
 //    }
-
-    print('$objName: $list');
 
     List<List<BoardData>> test = [];
     for (int i = 0; i < list.length; i++) {

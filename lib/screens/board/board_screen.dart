@@ -14,6 +14,7 @@ import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/utils/AdMob.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
@@ -32,6 +33,7 @@ class MainBoard extends StatefulWidget {
 
 class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   MainBoardBloc _mainBoardBloc;
+  Function(bool) onHintSelected;
 
   int _row = -1;
   int _col = -1;
@@ -46,7 +48,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   double _animatedHeight = 50.0;
 
   bool _isTimerPaused = false;
-  bool _isHintEnables = false;
   bool _isPencilON = false;
 
   List<List<BoardData>> _boardList = [];
@@ -56,6 +57,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   @override
   void initState() {
     AdMobIntegration.initAd();
+    Analytics.logEvent('screen_gameboard');
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
@@ -121,8 +124,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           }
         } else if (state is PlayAgainState) {
           _isTimerPaused = false;
-        } else if (state is HintState) {
-          _isHintEnables = state.isHintEnabled;
+        } else if (state is PencilState) {
+          _isPencilON = state.isPencilEnabled;
         }
       },
       child:
@@ -227,19 +230,25 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                   ),
                 ),
                 Panel(
+                  isPaused: _isTimerPaused,
+                  defaultPencilValue: _isPencilON == true ? false : true,
                   onSegmentChange: (int segmentValue, bool isSelected) {
                     if (!_isTimerPaused) {
                       switch (segmentValue) {
                         case 0:
+                          Analytics.logEvent('tap_full_screen');
                           _mainBoardBloc.add(FullScreen());
                           break;
                         case 1:
+                          Analytics.logEvent('tap_erase');
                           _numPadButtonClick(0);
                           break;
                         case 2:
+                          Analytics.logEvent('tap_undo');
                           _resetBoard();
                           break;
                         case 3:
+                          Analytics.logEvent('tap_hint');
                           _mainBoardBloc.add(Hint(
                               row: _row,
                               col: _col,
@@ -247,13 +256,17 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                               isPencilMode: _isPencilON));
                           break;
                         case 4:
-                          _isPencilON = isSelected;
+                          Analytics.logEvent('tap_edit');
+
+                          _mainBoardBloc
+                              .add(PencilMode(isPencilMode: isSelected));
                           break;
                       }
                     }
                   },
                 ),
                 NumPad(
+                  isPencilOn: _isPencilON,
                   values: [1, 2, 3, 4, 5],
                   marginTop: MediaQuery.of(context).size.height * 0.02,
                   marginRight: MediaQuery.of(context).size.height * 0.045,
@@ -265,6 +278,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                   },
                 ),
                 NumPad(
+                    isPencilOn: _isPencilON,
                     values: [6, 7, 8, 9],
                     marginTop: MediaQuery.of(context).size.height * 0.02,
                     marginRight: MediaQuery.of(context).size.height * 0.07,
@@ -378,7 +392,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     for (int c = 0; c < 9; c++) {
       lst.add(InkWell(
         onTap: () {
-          print('screens.board cell:[$r][$c]');
           _mainBoardBloc
               .add(UpdateRowCol(row: r, col: c, list: _initBoardList));
         },
@@ -475,7 +488,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   }
 
   Widget _buildItemsList(List<int> pencilValues) {
-    List items = [1, 2, 3, 0, 5, 6, 0, 8, 9];
     if (pencilValues != null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -521,17 +533,14 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state: $state');
     if (state == AppLifecycleState.paused) {
 //      var json = jsonEncode(_boardList, toEncodable: (e) => e.toJsonAttr());
       var json = jsonEncode(_boardList.map((e) => e.toString()).toList());
-      print('json: $json');
       LocalDB.setString(LocalDB.keyBoardList, json);
     } else if (state == AppLifecycleState.resumed) {
       LocalDB.getString(LocalDB.keyBoardList).then((value) async {
         if (value != null && value.isNotEmpty) {
           List data = json.decode(value);
-          print('data: ${data[0]}');
 
           List<List<BoardData>> test = [];
           for (int i = 0; i < data.length; i++) {
@@ -545,8 +554,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
             }
             test.add(dataList);
           }
-
-          print('test: ${test[0][0].mode}');
         }
       });
     }

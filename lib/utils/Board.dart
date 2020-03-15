@@ -20,8 +20,6 @@ class Conflict {
       for (int c = 0; c < 9; c++) {
         int newNum = grid[r][c].value;
 
-//        print('[$r][$c]=${grid[r][c]}');
-
         if (newNum == 0) continue;
         if (usedNumToRowCol.containsKey(newNum)) {
           res.add(new RowCol(r, c));

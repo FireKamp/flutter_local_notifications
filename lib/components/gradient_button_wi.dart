@@ -29,7 +29,7 @@ class RaisedGradientButtonWI extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      height: MediaQuery.of(context).size.height * 0.15,
+      height: MediaQuery.of(context).size.height * 0.1,
       margin: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),

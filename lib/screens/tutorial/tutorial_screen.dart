@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
@@ -12,6 +13,8 @@ class TutorialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Analytics.logEvent('screen_tutorial');
+
     return SafeArea(
       child: Column(
         children: <Widget>[

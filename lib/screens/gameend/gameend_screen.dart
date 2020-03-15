@@ -3,6 +3,7 @@ import 'package:gradient_text/gradient_text.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
@@ -25,6 +26,9 @@ class _GameEndScreenState extends State<GameEndScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => getData(context));
+    Analytics.logEvent('screen_score');
+    Analytics.logEventWithParameter('completed_game', 'level', _levelName);
+
     super.initState();
   }
 
@@ -114,13 +118,16 @@ class _GameEndScreenState extends State<GameEndScreen> {
                             levelName: _levelName.toLowerCase(),
                             index: _levelNumber - 1));
                   } else {
+                    Analytics.logEvent('tap_play_again');
                     Navigator.pushReplacementNamed(context, LevelSelection.id,
                         arguments: ScreenArguments(
                             levelTYPE: _levelName == 'easy'
                                 ? LevelTYPE.EASY
                                 : (_levelName == 'medium'
                                     ? LevelTYPE.MEDIUM
-                                    : LevelTYPE.HARD)));
+                                    : (_levelName == 'hard'
+                                        ? LevelTYPE.HARD
+                                        : LevelTYPE.EXPERT))));
                   }
                 },
               ),

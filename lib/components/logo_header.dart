@@ -8,7 +8,7 @@ class LogoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*0.30,
+      height: MediaQuery.of(context).size.height * 0.30,
       child: Row(
         children: <Widget>[
           Spacer(),
@@ -25,6 +25,12 @@ class LogoHeader extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Image(
+                image: AssetImage('assets/images/ic_logo.png'),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
               Image(
                 image: AssetImage('assets/images/header.png'),
               ),

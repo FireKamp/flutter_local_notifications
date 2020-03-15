@@ -6,12 +6,14 @@ class SwitchButton extends StatefulWidget {
   final IconData iconActive;
   final IconData iconInActive;
   final Color color;
+  final bool defaultPValue;
 
   SwitchButton(
       {@required this.value,
       @required this.iconActive,
       @required this.iconInActive,
       this.color,
+      this.defaultPValue,
       @required this.onClick});
 
   @override
@@ -19,7 +21,8 @@ class SwitchButton extends StatefulWidget {
 }
 
 class _SwitchButtonState extends State<SwitchButton> {
-  bool _isSelected = false;
+  bool _isSelected=false;
+
 
   @override
   Widget build(BuildContext context) {

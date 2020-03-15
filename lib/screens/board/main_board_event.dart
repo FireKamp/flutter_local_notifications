@@ -26,6 +26,12 @@ class CursorChanged extends MainBoardEvent {
   CursorChanged({this.val});
 }
 
+class PencilMode extends MainBoardEvent {
+  final bool isPencilMode;
+
+  PencilMode({this.isPencilMode});
+}
+
 class UpdateCellValue extends MainBoardEvent {
   final int val;
 

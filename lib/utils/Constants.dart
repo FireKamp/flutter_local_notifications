@@ -13,6 +13,22 @@ const lightBlue = Color(0xFFDCF8FF);
 const kBoardCellSelected = Color(0xFF80C3FF);
 const kBorderTest = Color(0x60170D2E);
 
+// Gradients
+const kEasyLevelGrad = LinearGradient(
+  colors: <Color>[Color(0xFF91E786), Color(0xFF0AB8AD)],
+);
+
+const kMediumLevelGrad = LinearGradient(
+  colors: <Color>[Color(0xFF1E9FFE), Color(0xFF4F5FFE)],
+);
+
+const kHardLevelGrad = LinearGradient(
+  colors: <Color>[Color(0xFFA193FF), Color(0xFF6442FD)],
+);
+const kExpertLevelGrad = LinearGradient(
+  colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
+);
+
 // init list
 List<List<int>> constantList = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -49,5 +65,3 @@ List<List<int>> dummyList = [
   [6, 4, 5, 9, 8, 3, 2, 7, 1],
   [3, 7, 8, 6, 2, 1, 5, 9, 0]
 ];
-
-

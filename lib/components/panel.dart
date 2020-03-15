@@ -5,8 +5,11 @@ import 'package:sudoku_brain/utils/Constants.dart';
 
 class Panel extends StatefulWidget {
   final Function(int, bool) onSegmentChange;
+  final bool defaultPencilValue;
+  final bool isPaused;
 
-  Panel({@required this.onSegmentChange});
+  Panel(
+      {@required this.onSegmentChange, this.defaultPencilValue, this.isPaused});
 
   @override
   _PanelState createState() => _PanelState();
@@ -15,57 +18,62 @@ class Panel extends StatefulWidget {
 class _PanelState extends State<Panel> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-          MediaQuery.of(context).size.height * 0.05,
-          MediaQuery.of(context).size.height * 0.02,
-          MediaQuery.of(context).size.height * 0.05,
-          MediaQuery.of(context).size.height * 0.01),
-      padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-      decoration: BoxDecoration(
-        color: Color(kPanelBg),
-        borderRadius: BorderRadius.circular(7.0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          SwitchButton(
-            value: 0,
-            iconActive: Icons.fullscreen_exit,
-            iconInActive: Icons.fullscreen,
-            onClick: (int val, bool isSel) {
-              widget.onSegmentChange(val, isSel);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              widget.onSegmentChange(1, false);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              widget.onSegmentChange(2, false);
-            },
-          ),
-          SwitchButton(
-            value: 3,
-            iconActive: Icons.lightbulb_outline,
-            iconInActive: Icons.lightbulb_outline,
-            onClick: (int val, bool isSel) {
-              widget.onSegmentChange(val, isSel);
-            },
-          ),
-          SwitchButton(
-            value: 4,
-            iconActive: Icons.edit,
-            iconInActive: Icons.edit,
-            onClick: (int val, bool isSel) {
-              widget.onSegmentChange(val, isSel);
-            },
-          ),
-        ],
+    print('build panel');
+    return AbsorbPointer(
+      absorbing: widget.isPaused,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(
+            MediaQuery.of(context).size.height * 0.05,
+            MediaQuery.of(context).size.height * 0.02,
+            MediaQuery.of(context).size.height * 0.05,
+            MediaQuery.of(context).size.height * 0.01),
+        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+        decoration: BoxDecoration(
+          color: Color(kPanelBg),
+          borderRadius: BorderRadius.circular(7.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            SwitchButton(
+              value: 0,
+              iconActive: Icons.fullscreen_exit,
+              iconInActive: Icons.fullscreen,
+              onClick: (int val, bool isSel) {
+                widget.onSegmentChange(val, isSel);
+              },
+            ),
+            IconButton(
+              icon: Image(
+                image: AssetImage('assets/images/ic_erase.png'),
+              ),
+              onPressed: () {
+                widget.onSegmentChange(1, false);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                widget.onSegmentChange(2, false);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.lightbulb_outline),
+              onPressed: () {
+                widget.onSegmentChange(3, false);
+              },
+            ),
+            SwitchButton(
+              value: 4,
+              defaultPValue: widget.defaultPencilValue,
+              iconActive: Icons.edit,
+              iconInActive: Icons.edit,
+              onClick: (int val, bool isSel) {
+                widget.onSegmentChange(val, isSel);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

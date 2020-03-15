@@ -5,6 +5,7 @@ import 'package:sudoku_brain/components/gradient_button_wi.dart';
 import 'package:sudoku_brain/components/top_container.dart';
 import 'package:sudoku_brain/screens/termofuse/termofuse_screen.dart';
 import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
 
@@ -14,6 +15,8 @@ class HelpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Analytics.logEvent('screen_help');
+
     return SafeArea(
       child: Column(
         children: <Widget>[
@@ -52,6 +55,8 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFF82FFF4), Color(0xFF05AB9C)],
                       ),
                       onPressed: () async {
+                        Analytics.logEvent('screen_contact_us');
+
                         getVersionName().then((onValue) async {
                           Logs.printLogs('onValue: $onValue');
                           final Email email = Email(
