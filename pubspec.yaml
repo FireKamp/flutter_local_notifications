@@ -37,6 +37,12 @@ dependencies:
   custom_switch: ^0.0.1
   firebase_core: ^0.4.0+9
   firebase_analytics: ^5.0.11
+  flutter_launcher_icons: ^0.7.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/ic_launcher.png"
 
 
 dev_dependencies:
