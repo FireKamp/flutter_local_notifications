@@ -109,7 +109,14 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     int hintCount = await LocalDB.getInt(key);
 
     if (hintCount == null) {
-      int value = 2;
+      int value = 0;
+      if (levelName == 'easy') {
+        value = 2;
+      } else if (levelName == 'medium') {
+        value = 1;
+      } else if (levelName == 'hard') {
+        value = 1;
+      }
       LocalDB.setInt(key, value);
       return value;
     } else {

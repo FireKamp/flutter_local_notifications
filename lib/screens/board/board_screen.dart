@@ -13,7 +13,7 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
-import 'package:sudoku_brain/utils/AdMob.dart';
+import 'package:sudoku_brain/utils/AdMobTest.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
@@ -51,13 +51,19 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   bool _isTimerPaused = false;
   bool _isPencilON = false;
 
+  AdMobIntegrationTest adMobIntegrationTest;
+
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
   HashSet<RowCol> _conflicts = new HashSet<RowCol>();
 
   @override
   void initState() {
-    AdMobIntegration.initBannerAd();
+    adMobIntegrationTest = new AdMobIntegrationTest(adRewarded: () {
+      print('add rewarded');
+    });
+    adMobIntegrationTest.initBannerAd();
+//    AdMobIntegration.initBannerAd();
     Analytics.logEvent('screen_gameboard');
 
     super.initState();
@@ -119,7 +125,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     bestTime: state.time,
                     isPlayed: true));
           } else {
-            AdMobIntegration.initInterstitialAd();
+            adMobIntegrationTest.initInterstitialAd();
             _isTimerPaused = true;
             _dynamicText = kLoseText;
             _dynamicTextFB = kLoseBText;
@@ -132,7 +138,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           hintCount = state.val;
           print('hintCount: ${state.val}');
           if (hintCount == 0) {
-            AdMobIntegration.initRewardAd();
+            adMobIntegrationTest.initRewardAd();
           }
         }
       },
@@ -544,6 +550,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state: ${state.toString()}');
     if (state == AppLifecycleState.paused) {
 //      var json = jsonEncode(_boardList, toEncodable: (e) => e.toJsonAttr());
       var json = jsonEncode(_boardList.map((e) => e.toString()).toList());
@@ -580,7 +587,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    AdMobIntegration.dispose();
+    adMobIntegrationTest.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

@@ -4,31 +4,34 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
-class AdMobIntegration {
-  static MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+class AdMobIntegrationTest {
+  MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     testDevices: [],
     nonPersonalizedAds: true,
     keywords: <String>['Game', 'Sudoku'],
   );
 
-  static BannerAd _bannerAd;
-  static InterstitialAd _interstitialAd;
+  BannerAd _bannerAd;
+  InterstitialAd _interstitialAd;
+  final Function adRewarded;
 
-  static initBannerAd() {
+  AdMobIntegrationTest({this.adRewarded});
+
+  initBannerAd() {
     FirebaseAdMob.instance.initialize(appId: _getAdAccountId());
     _bannerAd = _createBannerAd()
       ..load()
       ..show();
   }
 
-  static initInterstitialAd() {
+  initInterstitialAd() {
     FirebaseAdMob.instance.initialize(appId: _getAdAccountId());
     _interstitialAd = _createInterstitialAd()
       ..load()
       ..show();
   }
 
-  static initRewardAd() {
+  initRewardAd() {
     RewardedVideoAd.instance.load(
         adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
     RewardedVideoAd.instance.show();
@@ -36,13 +39,12 @@ class AdMobIntegration {
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       print('eventUp: $event');
       if (event == RewardedVideoAdEvent.rewarded) {
-
-
+        adRewarded();
       }
     };
   }
 
-  static BannerAd _createBannerAd() {
+  BannerAd _createBannerAd() {
     return BannerAd(
         adUnitId: _getBannerID(),
         size: AdSize.banner,
@@ -52,7 +54,7 @@ class AdMobIntegration {
         });
   }
 
-  static InterstitialAd _createInterstitialAd() {
+  InterstitialAd _createInterstitialAd() {
     return InterstitialAd(
       adUnitId: _getInterstitialAdID(),
       targetingInfo: targetingInfo,
@@ -62,12 +64,12 @@ class AdMobIntegration {
     );
   }
 
-  static void disposedkjk() {
+  void dispose() {
     if (_bannerAd != null) _bannerAd.dispose();
     if (_interstitialAd != null) _interstitialAd.dispose();
   }
 
-  static String _getBannerID() {
+  String _getBannerID() {
     if (kReleaseMode) {
       if (Platform.isAndroid) {
         return kBannerAdIDAndroid;
@@ -79,7 +81,7 @@ class AdMobIntegration {
     }
   }
 
-  static String _getInterstitialAdID() {
+  String _getInterstitialAdID() {
     if (kReleaseMode) {
       if (Platform.isAndroid) {
         return kInterstitialAdIDAndroid;
@@ -91,7 +93,7 @@ class AdMobIntegration {
     }
   }
 
-  static String _getAdAccountId() {
+  String _getAdAccountId() {
     if (Platform.isAndroid) {
       return kAppIDAndroid;
     } else {

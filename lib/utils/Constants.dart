@@ -29,6 +29,8 @@ const kExpertLevelGrad = LinearGradient(
   colors: <Color>[Color(0xFFFE23A7), Color(0xFFE2297E)],
 );
 
+const String levelHintName = '';
+
 // init list
 List<List<int>> constantList = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
