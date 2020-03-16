@@ -33,7 +33,7 @@ class AdMobIntegrationTest {
 
   initRewardAd() {
     RewardedVideoAd.instance.load(
-        adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
+        adUnitId: _getRewardAdID(), targetingInfo: targetingInfo);
     RewardedVideoAd.instance.show();
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
@@ -90,6 +90,18 @@ class AdMobIntegrationTest {
       }
     } else {
       return InterstitialAd.testAdUnitId;
+    }
+  }
+
+  String _getRewardAdID() {
+    if (kReleaseMode) {
+      if (Platform.isAndroid) {
+        return kRewardAddIDAndroid;
+      } else {
+        return kRewardAddIDiOS;
+      }
+    } else {
+      return RewardedVideoAd.testAdUnitId;
     }
   }
 

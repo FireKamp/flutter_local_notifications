@@ -62,7 +62,7 @@ class AdMobIntegration {
     );
   }
 
-  static void disposedkjk() {
+  static void dispose() {
     if (_bannerAd != null) _bannerAd.dispose();
     if (_interstitialAd != null) _interstitialAd.dispose();
   }
