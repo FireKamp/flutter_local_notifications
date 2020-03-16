@@ -26,6 +26,12 @@ class CursorChanged extends MainBoardEvent {
   CursorChanged({this.val});
 }
 
+class GetHintCount extends MainBoardEvent {
+  final int val;
+
+  GetHintCount({this.val});
+}
+
 class PencilMode extends MainBoardEvent {
   final bool isPencilMode;
 
@@ -51,8 +57,16 @@ class Hint extends MainBoardEvent {
   final int col;
   final levelDetails;
   final bool isPencilMode;
+  final String levelName;
+  final int index;
 
-  Hint({this.row, this.col, this.levelDetails, this.isPencilMode});
+  Hint(
+      {this.row,
+      this.col,
+      this.levelDetails,
+      this.isPencilMode,
+      this.levelName,
+      this.index});
 }
 
 class ResetBoard extends MainBoardEvent {

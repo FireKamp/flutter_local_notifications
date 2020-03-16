@@ -7,9 +7,13 @@ class Panel extends StatefulWidget {
   final Function(int, bool) onSegmentChange;
   final bool defaultPencilValue;
   final bool isPaused;
+  final int hintValue;
 
   Panel(
-      {@required this.onSegmentChange, this.defaultPencilValue, this.isPaused});
+      {@required this.onSegmentChange,
+      this.defaultPencilValue,
+      this.isPaused,
+      this.hintValue});
 
   @override
   _PanelState createState() => _PanelState();
@@ -58,7 +62,21 @@ class _PanelState extends State<Panel> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.lightbulb_outline),
+              icon: widget.hintValue > 0
+                  ? Icon(Icons.lightbulb_outline)
+                  : Stack(
+                      children: <Widget>[
+                        Positioned.fill(child: Icon(Icons.lightbulb_outline)),
+                        Positioned(
+                            top: 5.0,
+                            right: 4.0,
+                            child: Image(
+                              height: 12.0,
+                              width: 12.0,
+                              image: AssetImage('assets/images/ic_badge.png'),
+                            ))
+                      ],
+                    ),
               onPressed: () {
                 widget.onSegmentChange(3, false);
               },

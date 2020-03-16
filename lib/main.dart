@@ -33,6 +33,8 @@ void main() {
       (_) => runApp(MyApp()),
     );
   }, onError: Crashlytics.instance.recordError);
+
+
 }
 
 class MyApp extends StatelessWidget {

@@ -38,6 +38,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   int _row = -1;
   int _col = -1;
   int _cursor = 0;
+  int hintCount = -1;
   int _cursorCopy = -1;
   int _levelIndex = 0;
 
@@ -56,7 +57,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    AdMobIntegration.initAd();
+    AdMobIntegration.initBannerAd();
     Analytics.logEvent('screen_gameboard');
 
     super.initState();
@@ -118,6 +119,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     bestTime: state.time,
                     isPlayed: true));
           } else {
+            AdMobIntegration.initInterstitialAd();
             _isTimerPaused = true;
             _dynamicText = kLoseText;
             _dynamicTextFB = kLoseBText;
@@ -126,6 +128,12 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           _isTimerPaused = false;
         } else if (state is PencilState) {
           _isPencilON = state.isPencilEnabled;
+        } else if (state is GetHintVState) {
+          hintCount = state.val;
+          print('hintCount: ${state.val}');
+          if (hintCount == 0) {
+            AdMobIntegration.initRewardAd();
+          }
         }
       },
       child:
@@ -230,6 +238,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                   ),
                 ),
                 Panel(
+                  hintValue: hintCount,
                   isPaused: _isTimerPaused,
                   defaultPencilValue: _isPencilON == true ? false : true,
                   onSegmentChange: (int segmentValue, bool isSelected) {
@@ -253,7 +262,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                               row: _row,
                               col: _col,
                               levelDetails: '$_levelName-$_levelIndex',
-                              isPencilMode: _isPencilON));
+                              isPencilMode: _isPencilON,
+                              levelName: _levelName,
+                              index: _levelIndex));
                           break;
                         case 4:
                           Analytics.logEvent('tap_edit');

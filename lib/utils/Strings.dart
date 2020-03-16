@@ -4,6 +4,9 @@ const kAppIDAndroid='ca-app-pub-6145080690961844~7490094473';
 const kBannerAdIDAndroid='ca-app-pub-6145080690961844/2884635057';
 const kAppIDiOS='ca-app-pub-6145080690961844~5055502822';
 const kBannerAdIDiOS='ca-app-pub-6145080690961844/4880243001';
+const kInterstitialAdIDiOS='ca-app-pub-6145080690961844/8199269398';
+const kInterstitialAdIDAndroid='ca-app-pub-6145080690961844/5182223814';
+
 
 // Text Tutorial
 const kTutHeadOne = 'What is Sudoku';

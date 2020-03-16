@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
+import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -37,6 +38,8 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   ) async* {
     if (event is BoardInitISCalled) {
       yield FetchingLevel();
+      final hintCount = await _getHintCount(event.levelName, event.index);
+      yield GetHintVState(val: hintCount);
       final list =
           await _readJson(event.context, event.levelName, event.index, false);
       yield LevelFetched(boardList: list);
@@ -82,6 +85,15 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is Hint) {
       yield PencilState(isPencilEnabled: event.isPencilMode);
       if (!event.isPencilMode) {
+        int hintCount = await _getHintCount(event.levelName, event.index);
+        String key = getDBKey(event.levelName, event.index);
+        hintCount = hintCount - 1;
+
+        if (hintCount >= 0) {
+          LocalDB.setInt(key, hintCount);
+        }
+        yield GetHintVState(val: hintCount >= 0 ? hintCount : 0);
+
         int value = getHint(event.row, event.col);
         yield UpdateCellState(val: value);
       }
@@ -90,6 +102,25 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is PencilMode) {
       yield PencilState(isPencilEnabled: event.isPencilMode);
     }
+  }
+
+  Future<int> _getHintCount(String levelName, int index) async {
+    String key = getDBKey(levelName, index);
+    int hintCount = await LocalDB.getInt(key);
+
+    if (hintCount == null) {
+      int value = 2;
+      LocalDB.setInt(key, value);
+      return value;
+    } else {
+      return hintCount;
+    }
+  }
+
+  String getDBKey(String levelName, int index) {
+    String key = '${levelName}_hint_${index + 1}';
+    print('key: $key');
+    return key;
   }
 
   void _stopTimer() {
@@ -152,17 +183,17 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     String data =
         await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 
-    var decodedData = jsonDecode(data);
-    List list = decodedData['difficulty'][objName]['level'][index]
-        [isSol == true ? 'solution' : 'board'];
+//    var decodedData = jsonDecode(data);
+//    List list = decodedData['difficulty'][objName]['level'][index]
+//        [isSol == true ? 'solution' : 'board'];
 
     // just for testing. TODO: remove later just for testing
-//    List list;
-//    if (isSol) {
-//      list = List.from(dummyList1);
-//    } else {
-//      list = List.from(dummyList);
-//    }
+    List list;
+    if (isSol) {
+      list = List.from(dummyList1);
+    } else {
+      list = List.from(dummyList);
+    }
 
     List<List<BoardData>> test = [];
     for (int i = 0; i < list.length; i++) {

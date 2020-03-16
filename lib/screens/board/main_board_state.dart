@@ -63,6 +63,12 @@ class UpdateCellState extends MainBoardState {
   UpdateCellState({this.val});
 }
 
+class GetHintVState extends MainBoardState {
+  final int val;
+
+  GetHintVState({this.val});
+}
+
 class FullScreenState extends MainBoardState {
   final bool isFull;
 
