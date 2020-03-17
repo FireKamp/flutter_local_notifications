@@ -10,6 +10,5 @@ class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   Stream<TutorialState> mapEventToState(
     TutorialEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }

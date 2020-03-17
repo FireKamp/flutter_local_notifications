@@ -13,7 +13,7 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
-import 'package:sudoku_brain/utils/AdMobTest.dart';
+import 'package:sudoku_brain/utils/AdMobIntegration.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
@@ -51,7 +51,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   bool _isTimerPaused = false;
   bool _isPencilON = false;
 
-  AdMobIntegrationTest adMobIntegrationTest;
+  AdMobIntegration adMobIntegrationTest;
 
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
@@ -59,11 +59,12 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    adMobIntegrationTest = new AdMobIntegrationTest(adRewarded: () {
-      print('add rewarded');
+    adMobIntegrationTest = new AdMobIntegration(adRewarded: () {
+      _mainBoardBloc.add(AdRewarded(levelName: _levelName, index: _levelIndex));
+      _mainBoardBloc.add(StartTimer());
+
     });
     adMobIntegrationTest.initBannerAd();
-//    AdMobIntegration.initBannerAd();
     Analytics.logEvent('screen_gameboard');
 
     super.initState();
@@ -137,8 +138,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         } else if (state is GetHintVState) {
           hintCount = state.val;
           print('hintCount: ${state.val}');
-          if (hintCount == 0) {
+          if (hintCount < 0) {
             adMobIntegrationTest.initRewardAd();
+            _mainBoardBloc.add(PauseTimer());
+
           }
         }
       },
@@ -324,7 +327,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     } else {
       _changeCursor(value);
       _mainBoardBloc.add(UpdateCellValue(val: value));
-//      _changeConflicts(); TODO: just commented for testing
     }
   }
 

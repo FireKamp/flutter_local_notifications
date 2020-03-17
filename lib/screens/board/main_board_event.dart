@@ -80,6 +80,13 @@ class ResetBoard extends MainBoardEvent {
 
 class FullScreen extends MainBoardEvent {}
 
+class AdRewarded extends MainBoardEvent {
+  final int index;
+  final String levelName;
+
+  AdRewarded({this.levelName, this.index});
+}
+
 class PlayAgain extends MainBoardEvent {}
 
 //================================== TIMER =========================================//

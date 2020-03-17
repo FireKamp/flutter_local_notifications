@@ -10,6 +10,5 @@ class TermofuseBloc extends Bloc<TermofuseEvent, TermofuseState> {
   Stream<TermofuseState> mapEventToState(
     TermofuseEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }

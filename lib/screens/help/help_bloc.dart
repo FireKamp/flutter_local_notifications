@@ -10,6 +10,5 @@ class HelpBloc extends Bloc<HelpEvent, HelpState> {
   Stream<HelpState> mapEventToState(
     HelpEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }

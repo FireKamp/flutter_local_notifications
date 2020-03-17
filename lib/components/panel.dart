@@ -22,7 +22,6 @@ class Panel extends StatefulWidget {
 class _PanelState extends State<Panel> {
   @override
   Widget build(BuildContext context) {
-    print('build panel');
     return AbsorbPointer(
       absorbing: widget.isPaused,
       child: Container(
@@ -68,12 +67,25 @@ class _PanelState extends State<Panel> {
                       children: <Widget>[
                         Positioned.fill(child: Icon(Icons.lightbulb_outline)),
                         Positioned(
-                            top: 5.0,
                             right: 4.0,
-                            child: Image(
+                            top: 4.0,
+                            child: Container(
                               height: 12.0,
                               width: 12.0,
-                              image: AssetImage('assets/images/ic_badge.png'),
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '1',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 11.0,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
                             ))
                       ],
                     ),

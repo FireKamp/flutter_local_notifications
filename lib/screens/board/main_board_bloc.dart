@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
-import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 
@@ -87,20 +87,25 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       if (!event.isPencilMode) {
         int hintCount = await _getHintCount(event.levelName, event.index);
         String key = getDBKey(event.levelName, event.index);
+
         hintCount = hintCount - 1;
 
-        if (hintCount >= 0) {
+        if (hintCount >=0) {
           LocalDB.setInt(key, hintCount);
+          int value = getHint(event.row, event.col);
+          yield UpdateCellState(val: value);
         }
-        yield GetHintVState(val: hintCount >= 0 ? hintCount : 0);
+        yield GetHintVState(val: hintCount);
 
-        int value = getHint(event.row, event.col);
-        yield UpdateCellState(val: value);
       }
     } else if (event is PlayAgain) {
       yield PlayAgainState();
     } else if (event is PencilMode) {
       yield PencilState(isPencilEnabled: event.isPencilMode);
+    } else if (event is AdRewarded) {
+      String key = getDBKey(event.levelName, event.index);
+      LocalDB.setInt(key, 1);
+      yield GetHintVState(val: 2);
     }
   }
 
@@ -190,17 +195,17 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     String data =
         await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 
-//    var decodedData = jsonDecode(data);
-//    List list = decodedData['difficulty'][objName]['level'][index]
-//        [isSol == true ? 'solution' : 'board'];
+    var decodedData = jsonDecode(data);
+    List list = decodedData['difficulty'][objName]['level'][index]
+        [isSol == true ? 'solution' : 'board'];
 
     // just for testing. TODO: remove later just for testing
-    List list;
-    if (isSol) {
-      list = List.from(dummyList1);
-    } else {
-      list = List.from(dummyList);
-    }
+//    List list;
+//    if (isSol) {
+//      list = List.from(dummyList1);
+//    } else {
+//      list = List.from(dummyList);
+//    }
 
     List<List<BoardData>> test = [];
     for (int i = 0; i < list.length; i++) {

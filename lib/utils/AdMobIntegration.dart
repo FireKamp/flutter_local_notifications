@@ -4,9 +4,9 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
-class AdMobIntegrationTest {
+class AdMobIntegration {
   MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: [],
+    testDevices: ["517603BE84183CF5E71EFA90A419FC0D"],
     nonPersonalizedAds: true,
     keywords: <String>['Game', 'Sudoku'],
   );
@@ -15,7 +15,7 @@ class AdMobIntegrationTest {
   InterstitialAd _interstitialAd;
   final Function adRewarded;
 
-  AdMobIntegrationTest({this.adRewarded});
+  AdMobIntegration({this.adRewarded});
 
   initBannerAd() {
     FirebaseAdMob.instance.initialize(appId: _getAdAccountId());
@@ -32,13 +32,15 @@ class AdMobIntegrationTest {
   }
 
   initRewardAd() {
-    RewardedVideoAd.instance.load(
-        adUnitId: _getRewardAdID(), targetingInfo: targetingInfo);
-    RewardedVideoAd.instance.show();
+    RewardedVideoAd.instance
+        .load(adUnitId: _getRewardAdID(), targetingInfo: targetingInfo);
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      print('eventUp: $event');
       if (event == RewardedVideoAdEvent.rewarded) {
+        adRewarded();
+      } else if (event == RewardedVideoAdEvent.loaded) {
+        RewardedVideoAd.instance.show();
+      } else if (event == RewardedVideoAdEvent.failedToLoad) {
         adRewarded();
       }
     };
@@ -49,18 +51,14 @@ class AdMobIntegrationTest {
         adUnitId: _getBannerID(),
         size: AdSize.banner,
         targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) {
-          print("BannerAd $event");
-        });
+        listener: (MobileAdEvent event) {});
   }
 
   InterstitialAd _createInterstitialAd() {
     return InterstitialAd(
       adUnitId: _getInterstitialAdID(),
       targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("InterstitialAd event is $event");
-      },
+      listener: (MobileAdEvent event) {},
     );
   }
 

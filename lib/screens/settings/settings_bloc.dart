@@ -10,6 +10,5 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Stream<SettingsState> mapEventToState(
     SettingsEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }

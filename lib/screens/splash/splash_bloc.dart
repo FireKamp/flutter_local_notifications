@@ -10,6 +10,5 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   Stream<SplashState> mapEventToState(
     SplashEvent event,
   ) async* {
-    // TODO: Add Logic
   }
 }
