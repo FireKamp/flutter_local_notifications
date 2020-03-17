@@ -64,7 +64,7 @@ class AdMobIntegration {
 
   void dispose() {
 //    if (_bannerAd != null) _bannerAd.dispose();
-//    if (_interstitialAd != null) _interstitialAd.dispose();
+    if (_interstitialAd != null) _interstitialAd.dispose();
   }
 
   String _getBannerID() {
