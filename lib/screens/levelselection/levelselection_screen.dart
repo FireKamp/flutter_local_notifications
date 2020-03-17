@@ -9,7 +9,6 @@ import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/bloc.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
-import 'package:sudoku_brain/utils/Logs.dart';
 
 class LevelSelection extends StatefulWidget {
   static String id = 'level_selection';
@@ -38,7 +37,6 @@ class _LevelSelectionState extends State<LevelSelection> {
       bloc: BlocProvider.of<LevelSelectionBloc>(context),
       listener: (BuildContext context, state) {
         if (state is LevelListState) {
-          Logs.printLogs('LevelListState: ${state.levelList}');
           _levelList = List.from(state.levelList);
         }
       },
@@ -53,7 +51,7 @@ class _LevelSelectionState extends State<LevelSelection> {
                 Expanded(
                   flex: 6,
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
+                    margin: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 10.0),
                     decoration: new BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10.0),
@@ -82,8 +80,6 @@ class _LevelSelectionState extends State<LevelSelection> {
                 ),
               ],
             ),
-
-//
           ),
         );
       }),
@@ -104,7 +100,6 @@ class _LevelSelectionState extends State<LevelSelection> {
               children: List.generate(items.length, (index) {
                 return GestureDetector(
                   onTap: () {
-                    Logs.printLogs('index: $index');
                     if (items[index]) {
                       Navigator.pushReplacementNamed(context, GameEndScreen.id,
                           arguments: ScreenArguments(
@@ -159,7 +154,6 @@ class _LevelSelectionState extends State<LevelSelection> {
         ),
       );
     } else {
-      Logs.printLogs('else');
       return Container(
         padding: EdgeInsets.all(10.0),
         width: double.maxFinite,

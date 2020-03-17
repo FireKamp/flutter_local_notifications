@@ -61,34 +61,32 @@ class _PanelState extends State<Panel> {
               },
             ),
             IconButton(
-              icon: widget.hintValue > 0
-                  ? Icon(Icons.lightbulb_outline)
-                  : Stack(
-                      children: <Widget>[
-                        Positioned.fill(child: Icon(Icons.lightbulb_outline)),
-                        Positioned(
-                            right: 4.0,
-                            top: 4.0,
-                            child: Container(
-                              height: 12.0,
-                              width: 12.0,
-                              decoration: new BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '1',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 11.0,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ),
-                            ))
-                      ],
-                    ),
+              icon: Stack(
+                children: <Widget>[
+                  Positioned.fill(child: Icon(Icons.lightbulb_outline)),
+                  Positioned(
+                      right: 4.0,
+                      top: 4.0,
+                      child: Container(
+                        height: 12.0,
+                        width: 12.0,
+                        decoration: new BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${widget.hintValue >= 0 ? widget.hintValue : 0}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 11.0,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ))
+                ],
+              ),
               onPressed: () {
                 widget.onSegmentChange(3, false);
               },

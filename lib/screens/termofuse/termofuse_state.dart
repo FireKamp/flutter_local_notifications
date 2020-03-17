@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
 @immutable
-abstract class TermofuseState {}
+abstract class TermsOfUseState {}
 
-class InitialTermofuseState extends TermofuseState {}
+class InitialTermOfUseState extends TermsOfUseState {}

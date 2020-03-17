@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import './bloc.dart';
 
-class TermofuseBloc extends Bloc<TermofuseEvent, TermofuseState> {
+class TermofuseBloc extends Bloc<TermofuseEvent, TermsOfUseState> {
   @override
-  TermofuseState get initialState => InitialTermofuseState();
+  TermsOfUseState get initialState => InitialTermOfUseState();
 
   @override
-  Stream<TermofuseState> mapEventToState(
+  Stream<TermsOfUseState> mapEventToState(
     TermofuseEvent event,
   ) async* {
   }

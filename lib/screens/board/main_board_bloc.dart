@@ -90,13 +90,12 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
         hintCount = hintCount - 1;
 
-        if (hintCount >=0) {
+        if (hintCount >= 0) {
           LocalDB.setInt(key, hintCount);
           int value = getHint(event.row, event.col);
           yield UpdateCellState(val: value);
         }
         yield GetHintVState(val: hintCount);
-
       }
     } else if (event is PlayAgain) {
       yield PlayAgainState();
@@ -105,7 +104,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is AdRewarded) {
       String key = getDBKey(event.levelName, event.index);
       LocalDB.setInt(key, 1);
-      yield GetHintVState(val: 2);
+      yield GetHintVState(val: 1);
     }
   }
 

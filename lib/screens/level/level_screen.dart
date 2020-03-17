@@ -42,7 +42,6 @@ class _LevelScreenState extends State<LevelScreen> {
         }
       },
       child: BlocBuilder<LevelBloc, LevelState>(builder: (context, state) {
-        print('BlocBuilder');
         return SafeArea(
           child: Container(
             color: kPrimaryColor,
@@ -54,7 +53,6 @@ class _LevelScreenState extends State<LevelScreen> {
                     text: '${EnumToString.parse(LevelTYPE.EASY)}',
                     gradient: kEasyLevelGrad,
                     onPressed: () {
-                      print('button clicked');
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.EASY));
                     }),
                 SizedBox(

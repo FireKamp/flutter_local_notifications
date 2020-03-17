@@ -3,13 +3,30 @@ import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/screens/help/help_screen.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
+import 'package:sudoku_brain/utils/AdMobIntegration.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static final String id = 'home_screen';
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final double sizedBoxHeight = 25.0;
+
   final double sizedBoxTop = 10.0;
+
+  AdMobIntegration _adMobIntegrationTest;
+
+  @override
+  void initState() {
+    _adMobIntegrationTest = AdMobIntegration();
+    _adMobIntegrationTest.initBannerAd();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +73,7 @@ class HomeScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFF8497FF), Color(0xFFBDDAFF)],
                       ),
                       shadowColor: Color(0xFF8497FF),
-                      onPressed: () {
-                        print('button clicked');
-                      }),
+                      onPressed: () {}),
                 ),
                 SizedBox(
                   height: sizedBoxHeight,
@@ -74,7 +89,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                     shadowColor: Color(0xFFB9ACFF),
                     onPressed: () {
-                      print('New Game');
                       Navigator.pushNamed(context, LevelScreen.id);
                     }),
                 Visibility(
@@ -90,7 +104,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                       shadowColor: Color(0xFF8DFDC4),
                       onPressed: () {
-                        print('Settings');
                         Navigator.pushNamed(context, SettingsScreen.id);
                       }),
                 ),
@@ -108,7 +121,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                     shadowColor: Color(0xFFFFC7E7),
                     onPressed: () {
-                      print('Help');
                       Navigator.pushNamed(context, HelpScreen.id);
                     }),
               ],

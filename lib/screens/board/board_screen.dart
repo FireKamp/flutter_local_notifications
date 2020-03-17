@@ -62,10 +62,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     adMobIntegrationTest = new AdMobIntegration(adRewarded: () {
       _mainBoardBloc.add(AdRewarded(levelName: _levelName, index: _levelIndex));
       _mainBoardBloc.add(StartTimer());
-
     });
-    adMobIntegrationTest.initBannerAd();
     Analytics.logEvent('screen_gameboard');
+
 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -137,11 +136,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           _isPencilON = state.isPencilEnabled;
         } else if (state is GetHintVState) {
           hintCount = state.val;
-          print('hintCount: ${state.val}');
           if (hintCount < 0) {
+            // due to pre decrement its less than 0
             adMobIntegrationTest.initRewardAd();
             _mainBoardBloc.add(PauseTimer());
-
           }
         }
       },
@@ -559,22 +557,22 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       LocalDB.setString(LocalDB.keyBoardList, json);
     } else if (state == AppLifecycleState.resumed) {
       LocalDB.getString(LocalDB.keyBoardList).then((value) async {
-        if (value != null && value.isNotEmpty) {
-          List data = json.decode(value);
-
-          List<List<BoardData>> test = [];
-          for (int i = 0; i < data.length; i++) {
-            List innerList = data[i];
-            List<BoardData> dataList = [];
-            for (int j = 0; j < innerList.length; j++) {
-//              var value=decodedData['${innerList[j]}'];
-
-//              dataList.add(BoardData(
-//                  value: boardData.value, mode: boardData.mode));
-            }
-            test.add(dataList);
-          }
-        }
+//        if (value != null && value.isNotEmpty) {
+//          List data = json.decode(value);
+//
+//          List<List<BoardData>> test = [];
+//          for (int i = 0; i < data.length; i++) {
+//            List innerList = data[i];
+//            List<BoardData> dataList = [];
+//            for (int j = 0; j < innerList.length; j++) {
+////              var value=decodedData['${innerList[j]}'];
+//
+////              dataList.add(BoardData(
+////                  value: boardData.value, mode: boardData.mode));
+//            }
+//            test.add(dataList);
+//          }
+//        }
       });
     }
   }
