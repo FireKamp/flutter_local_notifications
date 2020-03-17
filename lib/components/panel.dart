@@ -67,21 +67,24 @@ class _PanelState extends State<Panel> {
                   Positioned(
                       right: 4.0,
                       top: 4.0,
-                      child: Container(
-                        height: 12.0,
-                        width: 12.0,
-                        decoration: new BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${widget.hintValue >= 0 ? widget.hintValue : 0}',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 11.0,
-                                fontWeight: FontWeight.w700),
+                      child: Visibility(
+                        visible: widget.hintValue > 0 ? true : false,
+                        child: Container(
+                          height: 12.0,
+                          width: 12.0,
+                          decoration: new BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${widget.hintValue >= 0 ? widget.hintValue : 0}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 11.0,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ),
                       ))
