@@ -105,8 +105,9 @@ class StartTimerState extends MainBoardState {}
 
 class PauseTimerState extends MainBoardState {
   final bool isPaused;
+  final bool isPausedForAd;
 
-  PauseTimerState({this.isPaused});
+  PauseTimerState({this.isPaused, this.isPausedForAd});
 }
 
 class RestartTimerState extends MainBoardState {}

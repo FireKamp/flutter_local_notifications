@@ -6,6 +6,7 @@ import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/AdMobIntegration.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home_screen';
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _adMobIntegrationTest = AdMobIntegration();
-    _adMobIntegrationTest.initBannerAd();
+//    _adMobIntegrationTest.initBannerAd();
     super.initState();
   }
 
@@ -89,8 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     shadowColor: Color(0xFFB9ACFF),
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       Navigator.pushNamed(context, LevelScreen.id);
                     }),
+                SizedBox(
+                  height: sizedBoxHeight,
+                ),
                 Visibility(
                   visible: false,
                   child: RaisedGradientButton(
@@ -104,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       shadowColor: Color(0xFF8DFDC4),
                       onPressed: () {
+                        MediaPlayer.loadPlayAudio(0);
                         Navigator.pushNamed(context, SettingsScreen.id);
                       }),
                 ),
@@ -121,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     shadowColor: Color(0xFFFFC7E7),
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       Navigator.pushNamed(context, HelpScreen.id);
                     }),
               ],

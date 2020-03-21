@@ -40,8 +40,10 @@ class PencilMode extends MainBoardEvent {
 
 class UpdateCellValue extends MainBoardEvent {
   final int val;
+  final int row;
+  final int col;
 
-  UpdateCellValue({this.val});
+  UpdateCellValue({this.val, this.row, this.col});
 }
 
 class UpdateRowCol extends MainBoardEvent {
@@ -92,7 +94,11 @@ class PlayAgain extends MainBoardEvent {}
 //================================== TIMER =========================================//
 class StartTimer extends MainBoardEvent {}
 
-class PauseTimer extends MainBoardEvent {}
+class PauseTimer extends MainBoardEvent {
+  final bool isPausedForAd;
+
+  PauseTimer({this.isPausedForAd});
+}
 
 class RestartTimer extends MainBoardEvent {}
 

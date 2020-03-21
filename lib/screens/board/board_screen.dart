@@ -13,11 +13,13 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
+import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/AdMobIntegration.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
 import 'main_board_bloc.dart';
@@ -49,6 +51,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   double _animatedHeight = 50.0;
 
   bool _isTimerPaused = false;
+  bool _isPausedForAd = false;
   bool _isPencilON = false;
 
   AdMobIntegration adMobIntegrationTest;
@@ -64,7 +67,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       _mainBoardBloc.add(StartTimer());
     });
     Analytics.logEvent('screen_gameboard');
-
 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -105,7 +107,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           _row = state.row;
           _col = state.col;
         } else if (state is PauseTimerState) {
+          print('_isPausedForAd: ${state.isPausedForAd}');
           _isTimerPaused = state.isPaused;
+          _isPausedForAd = state.isPausedForAd;
           _dynamicText = kPauseText;
           _dynamicTextFB = kEndText;
         } else if (state is ResetState) {
@@ -118,6 +122,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
               : _animatedHeight = 40.0;
         } else if (state is GameFinishedState) {
           if (state.isWon) {
+            MediaPlayer.loadPlayAudio(5);
             Navigator.pushReplacementNamed(context, GameEndScreen.id,
                 arguments: ScreenArguments(
                     levelName: _levelName,
@@ -139,7 +144,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           if (hintCount < 0) {
             // due to pre decrement its less than 0
             adMobIntegrationTest.initRewardAd();
-            _mainBoardBloc.add(PauseTimer());
+            _mainBoardBloc.add(PauseTimer(isPausedForAd: true));
           }
         }
       },
@@ -159,9 +164,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       children: <Widget>[
                         InkWell(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.pushNamed(context, SettingsScreen.id);
                             },
-                            child: Icon(Icons.arrow_back, size: 25.0)),
+                            child: Icon(Icons.settings, size: 25.0)),
                         CounterWidget(mainBoardBloc: _mainBoardBloc),
                         PlayPauseWidget(
                             isTimerPaused: _isTimerPaused,
@@ -182,7 +187,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       ),
                       Positioned(
                         child: Visibility(
-                          visible: _isTimerPaused,
+                          visible: _isPausedForAd == true
+                              ? !_isPausedForAd
+                              : _isTimerPaused,
                           child: Container(
                             width: double.infinity,
                             height: MediaQuery.of(context).size.height * 0.55,
@@ -321,10 +328,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   void _numPadButtonClick(int value) {
     if (_isPencilON) {
-      _mainBoardBloc.add(UpdateCellValue(val: value));
+      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
     } else {
       _changeCursor(value);
-      _mainBoardBloc.add(UpdateCellValue(val: value));
+      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
     }
   }
 

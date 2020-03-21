@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class TopContainer extends StatelessWidget {
   final String text;
@@ -38,6 +39,7 @@ class TopContainer extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
+                    MediaPlayer.loadPlayAudio(0);
                     Navigator.pop(context);
                   },
                   child: Container(
