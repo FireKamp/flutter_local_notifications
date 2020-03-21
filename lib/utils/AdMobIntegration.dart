@@ -13,7 +13,7 @@ class AdMobIntegration {
 
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
-  final Function adRewarded;
+  final Function(bool) adRewarded;
 
   AdMobIntegration({this.adRewarded});
 
@@ -37,11 +37,13 @@ class AdMobIntegration {
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.rewarded) {
-        adRewarded();
+        adRewarded(true);
       } else if (event == RewardedVideoAdEvent.loaded) {
         RewardedVideoAd.instance.show();
       } else if (event == RewardedVideoAdEvent.failedToLoad) {
-        adRewarded();
+        adRewarded(true);
+      } else if (event == RewardedVideoAdEvent.closed) {
+        adRewarded(false);
       }
     };
   }

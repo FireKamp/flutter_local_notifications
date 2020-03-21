@@ -62,8 +62,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    adMobIntegrationTest = new AdMobIntegration(adRewarded: () {
-      _mainBoardBloc.add(AdRewarded(levelName: _levelName, index: _levelIndex));
+    adMobIntegrationTest = new AdMobIntegration(adRewarded: (bool rewardAd) {
+      if (rewardAd)
+        _mainBoardBloc
+            .add(AdRewarded(levelName: _levelName, index: _levelIndex));
       _mainBoardBloc.add(StartTimer());
     });
     Analytics.logEvent('screen_gameboard');
