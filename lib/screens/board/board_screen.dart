@@ -14,7 +14,7 @@ import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
-import 'package:sudoku_brain/utils/AdMobIntegration.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
@@ -54,25 +54,39 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   bool _isPausedForAd = false;
   bool _isPencilON = false;
 
-  AdMobIntegration adMobIntegrationTest;
-
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
   HashSet<RowCol> _conflicts = new HashSet<RowCol>();
 
   @override
   void initState() {
-    adMobIntegrationTest = new AdMobIntegration(adRewarded: (bool rewardAd) {
-      if (rewardAd)
-        _mainBoardBloc
-            .add(AdRewarded(levelName: _levelName, index: _levelIndex));
-      _mainBoardBloc.add(StartTimer());
-    });
+    setupAds();
     Analytics.logEvent('screen_gameboard');
 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
+  }
+
+  setupAds() {
+    AdManager.rewardEvents = ((RewardAdStatus status) {
+      var shouldReward = (status == RewardAdStatus.notFetched || status == RewardAdStatus.failed || status == RewardAdStatus.reward);
+      if (shouldReward) {
+        // If they saw the ad, reward them and they need to tap on hint again to trigger
+        if (status == RewardAdStatus.reward) {
+          _mainBoardBloc
+              .add(AdRewarded(levelName: _levelName, index: _levelIndex));
+          AdManager.precacheRewardAd();
+        } else {
+          // TODO: Zahid - This block means no ad was shown, we should just immediately put the hint in the box in this case so they don't have to tap twice, otherwise seems broken
+        }
+      }
+      // TODO: Zahid - There's some issue with the timer now it goes much faster after a failed reward ad
+      _mainBoardBloc.add(StartTimer());
+    });
+    AdManager.startListening();
+    AdManager.precacheRewardAd();
+    AdManager.precacheInterstitialAd();
   }
 
   @override
@@ -123,6 +137,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
               ? _animatedHeight = 0.0
               : _animatedHeight = 40.0;
         } else if (state is GameFinishedState) {
+          AdManager.showInterstitialAd();
           if (state.isWon) {
             MediaPlayer.loadPlayAudio(5);
             Navigator.pushReplacementNamed(context, GameEndScreen.id,
@@ -132,7 +147,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     bestTime: state.time,
                     isPlayed: true));
           } else {
-            adMobIntegrationTest.initInterstitialAd();
             _isTimerPaused = true;
             _dynamicText = kLoseText;
             _dynamicTextFB = kLoseBText;
@@ -145,8 +159,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           hintCount = state.val;
           if (hintCount < 0) {
             // due to pre decrement its less than 0
-            adMobIntegrationTest.initRewardAd();
             _mainBoardBloc.add(PauseTimer(isPausedForAd: true));
+            AdManager.showRewardAd();
           }
         }
       },
@@ -596,7 +610,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    adMobIntegrationTest.dispose();
+    AdManager.rewardEvents = null;
+    AdManager.stopListening();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
