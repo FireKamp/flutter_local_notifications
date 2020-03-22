@@ -13,7 +13,6 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
-import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -89,7 +88,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
               levelDetails: '$_levelName-$_levelIndex',
               isPencilMode: _isPencilON,
               levelName: _levelName,
-              index: _levelIndex));
+              index: _levelIndex,
+              isForFailedAd: true));
         }
       }
       if (_isTimerPaused) {
@@ -193,9 +193,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       children: <Widget>[
                         InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, SettingsScreen.id);
+                              Navigator.pop(context);
                             },
-                            child: Icon(Icons.settings, size: 25.0)),
+                            child: Icon(Icons.arrow_back, size: 25.0)),
                         CounterWidget(mainBoardBloc: _mainBoardBloc),
                         PlayPauseWidget(
                             isTimerPaused: _isTimerPaused,
@@ -307,7 +307,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                               levelDetails: '$_levelName-$_levelIndex',
                               isPencilMode: _isPencilON,
                               levelName: _levelName,
-                              index: _levelIndex));
+                              index: _levelIndex,
+                              isForFailedAd: false));
                           break;
                         case 4:
                           Analytics.logEvent('tap_edit');

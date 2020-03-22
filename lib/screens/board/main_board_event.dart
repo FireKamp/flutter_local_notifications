@@ -59,6 +59,7 @@ class Hint extends MainBoardEvent {
   final int col;
   final levelDetails;
   final bool isPencilMode;
+  final bool isForFailedAd;
   final String levelName;
   final int index;
 
@@ -68,7 +69,8 @@ class Hint extends MainBoardEvent {
       this.levelDetails,
       this.isPencilMode,
       this.levelName,
-      this.index});
+      this.index,
+      this.isForFailedAd});
 }
 
 class ResetBoard extends MainBoardEvent {

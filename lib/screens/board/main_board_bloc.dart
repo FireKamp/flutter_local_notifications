@@ -101,14 +101,18 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
         hintCount = hintCount - 1;
 
+        int value = getHint(event.row, event.col);
+
+        if (event.isForFailedAd) {
+          yield UpdateCellState(val: value);
+        }
+
         if (hintCount >= 0) {
           LocalDB.setInt(key, hintCount);
-          int value = getHint(event.row, event.col);
           yield UpdateCellState(val: value);
           MediaPlayer.loadPlayAudio(2);
-
         }
-        yield GetHintVState(val: hintCount);
+        if (!event.isForFailedAd) yield GetHintVState(val: hintCount);
       }
     } else if (event is PlayAgain) {
       yield PlayAgainState();
