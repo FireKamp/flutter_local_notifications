@@ -24,20 +24,20 @@ private enum AdIdentifier: String {
 #endif
 
 public enum InterstitialAdEvent: Int {
-    case willAppear = 1
-    case didAppear = 2
-    case willDisappear = 3
-    case didDisappear = 4
+    case willAppear = 0
+    case didAppear = 1
+    case willDisappear = 2
+    case didDisappear = 3
 }
 
 public enum RewardAdEvent: Int {
-    case notFetched = 1
-    case failed = 2
-    case willAppear = 3
-    case didAppear = 4
-    case willDisappear = 5
-    case didDisappear = 6
-    case reward = 7
+    case notFetched = 0
+    case failed = 1
+    case willAppear = 2
+    case didAppear = 3
+    case willDisappear = 4
+    case didDisappear = 5
+    case reward = 6
 }
 
 @objcMembers

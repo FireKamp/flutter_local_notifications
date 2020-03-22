@@ -70,9 +70,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   setupAds() {
     AdManager.rewardEvents = ((RewardAdStatus status) {
-      if (!_isPausedForAd) {
-        return;
-      }
       var shouldReward = (status == RewardAdStatus.notFetched ||
           status == RewardAdStatus.failed ||
           status == RewardAdStatus.reward);
@@ -95,7 +92,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       }
       if (_isTimerPaused) {
         _mainBoardBloc.add(StartTimer());
-        _isPausedForAd = false;
       }
     });
     AdManager.startListening();
