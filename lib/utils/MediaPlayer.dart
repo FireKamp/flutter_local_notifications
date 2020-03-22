@@ -13,6 +13,7 @@ class MediaPlayer {
   ];
 
   static loadPlayAudio(int index) {
-    assetsAudioPlayer.open(_assets[index]);
+    //TODO: Enable once sounds are complete
+  //    assetsAudioPlayer.open(_assets[index]);
   }
 }

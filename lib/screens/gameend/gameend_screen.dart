@@ -28,7 +28,6 @@ class _GameEndScreenState extends State<GameEndScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => getData(context));
     Analytics.logEvent('screen_score');
-    Analytics.logEventWithParameter('completed_game', 'level', _levelName);
 
     super.initState();
   }
@@ -150,6 +149,8 @@ class _GameEndScreenState extends State<GameEndScreen> {
     String key = '${_levelName}_$_levelNumber';
     String test = await LocalDB.getString(key);
     _lastBestTime = test;
+
+    Analytics.logEventWithParameter('completed_game', 'level', '${_levelName}_${_levelNumber}');
 
     if (_isGameEnded) {
       LocalDB.setString(key, _bestTime);

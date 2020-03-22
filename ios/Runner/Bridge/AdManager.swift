@@ -148,7 +148,6 @@ extension AdManager: MPInterstitialAdControllerDelegate {
 
     public func interstitialDidLoadAd(_ interstitial: MPInterstitialAdController!) {
         print("Interstitial did load for id \(interstitial.adUnitId)")
-        showInterstitialAd()
     }
     
     public func interstitialWillAppear(_ interstitial: MPInterstitialAdController!) {

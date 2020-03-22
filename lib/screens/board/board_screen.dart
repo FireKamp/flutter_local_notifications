@@ -70,6 +70,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   setupAds() {
     AdManager.rewardEvents = ((RewardAdStatus status) {
+      if (!_isPausedForAd) {
+        return;
+      }
       var shouldReward = (status == RewardAdStatus.notFetched ||
           status == RewardAdStatus.failed ||
           status == RewardAdStatus.reward);
@@ -89,8 +92,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
               index: _levelIndex));
         }
       }
-      // TODO: Zahid - There's some issue with the timer now it goes much faster after a failed reward ad
-      _mainBoardBloc.add(StartTimer());
+      if (_isTimerPaused) {
+        _mainBoardBloc.add(StartTimer());
+        _isPausedForAd = false;
+      }
     });
     AdManager.startListening();
     AdManager.precacheRewardAd();
@@ -573,7 +578,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _mainBoardBloc.add(BoardInitISCalled(
         context: context, levelName: args.levelName, index: args.index));
-    _mainBoardBloc.add(StartTimer());
 
     _levelIndex = args.index;
     _levelName = args.levelName;
