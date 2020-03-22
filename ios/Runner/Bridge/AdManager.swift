@@ -17,12 +17,9 @@ private enum AdIdentifier: String {
 }
 #else
 private enum AdIdentifier: String {
-    case banner = "0ac59b0996d947309c33f59d6676399f"
-    case interstitial = "4f117153f5c24fa6a3a92b818a5eb630"
-    case reward = "8f000bd5e00246de9c789eed39ff6096"
-//    case banner = "d461add2090246fc8cc90e1013fea995"
-//    case interstitial = "47ac05ce10a740379c97eb8bb538cb26"
-//    case reward = "b16545998e534585aee852322bdf253a"
+    case banner = "d461add2090246fc8cc90e1013fea995"
+    case interstitial = "47ac05ce10a740379c97eb8bb538cb26"
+    case reward = "b16545998e534585aee852322bdf253a"
 }
 #endif
 
@@ -63,9 +60,15 @@ public class AdManager: NSObject {
         interstitial?.delegate = self
         
         let config = MPMoPubConfiguration(adUnitIdForAppInitialization: AdIdentifier.banner.rawValue)
-        
+        let unitySettings = ["gameId": "3515410"]
+        let ironsourceSettings = ["applicationKey": "b93ac8d5"]
+        let vungleSettings = ["appId": "5e7761beaf441d0001b7e332"]
+
+        config.mediatedNetworkConfigurations = ["UnityAdsAdapterConfiguration": unitySettings,
+                                                "IronSourceAdapterConfiguration": ironsourceSettings,
+                                                "VungleAdapterConfiguration": vungleSettings]
         config.globalMediationSettings = []
-        config.loggingLevel = .debug
+        config.loggingLevel = .info
 
         MoPub.sharedInstance().initializeSdk(with: config) {
             print("Initialized MP")
@@ -123,7 +126,7 @@ extension AdManager: MPAdViewDelegate {
     }
     
     public func adViewDidLoadAd(_ view: MPAdView!, adSize: CGSize) {
-        print("banner did load")
+        print("banner did load for id: \(view.adUnitId)")
         
         if bannerView?.superview == nil {
             guard let rootView = rootViewController.view else { return }
@@ -144,7 +147,8 @@ extension AdManager: MPAdViewDelegate {
 extension AdManager: MPInterstitialAdControllerDelegate {
 
     public func interstitialDidLoadAd(_ interstitial: MPInterstitialAdController!) {
-        print("Interstitial did load")
+        print("Interstitial did load for id \(interstitial.adUnitId)")
+        showInterstitialAd()
     }
     
     public func interstitialWillAppear(_ interstitial: MPInterstitialAdController!) {
@@ -171,7 +175,7 @@ extension AdManager: MPInterstitialAdControllerDelegate {
 
 extension AdManager: MPRewardedVideoDelegate {
     public func rewardedVideoAdDidLoad(forAdUnitID adUnitID: String!) {
-        print("reward did load")
+        print("reward did load for id \(adUnitID)")
     }
     
     public func rewardedVideoAdDidFailToLoad(forAdUnitID adUnitID: String!, error: Error!) {

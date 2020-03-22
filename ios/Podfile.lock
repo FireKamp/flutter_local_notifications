@@ -1,5 +1,4 @@
 PODS:
-  - AppLovinSDK (6.11.5)
   - assets_audio_player (0.0.1):
     - Flutter
   - Crashlytics (3.14.0):
@@ -98,14 +97,6 @@ PODS:
     - Google-Mobile-Ads-SDK (= 7.56.0)
     - mopub-ios-sdk/Core (~> 5.8)
     - mopub-ios-sdk/NativeAds (~> 5.8)
-  - MoPub-Applovin-Adapters (6.11.5.0):
-    - MoPub-Applovin-Adapters/MoPub (= 6.11.5.0)
-    - MoPub-Applovin-Adapters/Network (= 6.11.5.0)
-  - MoPub-Applovin-Adapters/MoPub (6.11.5.0):
-    - mopub-ios-sdk/Core (~> 5.8)
-  - MoPub-Applovin-Adapters/Network (6.11.5.0):
-    - AppLovinSDK (= 6.11.5)
-    - mopub-ios-sdk/Core (~> 5.8)
   - MoPub-FacebookAudienceNetwork-Adapters (5.7.1.0):
     - MoPub-FacebookAudienceNetwork-Adapters/MoPub (= 5.7.1.0)
     - MoPub-FacebookAudienceNetwork-Adapters/Network (= 5.7.1.0)
@@ -182,7 +173,6 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
   - MoPub-AdMob-Adapters (= 7.56.0.0)
-  - MoPub-Applovin-Adapters (= 6.11.5.0)
   - MoPub-FacebookAudienceNetwork-Adapters (= 5.7.1.0)
   - mopub-ios-sdk
   - MoPub-IronSource-Adapters (= 6.14.0.0.0)
@@ -196,7 +186,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppLovinSDK
     - Crashlytics
     - Fabric
     - FBAudienceNetwork
@@ -214,7 +203,6 @@ SPEC REPOS:
     - GoogleUtilities
     - IronSourceSDK
     - MoPub-AdMob-Adapters
-    - MoPub-Applovin-Adapters
     - MoPub-FacebookAudienceNetwork-Adapters
     - mopub-ios-sdk
     - MoPub-IronSource-Adapters
@@ -252,7 +240,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  AppLovinSDK: 2632c4b2f7fd8fefccf27507792a7c0cd3cec2fc
   assets_audio_player: 828c5761d1e51c569f40e622db3a2cbfd61ecb7d
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
@@ -277,7 +264,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
   IronSourceSDK: 9e4c9b860a59512a08c9c3a53ec99d5f248ebe13
   MoPub-AdMob-Adapters: 8a847666e0f97cc143fd09ab05710bb6da27ec01
-  MoPub-Applovin-Adapters: aef4aec47ddacbfd8b242a1987b206e44ab85cf1
   MoPub-FacebookAudienceNetwork-Adapters: 028831633b1318c7b6f094129bfcfd616d7d7df5
   mopub-ios-sdk: 292b8e9a55a2e72a34afc04ec01e85486af46240
   MoPub-IronSource-Adapters: 75a5f7f468dc4641d0bdf7c616b71daf776fb2f1
@@ -293,6 +279,6 @@ SPEC CHECKSUMS:
   VungleSDK-iOS: b39f80d93c342cb07f9d83ab1105817ddcb61b72
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
-PODFILE CHECKSUM: a8afeead1c93bbd38e73ad3470cf7911ce1f7e00
+PODFILE CHECKSUM: 9c254920ec0714b8fb66520dafe4f58d77c85483
 
 COCOAPODS: 1.8.4

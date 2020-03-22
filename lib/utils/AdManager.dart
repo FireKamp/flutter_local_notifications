@@ -38,6 +38,7 @@ class AdManager {
     print('Reward ad with value');
     print(statusValue);
     var status = RewardAdStatus.values[statusValue];
+    print(status);
     if (rewardEvents != null) {
       rewardEvents(status);
     }
