@@ -81,7 +81,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           // TODO: Zahid - This block means no ad was shown, we should just immediately put the hint in the box in this case so they don't have to tap twice, otherwise seems broken
           _mainBoardBloc
               .add(AdRewarded(levelName: _levelName, index: _levelIndex));
-          AdManager.precacheRewardAd();
         }
       }
       // TODO: Zahid - There's some issue with the timer now it goes much faster after a failed reward ad

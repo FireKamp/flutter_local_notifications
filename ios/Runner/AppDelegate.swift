@@ -20,12 +20,14 @@ import AdSupport
     let adManager = AdManager.shared
     adManager.rootViewController = controller
     bridge = NativeBridging(binaryMessenger: controller.binaryMessenger, adManager: adManager)
-    print("ADID: \(self.identifierForAdvertising())")
     GeneratedPluginRegistrant.register(with: self)
+        #if DEBUG
+        print("ADID: \(self.identifierForAdvertising())")
+        #endif
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-
+    #if DEBUG
     func identifierForAdvertising() -> String? {
         // Check whether advertising tracking is enabled
         guard ASIdentifierManager.shared().isAdvertisingTrackingEnabled else {
@@ -35,5 +37,7 @@ import AdSupport
         // Get and return IDFA
         return ASIdentifierManager.shared().advertisingIdentifier.uuidString
     }
+    #endif
+    
 }
 
