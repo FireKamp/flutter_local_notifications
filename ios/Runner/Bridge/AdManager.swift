@@ -23,6 +23,18 @@ private enum AdIdentifier: String {
 }
 #endif
 
+private enum AdAdapterValueConstants: String {
+    case gameId = "gameId"
+    case appId = "appId"
+    case applicationKey = "applicationKey"
+}
+
+private enum AdAdapterConstants: String {
+    case unity = "UnityAdsAdapterConfiguration"
+    case ironSource = "IronSourceAdapterConfiguration"
+    case vungle = "VungleAdapterConfiguration"
+}
+
 public enum InterstitialAdEvent: Int {
     case willAppear = 0
     case didAppear = 1
@@ -60,13 +72,13 @@ public class AdManager: NSObject {
         interstitial?.delegate = self
         
         let config = MPMoPubConfiguration(adUnitIdForAppInitialization: AdIdentifier.banner.rawValue)
-        let unitySettings = ["gameId": "3515410"]
-        let ironsourceSettings = ["applicationKey": "b93ac8d5"]
-        let vungleSettings = ["appId": "5e7761beaf441d0001b7e332"]
+        let unitySettings = [AdAdapterValueConstants.gameId.rawValue: "3515410"]
+        let ironsourceSettings = [AdAdapterValueConstants.applicationKey.rawValue: "b93ac8d5"]
+        let vungleSettings = [AdAdapterValueConstants.appId.rawValue: "5e7761beaf441d0001b7e332"]
 
-        config.mediatedNetworkConfigurations = ["UnityAdsAdapterConfiguration": unitySettings,
-                                                "IronSourceAdapterConfiguration": ironsourceSettings,
-                                                "VungleAdapterConfiguration": vungleSettings]
+        config.mediatedNetworkConfigurations = [AdAdapterConstants.unity.rawValue: unitySettings,
+                                                AdAdapterConstants.ironSource.rawValue: ironsourceSettings,
+                                                AdAdapterConstants.vungle.rawValue: vungleSettings]
         config.globalMediationSettings = []
         config.loggingLevel = .info
 
