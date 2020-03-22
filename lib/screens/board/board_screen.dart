@@ -192,8 +192,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       children: <Widget>[
                         InkWell(
                             onTap: () {
-                              _mainBoardBloc.add(AdRewarded(
-                                  levelName: _levelName, index: _levelIndex));
+                              Navigator.pop(context);
                             },
                             child: Icon(Icons.arrow_back, size: 25.0)),
                         CounterWidget(mainBoardBloc: _mainBoardBloc),
