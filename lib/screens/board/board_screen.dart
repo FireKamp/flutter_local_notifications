@@ -65,6 +65,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
+    _mainBoardBloc.add(StartTimer());
   }
 
   setupAds() {
