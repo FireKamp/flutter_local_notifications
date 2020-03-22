@@ -125,8 +125,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         } else if (state is UpdateCellState) {
           if (_isPencilON) {
             bool isConflict = _conflicts.contains(new RowCol(_row, _col));
-            _boardList[_row][_col].mode = PlayMode.PENCIL;
-            _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
+            if (state.val > 0) {
+              _boardList[_row][_col].mode = PlayMode.PENCIL;
+              _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
+            }
           } else {
             _boardList[_row][_col].mode = PlayMode.PLAY;
             _boardList[_row][_col].value = state.val;
@@ -193,7 +195,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       children: <Widget>[
                         InkWell(
                             onTap: () {
-                              Navigator.pop(context);
+                              _mainBoardBloc.add(AdRewarded(
+                                  levelName: _levelName, index: _levelIndex));
                             },
                             child: Icon(Icons.arrow_back, size: 25.0)),
                         CounterWidget(mainBoardBloc: _mainBoardBloc),
@@ -357,12 +360,11 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   }
 
   void _numPadButtonClick(int value) {
-    if (_isPencilON) {
-      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
-    } else {
+    if (!_isPencilON) {
       _changeCursor(value);
-      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
     }
+    if (_row >= 0 && _col >= 0)
+      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
   }
 
 //  Methods

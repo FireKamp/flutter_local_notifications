@@ -25,14 +25,16 @@ import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
-  runZoned(() {
-    WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
-      (_) => runApp(MyApp()),
-    );
-  }, onError: Crashlytics.instance.recordError);
+//  Crashlytics.instance.enableInDevMode = true;
+//  runZoned(() {
+//    WidgetsFlutterBinding.ensureInitialized();
+//    SystemChrome.setPreferredOrientations(
+//        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
+//      (_) => runApp(MyApp()),
+//    );
+//  }, onError: Crashlytics.instance.recordError);
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
