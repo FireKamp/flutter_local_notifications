@@ -1,13 +1,21 @@
-// appID and banner Ad ID
+// appID and AdMob Ad ID's
 
-const kAppIDAndroid='ca-app-pub-6145080690961844~7490094473';
-const kBannerAdIDAndroid='ca-app-pub-6145080690961844/2884635057';
-const kAppIDiOS='ca-app-pub-6145080690961844~5055502822';
-const kBannerAdIDiOS='ca-app-pub-6145080690961844/4880243001';
-const kInterstitialAdIDiOS='ca-app-pub-6145080690961844/8199269398';
-const kInterstitialAdIDAndroid='ca-app-pub-6145080690961844/5182223814';
-const kRewardAddIDiOS='ca-app-pub-6145080690961844/1278637826';
-const kRewardAddIDAndroid='ca-app-pub-6145080690961844/5901436785';
+const kAppIDAndroid = 'ca-app-pub-6145080690961844~7490094473';
+const kBannerAdIDAndroid = 'ca-app-pub-6145080690961844/2884635057';
+const kAppIDiOS = 'ca-app-pub-6145080690961844~5055502822';
+const kBannerAdIDiOS = 'ca-app-pub-6145080690961844/4880243001';
+const kInterstitialAdIDiOS = 'ca-app-pub-6145080690961844/8199269398';
+const kInterstitialAdIDAndroid = 'ca-app-pub-6145080690961844/5182223814';
+const kRewardAddIDiOS = 'ca-app-pub-6145080690961844/1278637826';
+const kRewardAddIDAndroid = 'ca-app-pub-6145080690961844/5901436785';
+
+// DB keys
+
+const turn_on_sound = 'turn_on_sound';
+const turn_on_haptics = 'turn_on_haptics';
+const hide_duplicate = 'hide_duplicate';
+const highlight_duplicate = 'highlight_duplicate';
+const mistake_limit = 'mistake_limit';
 
 // Text Tutorial
 const kTutHeadOne = 'What is Sudoku';

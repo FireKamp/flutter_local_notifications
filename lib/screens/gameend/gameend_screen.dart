@@ -3,7 +3,7 @@ import 'package:gradient_text/gradient_text.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
-import 'package:sudoku_brain/utils/AdMobIntegration.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
@@ -23,22 +23,13 @@ class _GameEndScreenState extends State<GameEndScreen> {
 
   bool _isGameEnded = true;
   int _levelNumber;
-  AdMobIntegration adMobIntegrationTest;
 
   @override
   void initState() {
-    adMobIntegrationTest = AdMobIntegration();
     WidgetsBinding.instance.addPostFrameCallback((_) => getData(context));
     Analytics.logEvent('screen_score');
-    Analytics.logEventWithParameter('completed_game', 'level', _levelName);
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    adMobIntegrationTest.dispose();
-    super.dispose();
   }
 
   @override
@@ -159,9 +150,10 @@ class _GameEndScreenState extends State<GameEndScreen> {
     String test = await LocalDB.getString(key);
     _lastBestTime = test;
 
+    Analytics.logEventWithParameter('completed_game', 'level', '${_levelName}_${_levelNumber}');
+
     if (_isGameEnded) {
       LocalDB.setString(key, _bestTime);
-      adMobIntegrationTest.initInterstitialAd();
     }
 
     setState(() {});

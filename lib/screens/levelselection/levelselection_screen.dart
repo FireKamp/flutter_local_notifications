@@ -9,6 +9,7 @@ import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/bloc.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class LevelSelection extends StatefulWidget {
   static String id = 'level_selection';
@@ -100,6 +101,7 @@ class _LevelSelectionState extends State<LevelSelection> {
               children: List.generate(items.length, (index) {
                 return GestureDetector(
                   onTap: () {
+                    MediaPlayer.loadPlayAudio(0);
                     if (items[index]) {
                       Navigator.pushReplacementNamed(context, GameEndScreen.id,
                           arguments: ScreenArguments(

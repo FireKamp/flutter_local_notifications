@@ -1,10 +1,12 @@
 PODS:
+  - assets_audio_player (0.0.1):
+    - Flutter
   - Crashlytics (3.14.0):
     - Fabric (~> 1.10.2)
   - Fabric (1.10.2)
-  - Firebase/AdMob (6.18.0):
-    - Firebase/CoreOnly
-    - Google-Mobile-Ads-SDK (~> 7.50)
+  - FBAudienceNetwork (5.7.1):
+    - FBSDKCoreKit/Basics (>= 5.6.0)
+  - FBSDKCoreKit/Basics (6.2.0)
   - Firebase/Analytics (6.18.0):
     - Firebase/Core
   - Firebase/Core (6.18.0):
@@ -12,10 +14,6 @@ PODS:
     - FirebaseAnalytics (= 6.3.0)
   - Firebase/CoreOnly (6.18.0):
     - FirebaseCore (= 6.6.3)
-  - firebase_admob (0.0.1):
-    - Firebase/AdMob
-    - Firebase/Core
-    - Flutter
   - firebase_analytics (0.0.1):
     - Firebase/Analytics (~> 6.0)
     - Firebase/Core
@@ -88,6 +86,65 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
+  - IronSourceSDK (6.14.0.0)
+  - MoPub-AdMob-Adapters (7.56.0.0):
+    - MoPub-AdMob-Adapters/MoPub (= 7.56.0.0)
+    - MoPub-AdMob-Adapters/Network (= 7.56.0.0)
+  - MoPub-AdMob-Adapters/MoPub (7.56.0.0):
+    - mopub-ios-sdk/Core (~> 5.8)
+    - mopub-ios-sdk/NativeAds (~> 5.8)
+  - MoPub-AdMob-Adapters/Network (7.56.0.0):
+    - Google-Mobile-Ads-SDK (= 7.56.0)
+    - mopub-ios-sdk/Core (~> 5.8)
+    - mopub-ios-sdk/NativeAds (~> 5.8)
+  - MoPub-FacebookAudienceNetwork-Adapters (5.7.1.0):
+    - MoPub-FacebookAudienceNetwork-Adapters/MoPub (= 5.7.1.0)
+    - MoPub-FacebookAudienceNetwork-Adapters/Network (= 5.7.1.0)
+  - MoPub-FacebookAudienceNetwork-Adapters/MoPub (5.7.1.0):
+    - mopub-ios-sdk/Core (~> 5.6)
+    - mopub-ios-sdk/NativeAds (~> 5.6)
+  - MoPub-FacebookAudienceNetwork-Adapters/Network (5.7.1.0):
+    - FBAudienceNetwork (= 5.7.1)
+    - mopub-ios-sdk/Core (~> 5.6)
+    - mopub-ios-sdk/NativeAds (~> 5.6)
+  - mopub-ios-sdk (5.11.0):
+    - mopub-ios-sdk/MoPubSDK (= 5.11.0)
+  - mopub-ios-sdk/Avid (5.11.0):
+    - mopub-ios-sdk/Core
+  - mopub-ios-sdk/Core (5.11.0)
+  - mopub-ios-sdk/Moat (5.11.0):
+    - mopub-ios-sdk/Core
+  - mopub-ios-sdk/MoPubSDK (5.11.0):
+    - mopub-ios-sdk/Avid
+    - mopub-ios-sdk/Core
+    - mopub-ios-sdk/Moat
+    - mopub-ios-sdk/NativeAds
+  - mopub-ios-sdk/NativeAds (5.11.0):
+    - mopub-ios-sdk/Core
+  - MoPub-IronSource-Adapters (6.14.0.0.0):
+    - MoPub-IronSource-Adapters/MoPub (= 6.14.0.0.0)
+    - MoPub-IronSource-Adapters/Network (= 6.14.0.0.0)
+  - MoPub-IronSource-Adapters/MoPub (6.14.0.0.0):
+    - mopub-ios-sdk/Core (~> 5.6)
+  - MoPub-IronSource-Adapters/Network (6.14.0.0.0):
+    - IronSourceSDK (= 6.14.0.0)
+    - mopub-ios-sdk/Core (~> 5.6)
+  - MoPub-UnityAds-Adapters (3.4.2.0):
+    - MoPub-UnityAds-Adapters/MoPub (= 3.4.2.0)
+    - MoPub-UnityAds-Adapters/Network (= 3.4.2.0)
+  - MoPub-UnityAds-Adapters/MoPub (3.4.2.0):
+    - mopub-ios-sdk/Core (~> 5.8)
+  - MoPub-UnityAds-Adapters/Network (3.4.2.0):
+    - mopub-ios-sdk/Core (~> 5.8)
+    - UnityAds (= 3.4.2)
+  - MoPub-Vungle-Adapters (6.5.2.0):
+    - MoPub-Vungle-Adapters/MoPub (= 6.5.2.0)
+    - MoPub-Vungle-Adapters/Network (= 6.5.2.0)
+  - MoPub-Vungle-Adapters/MoPub (6.5.2.0):
+    - mopub-ios-sdk/Core (~> 5.8)
+  - MoPub-Vungle-Adapters/Network (6.5.2.0):
+    - mopub-ios-sdk/Core (~> 5.8)
+    - VungleSDK-iOS (= 6.5.2)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -102,17 +159,25 @@ PODS:
     - Flutter
   - shared_preferences_web (0.0.1):
     - Flutter
+  - UnityAds (3.4.2)
+  - VungleSDK-iOS (6.5.2)
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
+  - assets_audio_player (from `.symlinks/plugins/assets_audio_player/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - MoPub-AdMob-Adapters (= 7.56.0.0)
+  - MoPub-FacebookAudienceNetwork-Adapters (= 5.7.1.0)
+  - mopub-ios-sdk
+  - MoPub-IronSource-Adapters (= 6.14.0.0.0)
+  - MoPub-UnityAds-Adapters (= 3.4.2.0)
+  - MoPub-Vungle-Adapters (= 6.5.2.0)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
@@ -123,6 +188,8 @@ SPEC REPOS:
   trunk:
     - Crashlytics
     - Fabric
+    - FBAudienceNetwork
+    - FBSDKCoreKit
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -134,12 +201,21 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
+    - IronSourceSDK
+    - MoPub-AdMob-Adapters
+    - MoPub-FacebookAudienceNetwork-Adapters
+    - mopub-ios-sdk
+    - MoPub-IronSource-Adapters
+    - MoPub-UnityAds-Adapters
+    - MoPub-Vungle-Adapters
     - nanopb
     - PromisesObjC
+    - UnityAds
+    - VungleSDK-iOS
 
 EXTERNAL SOURCES:
-  firebase_admob:
-    :path: ".symlinks/plugins/firebase_admob/ios"
+  assets_audio_player:
+    :path: ".symlinks/plugins/assets_audio_player/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
@@ -164,10 +240,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  assets_audio_player: 828c5761d1e51c569f40e622db3a2cbfd61ecb7d
   Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
+  FBAudienceNetwork: 33fc8c8c07c1cdbf5279784b73729c6410809daa
+  FBSDKCoreKit: a7bb9f5ac56c1e11d5f8ae0b90a3610f8744b43a
   Firebase: 0490eca762a72e4f1582319539153897f1508dee
-  firebase_admob: d8c2bc95b5e0069406280ce6adb816cdee6aa595
   firebase_analytics: dacdcfc524d722fff13dcff942f0dfa47e6be567
   firebase_core: dc539d4bdc69894823e4a6e557034a9e48960f21
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
@@ -184,14 +262,23 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 653963cf5be60fb59cf051e070f0836fdc305f81
   GoogleDataTransportCCTSupport: 84e4d4bbab642f2e9d83ee65d78aca2b5527d314
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
+  IronSourceSDK: 9e4c9b860a59512a08c9c3a53ec99d5f248ebe13
+  MoPub-AdMob-Adapters: 8a847666e0f97cc143fd09ab05710bb6da27ec01
+  MoPub-FacebookAudienceNetwork-Adapters: 028831633b1318c7b6f094129bfcfd616d7d7df5
+  mopub-ios-sdk: 292b8e9a55a2e72a34afc04ec01e85486af46240
+  MoPub-IronSource-Adapters: 75a5f7f468dc4641d0bdf7c616b71daf776fb2f1
+  MoPub-UnityAds-Adapters: 686fcb4efac29e58e0264b5fec0be40d687b607a
+  MoPub-Vungle-Adapters: e693a34c7998ca18562b30f5030fc535c9ce1614
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
+  UnityAds: db0da29fa3a7e519bceea56693909df0dd83caa5
+  VungleSDK-iOS: b39f80d93c342cb07f9d83ab1105817ddcb61b72
   webview_flutter: bec7599de6bfbe8008a739aa3ebd7b364ea9d0cd
 
-PODFILE CHECKSUM: cd7be0573275eed0345c476d3d67a82c45224287
+PODFILE CHECKSUM: 9c254920ec0714b8fb66520dafe4f58d77c85483
 
 COCOAPODS: 1.8.4

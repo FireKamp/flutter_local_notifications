@@ -3,9 +3,10 @@ import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/screens/help/help_screen.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
-import 'package:sudoku_brain/utils/AdMobIntegration.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String id = 'home_screen';
@@ -19,12 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final double sizedBoxTop = 10.0;
 
-  AdMobIntegration _adMobIntegrationTest;
 
   @override
   void initState() {
-    _adMobIntegrationTest = AdMobIntegration();
-    _adMobIntegrationTest.initBannerAd();
+    AdManager.showBannerAd();
     super.initState();
   }
 
@@ -89,8 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     shadowColor: Color(0xFFB9ACFF),
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       Navigator.pushNamed(context, LevelScreen.id);
                     }),
+                SizedBox(
+                  height: sizedBoxHeight,
+                ),
                 Visibility(
                   visible: false,
                   child: RaisedGradientButton(
@@ -104,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       shadowColor: Color(0xFF8DFDC4),
                       onPressed: () {
+                        MediaPlayer.loadPlayAudio(0);
                         Navigator.pushNamed(context, SettingsScreen.id);
                       }),
                 ),
@@ -121,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     shadowColor: Color(0xFFFFC7E7),
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       Navigator.pushNamed(context, HelpScreen.id);
                     }),
               ],

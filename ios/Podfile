@@ -58,6 +58,14 @@ target 'Runner' do
     end
   end
 
+  pod 'mopub-ios-sdk'
+  pod 'MoPub-UnityAds-Adapters', '3.4.2.0'
+  pod 'MoPub-IronSource-Adapters', '6.14.0.0.0'
+  pod 'MoPub-Vungle-Adapters', '6.5.2.0'
+#  pod 'MoPub-Applovin-Adapters', '6.11.5.0'
+  pod 'MoPub-FacebookAudienceNetwork-Adapters', '5.7.1.0'
+  pod 'MoPub-AdMob-Adapters', '7.56.0.0'
+
   # Keep pod path relative so it can be checked into Podfile.lock.
   pod 'Flutter', :path => 'Flutter'
 
@@ -83,6 +91,9 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['ENABLE_BITCODE'] = 'NO'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
+      if target.name == 'assets_audio_player'
+        config.build_settings['SWIFT_VERSION'] = '4.0'
+      end
     end
   end
 end

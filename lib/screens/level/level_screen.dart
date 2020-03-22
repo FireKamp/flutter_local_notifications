@@ -10,6 +10,7 @@ import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class LevelScreen extends StatefulWidget {
   static final String id = 'level_screen';
@@ -53,6 +54,7 @@ class _LevelScreenState extends State<LevelScreen> {
                     text: '${EnumToString.parse(LevelTYPE.EASY)}',
                     gradient: kEasyLevelGrad,
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.EASY));
                     }),
                 SizedBox(
@@ -62,6 +64,7 @@ class _LevelScreenState extends State<LevelScreen> {
                     text: '${EnumToString.parse(LevelTYPE.MEDIUM)}',
                     gradient: kMediumLevelGrad,
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       _levelBloc
                           .add(LevelSelected(levelTYPE: LevelTYPE.MEDIUM));
                     }),
@@ -72,6 +75,7 @@ class _LevelScreenState extends State<LevelScreen> {
                     text: '${EnumToString.parse(LevelTYPE.HARD)}',
                     gradient: kHardLevelGrad,
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.HARD));
                     }),
                 SizedBox(
@@ -81,6 +85,7 @@ class _LevelScreenState extends State<LevelScreen> {
                     text: '${EnumToString.parse(LevelTYPE.EXPERT)}',
                     gradient: kExpertLevelGrad,
                     onPressed: () {
+                      MediaPlayer.loadPlayAudio(0);
                       _levelBloc
                           .add(LevelSelected(levelTYPE: LevelTYPE.EXPERT));
                     }),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class LogoHeader extends StatelessWidget {
   const LogoHeader({
@@ -14,7 +15,7 @@ class LogoHeader extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              print('back level');
+              MediaPlayer.loadPlayAudio(0);
               Navigator.pop(context);
             },
             child: Image(
