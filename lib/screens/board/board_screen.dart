@@ -70,7 +70,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   setupAds() {
     AdManager.rewardEvents = ((RewardAdStatus status) {
-      var shouldReward = (status == RewardAdStatus.notFetched || status == RewardAdStatus.failed || status == RewardAdStatus.reward);
+      var shouldReward = (status == RewardAdStatus.notFetched ||
+          status == RewardAdStatus.failed ||
+          status == RewardAdStatus.reward);
       if (shouldReward) {
         // If they saw the ad, reward them and they need to tap on hint again to trigger
         if (status == RewardAdStatus.reward) {
@@ -79,8 +81,13 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           AdManager.precacheRewardAd();
         } else {
           // TODO: Zahid - This block means no ad was shown, we should just immediately put the hint in the box in this case so they don't have to tap twice, otherwise seems broken
-          _mainBoardBloc
-              .add(AdRewarded(levelName: _levelName, index: _levelIndex));
+          _mainBoardBloc.add(Hint(
+              row: _row,
+              col: _col,
+              levelDetails: '$_levelName-$_levelIndex',
+              isPencilMode: _isPencilON,
+              levelName: _levelName,
+              index: _levelIndex));
           AdManager.precacheRewardAd();
         }
       }
