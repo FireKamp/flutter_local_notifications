@@ -24,6 +24,14 @@
 	<string>ca-app-pub-6145080690961844~5055502822</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
+	<key>NSAllowsArbitraryLoadsForMedia</key>
+	<true/>
+	<key>NSAllowsArbitraryLoadsInWebContent</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -13,11 +13,12 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
-import 'package:sudoku_brain/utils/AdMobIntegration.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
 
 import 'main_board_bloc.dart';
@@ -49,9 +50,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   double _animatedHeight = 50.0;
 
   bool _isTimerPaused = false;
+  bool _isPausedForAd = false;
   bool _isPencilON = false;
-
-  AdMobIntegration adMobIntegrationTest;
 
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
@@ -59,16 +59,44 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    adMobIntegrationTest = new AdMobIntegration(adRewarded: () {
-      _mainBoardBloc.add(AdRewarded(levelName: _levelName, index: _levelIndex));
-      _mainBoardBloc.add(StartTimer());
-    });
+    setupAds();
     Analytics.logEvent('screen_gameboard');
-
 
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
+    _mainBoardBloc.add(StartTimer());
+  }
+
+  setupAds() {
+    AdManager.rewardEvents = ((RewardAdStatus status) {
+      var shouldReward = (status == RewardAdStatus.notFetched ||
+          status == RewardAdStatus.failed ||
+          status == RewardAdStatus.reward);
+      if (shouldReward) {
+        // If they saw the ad, reward them and they need to tap on hint again to trigger
+        if (status == RewardAdStatus.reward) {
+          _mainBoardBloc
+              .add(AdRewarded(levelName: _levelName, index: _levelIndex));
+          AdManager.precacheRewardAd();
+        } else {
+          _mainBoardBloc.add(Hint(
+              row: _row,
+              col: _col,
+              levelDetails: '$_levelName-$_levelIndex',
+              isPencilMode: _isPencilON,
+              levelName: _levelName,
+              index: _levelIndex,
+              isForFailedAd: true));
+        }
+      }
+      if (_isTimerPaused) {
+        _mainBoardBloc.add(StartTimer());
+      }
+    });
+    AdManager.startListening();
+    AdManager.precacheRewardAd();
+    AdManager.precacheInterstitialAd();
   }
 
   @override
@@ -94,8 +122,10 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         } else if (state is UpdateCellState) {
           if (_isPencilON) {
             bool isConflict = _conflicts.contains(new RowCol(_row, _col));
-            _boardList[_row][_col].mode = PlayMode.PENCIL;
-            _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
+            if (state.val > 0) {
+              _boardList[_row][_col].mode = PlayMode.PENCIL;
+              _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
+            }
           } else {
             _boardList[_row][_col].mode = PlayMode.PLAY;
             _boardList[_row][_col].value = state.val;
@@ -105,7 +135,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           _row = state.row;
           _col = state.col;
         } else if (state is PauseTimerState) {
+          print('_isPausedForAd: ${state.isPausedForAd}');
           _isTimerPaused = state.isPaused;
+          _isPausedForAd = state.isPausedForAd;
           _dynamicText = kPauseText;
           _dynamicTextFB = kEndText;
         } else if (state is ResetState) {
@@ -117,7 +149,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
               ? _animatedHeight = 0.0
               : _animatedHeight = 40.0;
         } else if (state is GameFinishedState) {
+          AdManager.showInterstitialAd();
           if (state.isWon) {
+            MediaPlayer.loadPlayAudio(5);
             Navigator.pushReplacementNamed(context, GameEndScreen.id,
                 arguments: ScreenArguments(
                     levelName: _levelName,
@@ -125,7 +159,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     bestTime: state.time,
                     isPlayed: true));
           } else {
-            adMobIntegrationTest.initInterstitialAd();
             _isTimerPaused = true;
             _dynamicText = kLoseText;
             _dynamicTextFB = kLoseBText;
@@ -138,8 +171,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           hintCount = state.val;
           if (hintCount < 0) {
             // due to pre decrement its less than 0
-            adMobIntegrationTest.initRewardAd();
-            _mainBoardBloc.add(PauseTimer());
+            _mainBoardBloc.add(PauseTimer(isPausedForAd: true));
+            AdManager.showRewardAd();
           }
         }
       },
@@ -182,7 +215,9 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       ),
                       Positioned(
                         child: Visibility(
-                          visible: _isTimerPaused,
+                          visible: _isPausedForAd == true
+                              ? !_isPausedForAd
+                              : _isTimerPaused,
                           child: Container(
                             width: double.infinity,
                             height: MediaQuery.of(context).size.height * 0.55,
@@ -271,7 +306,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                               levelDetails: '$_levelName-$_levelIndex',
                               isPencilMode: _isPencilON,
                               levelName: _levelName,
-                              index: _levelIndex));
+                              index: _levelIndex,
+                              isForFailedAd: false));
                           break;
                         case 4:
                           Analytics.logEvent('tap_edit');
@@ -320,12 +356,11 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   }
 
   void _numPadButtonClick(int value) {
-    if (_isPencilON) {
-      _mainBoardBloc.add(UpdateCellValue(val: value));
-    } else {
+    if (!_isPencilON) {
       _changeCursor(value);
-      _mainBoardBloc.add(UpdateCellValue(val: value));
     }
+    if (_row >= 0 && _col >= 0)
+      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
   }
 
 //  Methods
@@ -542,7 +577,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _mainBoardBloc.add(BoardInitISCalled(
         context: context, levelName: args.levelName, index: args.index));
-    _mainBoardBloc.add(StartTimer());
 
     _levelIndex = args.index;
     _levelName = args.levelName;
@@ -587,7 +621,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    adMobIntegrationTest.dispose();
+    AdManager.rewardEvents = null;
+    AdManager.stopListening();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

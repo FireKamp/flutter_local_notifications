@@ -8,6 +8,7 @@ import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Logs.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class HelpScreen extends StatelessWidget {
   static final String id = 'help_screen';
@@ -43,7 +44,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFFFABB69), Color(0xFFFE3E16)],
                       ),
                       onPressed: () {
-                        Logs.printLogs('Tutorial Clicked');
+                        MediaPlayer.loadPlayAudio(0);
                         Navigator.pushNamed(context, TutorialScreen.id);
                       }),
                   SizedBox(
@@ -55,6 +56,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFF82FFF4), Color(0xFF05AB9C)],
                       ),
                       onPressed: () async {
+                        MediaPlayer.loadPlayAudio(0);
                         Analytics.logEvent('screen_contact_us');
 
                         getVersionName().then((onValue) async {
@@ -76,7 +78,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFFBEE4FF), Color(0xFF1E9FFE)],
                       ),
                       onPressed: () {
-                        print('button clicked');
+                        MediaPlayer.loadPlayAudio(0);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => TermsOfUse()),

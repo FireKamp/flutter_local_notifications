@@ -4,6 +4,8 @@ import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/Strings.dart';
 
 class SettingsScreen extends StatelessWidget {
   static final String id = 'settings_screen';
@@ -50,7 +52,62 @@ class SettingsScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
                       ),
                     ),
-                    SettingsItem()
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    SettingsItem(
+                      onChanged: (bool value) {
+                        updateLocalDB(turn_on_sound, value);
+                      },
+                      text: 'Turn On Sounds',
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    SettingsItem(
+                      onChanged: (bool value) {
+                        updateLocalDB(turn_on_haptics, value);
+                      },
+                      text: 'Turn On Haptics',
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    HeaderText(
+                      text: 'GAME SETTINGS',
+                    ),
+                    GradientLine(
+                      gradient: LinearGradient(
+                        colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    SettingsItem(
+                      onChanged: (bool value) {
+                        updateLocalDB(hide_duplicate, value);
+                      },
+                      text: 'Hide Duplicates',
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    SettingsItem(
+                      onChanged: (bool value) {
+                        updateLocalDB(mistake_limit, value);
+                      },
+                      text: 'Mistake Limit',
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    SettingsItem(
+                      onChanged: (bool value) {
+                        updateLocalDB(highlight_duplicate, value);
+                      },
+                      text: 'Highlight Duplicates',
+                    ),
                   ],
                 ),
               ),
@@ -60,12 +117,17 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+
+  void updateLocalDB(String key, bool value) {
+    LocalDB.setBool(key, value);
+  }
 }
 
 class SettingsItem extends StatelessWidget {
-  const SettingsItem({
-    Key key,
-  }) : super(key: key);
+  final String text;
+  final Function(bool) onChanged;
+
+  SettingsItem({@required this.text, @required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +135,13 @@ class SettingsItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         SmallText(
-          text: 'Turn On Sounds',
+          text: text,
         ),
         CustomSwitch(
           activeColor: Color(0xFF0AB8AD),
           value: false,
           onChanged: (value) {
-            print("VALUE : $value");
+            onChanged(value);
           },
         ),
       ],

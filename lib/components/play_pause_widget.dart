@@ -24,7 +24,7 @@ class PlayPauseWidget extends StatelessWidget {
           if (_isTimerPaused) {
             _mainBoardBloc.add(StartTimer());
           } else {
-            _mainBoardBloc.add(PauseTimer());
+            _mainBoardBloc.add(PauseTimer(isPausedForAd: false));
           }
         },
         child: Icon(_isTimerPaused == true ? Icons.play_arrow : Icons.pause,

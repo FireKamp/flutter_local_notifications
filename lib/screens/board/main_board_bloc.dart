@@ -10,6 +10,7 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -64,22 +65,32 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     } else if (event is UpdateCellValue) {
       final value = _changeCellValue(event.val);
       yield UpdateCellState(val: value);
+
+      int cellVal = getHint(event.row, event.col);
+      if (value == cellVal) {
+        MediaPlayer.loadPlayAudio(2);
+      } else {
+        MediaPlayer.loadPlayAudio(1);
+      }
     } else if (event is UpdateRowCol) {
       final list = _changeRowCol(event.row, event.col, event.list);
       if (list != null) yield UpdateRowColState(row: list[0], col: list[1]);
     } else if (event is StartTimer) {
       _startTimer();
       _isPaused = false;
-      yield (PauseTimerState(isPaused: _isPaused));
+      yield (PauseTimerState(isPaused: _isPaused, isPausedForAd: false));
     } else if (event is PauseTimer) {
       _stopTimer();
       _isPaused = true;
-      yield (PauseTimerState(isPaused: _isPaused));
+      yield (PauseTimerState(
+          isPaused: _isPaused, isPausedForAd: event.isPausedForAd));
     } else if (event is ResetBoard) {
+      MediaPlayer.loadPlayAudio(3);
       final list = await _readJson(
           event.buildContext, event.levelName, event.index, false);
       yield ResetState(boardList: list);
     } else if (event is FullScreen) {
+      MediaPlayer.loadPlayAudio(4);
       final full = fullScreen();
       yield FullScreenState(isFull: full);
     } else if (event is Hint) {
@@ -90,12 +101,18 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
         hintCount = hintCount - 1;
 
-        if (hintCount >= 0) {
-          LocalDB.setInt(key, hintCount);
-          int value = getHint(event.row, event.col);
+        int value = getHint(event.row, event.col);
+
+        if (event.isForFailedAd) {
           yield UpdateCellState(val: value);
         }
-        yield GetHintVState(val: hintCount);
+
+        if (hintCount >= 0) {
+          LocalDB.setInt(key, hintCount);
+          yield UpdateCellState(val: value);
+          MediaPlayer.loadPlayAudio(2);
+        }
+        if (!event.isForFailedAd) yield GetHintVState(val: hintCount);
       }
     } else if (event is PlayAgain) {
       yield PlayAgainState();
