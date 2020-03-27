@@ -5,7 +5,16 @@ class ScreenArguments {
   String levelName;
   String bestTime;
   int index;
+  int pausedLevelTime;
   bool isPlayed;
+  bool isContinued;
 
-  ScreenArguments({this.levelTYPE, this.levelName, this.index, this.bestTime,this.isPlayed});
+  ScreenArguments(
+      {this.levelTYPE,
+      this.levelName,
+      this.index,
+      this.bestTime,
+      this.isPlayed,
+      this.isContinued,
+      this.pausedLevelTime});
 }

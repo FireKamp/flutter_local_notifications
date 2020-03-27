@@ -13,6 +13,7 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
+import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -52,6 +53,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   bool _isTimerPaused = false;
   bool _isPausedForAd = false;
   bool _isPencilON = false;
+  bool _isContinued = false;
 
   List<List<BoardData>> _boardList = [];
   List<List<BoardData>> _initBoardList = [];
@@ -109,6 +111,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         } else if (state is FetchingLevel) {
         } else if (state is LevelFetched) {
           _boardList = List.from(state.boardList);
+          _changeConflicts();
         } else if (state is InitStateFetched) {
           _initBoardList = List.from(state.boardList);
         } else if (state is ConflictsChanged) {
@@ -123,11 +126,11 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           if (_isPencilON) {
             bool isConflict = _conflicts.contains(new RowCol(_row, _col));
             if (state.val > 0) {
-              _boardList[_row][_col].mode = PlayMode.PENCIL;
+              _boardList[_row][_col].mode = EnumValues.getEnum(PlayMode.PENCIL);
               _boardList[_row][_col].pencilValues[state.val - 1] = state.val;
             }
           } else {
-            _boardList[_row][_col].mode = PlayMode.PLAY;
+            _boardList[_row][_col].mode = EnumValues.getEnum(PlayMode.PLAY);
             _boardList[_row][_col].value = state.val;
             _changeConflicts();
           }
@@ -135,7 +138,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
           _row = state.row;
           _col = state.col;
         } else if (state is PauseTimerState) {
-          print('_isPausedForAd: ${state.isPausedForAd}');
           _isTimerPaused = state.isPaused;
           _isPausedForAd = state.isPausedForAd;
           _dynamicText = kPauseText;
@@ -179,170 +181,179 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       child:
           BlocBuilder<MainBoardBloc, MainBoardState>(builder: (context, state) {
         return SafeArea(
-          child: Scaffold(
-              backgroundColor: kPrimaryColor,
-              body: Column(children: [
-                AnimatedContainer(
-                  height: _animatedHeight,
-                  duration: const Duration(milliseconds: 150),
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: WillPopScope(
+            onWillPop: _onWillPop,
+            child: Scaffold(
+                backgroundColor: kPrimaryColor,
+                body: Column(children: [
+                  AnimatedContainer(
+                    height: _animatedHeight,
+                    duration: const Duration(milliseconds: 150),
+                    child: Container(
+                      margin:
+                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          InkWell(
+                              onTap: () {
+                                _saveBoard();
+                                _exitScreen();
+                              },
+                              child: Icon(Icons.arrow_back, size: 25.0)),
+                          CounterWidget(mainBoardBloc: _mainBoardBloc),
+                          PlayPauseWidget(
+                              isTimerPaused: _isTimerPaused,
+                              mainBoardBloc: _mainBoardBloc),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Stack(
                       children: <Widget>[
-                        InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(Icons.arrow_back, size: 25.0)),
-                        CounterWidget(mainBoardBloc: _mainBoardBloc),
-                        PlayPauseWidget(
-                            isTimerPaused: _isTimerPaused,
-                            mainBoardBloc: _mainBoardBloc),
+                        Positioned(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: 10.0, right: 10.0, top: 2.0, bottom: 2.0),
+                            child: _buildTable(),
+                          ),
+                        ),
+                        Positioned(
+                          child: Visibility(
+                            visible: _isPausedForAd == true
+                                ? !_isPausedForAd
+                                : _isTimerPaused,
+                            child: Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.55,
+                              color: transparent,
+                              child: Column(
+                                children: <Widget>[
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  Center(
+                                      child: Text(
+                                    '$_dynamicText',
+                                    style: TextStyle(
+                                        fontSize: 40.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.yellow),
+                                  )),
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      if (_dynamicText == kPauseText) {
+                                        if (_isContinued)
+                                          LocalDB.savePausedBoard(
+                                              null, null, null, null);
+                                        _exitScreen();
+                                      } else {
+                                        _resetBoard();
+                                        _mainBoardBloc.add(PlayAgain());
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF7EC1FF),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      height: 50.0,
+                                      child: AutoSizeText(
+                                        _dynamicTextFB == null
+                                            ? ''
+                                            : _dynamicTextFB,
+                                        style: TextStyle(
+                                            fontFamily: 'Staatliches',
+                                            fontSize: 80.0,
+                                            letterSpacing: 2.0,
+                                            color: Colors.purple[900],
+                                            fontWeight: FontWeight.w800,
+                                            decoration: TextDecoration.none),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 50.0,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
-                ),
-                Container(
-                  child: Stack(
-                    children: <Widget>[
-                      Positioned(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 2.0, bottom: 2.0),
-                          child: _buildTable(),
-                        ),
-                      ),
-                      Positioned(
-                        child: Visibility(
-                          visible: _isPausedForAd == true
-                              ? !_isPausedForAd
-                              : _isTimerPaused,
-                          child: Container(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.55,
-                            color: transparent,
-                            child: Column(
-                              children: <Widget>[
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                Center(
-                                    child: Text(
-                                  '$_dynamicText',
-                                  style: TextStyle(
-                                      fontSize: 40.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.yellow),
-                                )),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    if (_dynamicText == kPauseText) {
-                                      Navigator.pop(context);
-                                    } else {
-                                      _resetBoard();
-                                      _mainBoardBloc.add(PlayAgain());
-                                    }
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF7EC1FF),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    height: 50.0,
-                                    child: AutoSizeText(
-                                      _dynamicTextFB == null
-                                          ? ''
-                                          : _dynamicTextFB,
-                                      style: TextStyle(
-                                          fontFamily: 'Staatliches',
-                                          fontSize: 80.0,
-                                          letterSpacing: 2.0,
-                                          color: Colors.purple[900],
-                                          fontWeight: FontWeight.w800,
-                                          decoration: TextDecoration.none),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 50.0,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Panel(
-                  hintValue: hintCount,
-                  isPaused: _isTimerPaused,
-                  defaultPencilValue: _isPencilON == true ? false : true,
-                  onSegmentChange: (int segmentValue, bool isSelected) {
-                    if (!_isTimerPaused) {
-                      switch (segmentValue) {
-                        case 0:
-                          Analytics.logEvent('tap_full_screen');
-                          _mainBoardBloc.add(FullScreen());
-                          break;
-                        case 1:
-                          Analytics.logEvent('tap_erase');
-                          _numPadButtonClick(0);
-                          break;
-                        case 2:
-                          Analytics.logEvent('tap_undo');
-                          _resetBoard();
-                          break;
-                        case 3:
-                          Analytics.logEvent('tap_hint');
-                          _mainBoardBloc.add(Hint(
-                              row: _row,
-                              col: _col,
-                              levelDetails: '$_levelName-$_levelIndex',
-                              isPencilMode: _isPencilON,
-                              levelName: _levelName,
-                              index: _levelIndex,
-                              isForFailedAd: false));
-                          break;
-                        case 4:
-                          Analytics.logEvent('tap_edit');
+                  Panel(
+                    hintValue: hintCount,
+                    isPaused: _isTimerPaused,
+                    defaultPencilValue: _isPencilON == true ? false : true,
+                    onSegmentChange: (int segmentValue, bool isSelected) {
+                      if (!_isTimerPaused) {
+                        switch (segmentValue) {
+                          case 0:
+                            Analytics.logEvent('tap_full_screen');
+                            _mainBoardBloc.add(FullScreen());
+                            break;
+                          case 1:
+                            Analytics.logEvent('tap_erase');
+                            _numPadButtonClick(0);
+                            break;
+                          case 2:
+                            Analytics.logEvent('tap_undo');
+                            _resetBoard();
+                            break;
+                          case 3:
+                            Analytics.logEvent('tap_hint');
+                            _mainBoardBloc.add(Hint(
+                                row: _row,
+                                col: _col,
+                                levelDetails: '$_levelName-$_levelIndex',
+                                isPencilMode: _isPencilON,
+                                levelName: _levelName,
+                                index: _levelIndex,
+                                isForFailedAd: false));
+                            break;
+                          case 4:
+                            Analytics.logEvent('tap_edit');
 
-                          _mainBoardBloc
-                              .add(PencilMode(isPencilMode: isSelected));
-                          break;
+                            _mainBoardBloc
+                                .add(PencilMode(isPencilMode: isSelected));
+                            break;
+                        }
                       }
-                    }
-                  },
-                ),
-                NumPad(
-                  isPencilOn: _isPencilON,
-                  values: [1, 2, 3, 4, 5],
-                  marginTop: MediaQuery.of(context).size.height * 0.02,
-                  marginRight: MediaQuery.of(context).size.height * 0.045,
-                  marginLeft: MediaQuery.of(context).size.height * 0.045,
-                  marginBottom: 0.0,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  onValueChanged: (int val) {
-                    if (!_isTimerPaused) _numPadButtonClick(val);
-                  },
-                ),
-                NumPad(
+                    },
+                  ),
+                  NumPad(
                     isPencilOn: _isPencilON,
-                    values: [6, 7, 8, 9],
+                    values: [1, 2, 3, 4, 5],
                     marginTop: MediaQuery.of(context).size.height * 0.02,
-                    marginRight: MediaQuery.of(context).size.height * 0.07,
-                    marginLeft: MediaQuery.of(context).size.height * 0.07,
+                    marginRight: MediaQuery.of(context).size.height * 0.045,
+                    marginLeft: MediaQuery.of(context).size.height * 0.045,
                     marginBottom: 0.0,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     onValueChanged: (int val) {
                       if (!_isTimerPaused) _numPadButtonClick(val);
-                    }),
-              ])),
+                    },
+                  ),
+                  NumPad(
+                      isPencilOn: _isPencilON,
+                      values: [6, 7, 8, 9],
+                      marginTop: MediaQuery.of(context).size.height * 0.02,
+                      marginRight: MediaQuery.of(context).size.height * 0.07,
+                      marginLeft: MediaQuery.of(context).size.height * 0.07,
+                      marginBottom: 0.0,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      onValueChanged: (int val) {
+                        if (!_isTimerPaused) _numPadButtonClick(val);
+                      }),
+                ])),
+          ),
         );
       }),
     );
@@ -366,7 +377,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 //  Methods
 
   void _changeConflicts() {
-    _mainBoardBloc.add(ChangeConflictsCalled(list: _boardList));
+    _mainBoardBloc.add(
+        ChangeConflictsCalled(list: _boardList, isContinued: _isContinued));
   }
 
   void _changeCursor(i) {
@@ -399,13 +411,13 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       if (isConflict && !isChangeAble)
         return Colors.red[100];
       else if (isConflict)
-        return Color(kBoardCellEmpty);
+        return kBoardCellEmpty;
       else if (isToHighlight && !_isPencilON)
         return Color(kBoardPreFilled);
       else
-        return Color(kBoardCellEmpty);
+        return kBoardCellEmpty;
     } else {
-      return Color(kBoardCellEmpty);
+      return kBoardCellEmpty;
     }
   }
 
@@ -493,7 +505,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                   Visibility(
                     visible: (_boardList.isEmpty
                         ? false
-                        : _boardList[r][c].mode == PlayMode.PENCIL
+                        : _boardList[r][c].mode ==
+                                EnumValues.getEnum(PlayMode.PENCIL)
                             ? false
                             : true),
                     child: AutoSizeText(
@@ -508,7 +521,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                   Visibility(
                     visible: (_boardList.isEmpty
                         ? false
-                        : _boardList[r][c].mode == PlayMode.PENCIL
+                        : _boardList[r][c].mode ==
+                                EnumValues.getEnum(PlayMode.PENCIL)
                             ? true
                             : false),
                     child: _buildItemsList(_boardList.isNotEmpty
@@ -576,39 +590,34 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   void initBoardData() {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _mainBoardBloc.add(BoardInitISCalled(
-        context: context, levelName: args.levelName, index: args.index));
+        context: context,
+        levelName: args.levelName,
+        index: args.index,
+        isContinued: args.isContinued,
+        pausedLevelTime: args.pausedLevelTime));
 
     _levelIndex = args.index;
     _levelName = args.levelName;
+    _isContinued = args.isContinued;
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('state: ${state.toString()}');
     if (state == AppLifecycleState.paused) {
-//      var json = jsonEncode(_boardList, toEncodable: (e) => e.toJsonAttr());
-      var json = jsonEncode(_boardList.map((e) => e.toString()).toList());
-      LocalDB.setString(LocalDB.keyBoardList, json);
+      _mainBoardBloc.add(PauseTimer(isPausedForAd: false));
+      AdManager.stopBannerRefresh();
+
+      _saveBoard();
     } else if (state == AppLifecycleState.resumed) {
-      LocalDB.getString(LocalDB.keyBoardList).then((value) async {
-//        if (value != null && value.isNotEmpty) {
-//          List data = json.decode(value);
-//
-//          List<List<BoardData>> test = [];
-//          for (int i = 0; i < data.length; i++) {
-//            List innerList = data[i];
-//            List<BoardData> dataList = [];
-//            for (int j = 0; j < innerList.length; j++) {
-////              var value=decodedData['${innerList[j]}'];
-//
-////              dataList.add(BoardData(
-////                  value: boardData.value, mode: boardData.mode));
-//            }
-//            test.add(dataList);
-//          }
-//        }
-      });
+      _mainBoardBloc.add(StartTimer());
+      AdManager.resumeBannerRefresh();
     }
+  }
+
+  void _saveBoard() {
+    var json = jsonEncode(_boardList.map((e) => e).toList());
+    LocalDB.savePausedBoard(
+        json, _levelName, _levelIndex, _mainBoardBloc.getTimerCurrentValue());
   }
 
   void _resetBoard() {
@@ -621,9 +630,28 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _mainBoardBloc.add(PauseTimer());
     AdManager.rewardEvents = null;
     AdManager.stopListening();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    _saveBoard();
+    if (_isContinued) {
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  void _exitScreen() {
+    if (_isContinued) {
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

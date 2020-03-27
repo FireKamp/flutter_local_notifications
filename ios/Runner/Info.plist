@@ -2,14 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppTransportSecurity</key>
-	<dict/>
-	<key>NSAllowsArbitraryLoadsInWebContent</key>
-	<true/>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
-	<key>NSAllowsArbitraryLoadsForMedia</key>
-	<true/>
+	<key>AppLovinSdkKey</key>
+	<string>MwwhiwzfiNGzQHR005ynVW4i8kdnEzHVyb0XH1bePmmMlPMkeURbWZ2l8xQV6NvcVqlPwEuH730sVr68GJWWvg</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -32,6 +26,14 @@
 	<string>ca-app-pub-6145080690961844~5055502822</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
+	<key>NSAllowsArbitraryLoadsForMedia</key>
+	<true/>
+	<key>NSAllowsArbitraryLoadsInWebContent</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

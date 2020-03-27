@@ -62,7 +62,7 @@ target 'Runner' do
   pod 'MoPub-UnityAds-Adapters', '3.4.2.0'
   pod 'MoPub-IronSource-Adapters', '6.14.0.0.0'
   pod 'MoPub-Vungle-Adapters', '6.5.2.0'
-#  pod 'MoPub-Applovin-Adapters', '6.11.5.0'
+  pod 'MoPub-Applovin-Adapters', '6.11.5.0'
   pod 'MoPub-FacebookAudienceNetwork-Adapters', '5.7.1.0'
   pod 'MoPub-AdMob-Adapters', '7.56.0.0'
 
