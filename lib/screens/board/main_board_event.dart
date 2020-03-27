@@ -9,15 +9,22 @@ class BoardInitISCalled extends MainBoardEvent {
   final BuildContext context;
   final String levelName;
   final int index;
+  final int pausedLevelTime;
+  final bool isContinued;
 
   BoardInitISCalled(
-      {@required this.context, @required this.levelName, @required this.index});
+      {@required this.context,
+      @required this.levelName,
+      @required this.index,
+      this.pausedLevelTime,
+      this.isContinued});
 }
 
 class ChangeConflictsCalled extends MainBoardEvent {
   final List<List<BoardData>> list;
+  final bool isContinued;
 
-  ChangeConflictsCalled({this.list});
+  ChangeConflictsCalled({this.list, this.isContinued});
 }
 
 class CursorChanged extends MainBoardEvent {

@@ -16,7 +16,8 @@ class GameEndScreen extends StatefulWidget {
   _GameEndScreenState createState() => _GameEndScreenState();
 }
 
-class _GameEndScreenState extends State<GameEndScreen> {
+class _GameEndScreenState extends State<GameEndScreen>
+    with WidgetsBindingObserver {
   String _levelName;
   String _bestTime = '';
   String _lastBestTime = '';
@@ -30,6 +31,7 @@ class _GameEndScreenState extends State<GameEndScreen> {
     Analytics.logEvent('screen_score');
 
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -116,7 +118,8 @@ class _GameEndScreenState extends State<GameEndScreen> {
                     Navigator.pushReplacementNamed(context, MainBoard.id,
                         arguments: ScreenArguments(
                             levelName: _levelName.toLowerCase(),
-                            index: _levelNumber - 1));
+                            index: _levelNumber - 1,
+                            isContinued: false));
                   } else {
                     Analytics.logEvent('tap_play_again');
                     Navigator.pushReplacementNamed(context, LevelSelection.id,
@@ -150,13 +153,23 @@ class _GameEndScreenState extends State<GameEndScreen> {
     String test = await LocalDB.getString(key);
     _lastBestTime = test;
 
-    Analytics.logEventWithParameter('completed_game', 'level', '${_levelName}_${_levelNumber}');
+    Analytics.logEventWithParameter(
+        'completed_game', 'level', '${_levelName}_${_levelNumber}');
 
     if (_isGameEnded) {
       LocalDB.setString(key, _bestTime);
     }
 
     setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      AdManager.stopBannerRefresh();
+    } else if (state == AppLifecycleState.resumed) {
+      AdManager.resumeBannerRefresh();
+    }
   }
 }
 

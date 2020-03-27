@@ -1,20 +1,20 @@
-import 'package:sudoku_brain/utils/Enums.dart';
-
 class BoardData {
   int value;
-  PlayMode mode;
-  List<int> pencilValues = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  int mode;
+  List<int> pencilValues;
 
-  BoardData({this.value, this.mode});
+  BoardData({this.value, this.mode, this.pencilValues});
 
   BoardData.fromJson(Map<String, dynamic> json) {
-    value = int.parse(json['value']);
+    value = json['value'];
+    pencilValues = json['pencilValues'].cast<int>();
     mode = json['mode'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['value'] = this.value;
+    data['pencilValues'] = this.pencilValues;
     data['mode'] = this.mode;
     return data;
   }

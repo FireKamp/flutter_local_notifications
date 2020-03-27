@@ -58,6 +58,20 @@ class Conflict {
       }
     }
     return isGameFinished;
+  } // Check to finish 3x3 cell
+
+  static bool computeCellCompleted(
+      List<List<BoardData>> grid, int r1, int r2, int c1, int c2) {
+    bool isGameFinished = true;
+    for (int c = c1; c < c2; c++) {
+      for (int r = r1; r < r2; r++) {
+        int newNum = grid[r][c].value;
+        if (newNum == 0) {
+          isGameFinished = false;
+        }
+      }
+    }
+    return isGameFinished;
   }
 
   static void computeBlockConflicts(

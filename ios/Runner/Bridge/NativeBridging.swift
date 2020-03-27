@@ -21,6 +21,8 @@ private enum BridgeMethods: String {
     case prefetchReward = "prefetchReward"
     case showInterstitialAd = "showInterstitialAd"
     case showRewardAd = "showRewardAd"
+    case resumeBannerRefresh = "resumeBannerRefresh"
+    case stopBannerRefresh = "stopBannerRefresh"
 }
 
 public class NativeBridging {
@@ -28,7 +30,9 @@ public class NativeBridging {
                                     BridgeMethods.prefetchInterstitial.rawValue,
                                     BridgeMethods.prefetchReward.rawValue,
                                     BridgeMethods.showInterstitialAd.rawValue,
-                                    BridgeMethods.showRewardAd.rawValue]
+                                    BridgeMethods.showRewardAd.rawValue,
+                                    BridgeMethods.resumeBannerRefresh.rawValue,
+                                    BridgeMethods.stopBannerRefresh.rawValue]
     
     private let methodChannel: FlutterMethodChannel
     private let interstitialChannel: FlutterEventChannel
@@ -83,6 +87,10 @@ public class NativeBridging {
             adManager.showInterstitialAd()
         } else if methodCall == BridgeMethods.showRewardAd.rawValue {
             adManager.showRewardAd()
+        } else if methodCall == BridgeMethods.resumeBannerRefresh.rawValue {
+            adManager.resumeBannerRefresh()
+        } else if methodCall == BridgeMethods.stopBannerRefresh.rawValue {
+            adManager.stopBannerRefresh()
         }
     }
 

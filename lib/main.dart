@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,14 +26,17 @@ import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 void main() {
-  Crashlytics.instance.enableInDevMode = true;
-  runZoned(() {
-    WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
-      (_) => runApp(MyApp()),
-    );
-  }, onError: Crashlytics.instance.recordError);
+  if (kReleaseMode) {
+    runZoned(() {
+      WidgetsFlutterBinding.ensureInitialized();
+      SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
+            (_) => runApp(MyApp()),
+      );
+    }, onError: Crashlytics.instance.recordError);
+  } else {
+    runApp(MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {

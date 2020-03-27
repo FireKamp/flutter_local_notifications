@@ -9,7 +9,7 @@
 import Foundation
 import MoPub
 
-#if DEBUG
+#if DEBUG || ((arch(i386) || arch(x86_64)) && os(iOS))
 private enum AdIdentifier: String {
     case banner = "0ac59b0996d947309c33f59d6676399f"
     case interstitial = "4f117153f5c24fa6a3a92b818a5eb630"
@@ -59,17 +59,22 @@ public class AdManager: NSObject {
     public var interstitialStream: ((_ status: InterstitialAdEvent) -> (Void))?
     public var rewardStream: ((_ status: RewardAdEvent) -> (Void))?
 
-    private var bannerView = MPAdView(adUnitId: AdIdentifier.banner.rawValue)
-    private var interstitial = MPInterstitialAdController(forAdUnitId: AdIdentifier.interstitial.rawValue)
+    private var bannerView: MPAdView
+    private var interstitial: MPInterstitialAdController
     
     public var rootViewController: UIViewController!
     
+    private var bannerAdSize: CGSize {
+        let preset = UIDevice.current.userInterfaceIdiom == .pad ? kMPPresetMaxAdSize90Height : kMPPresetMaxAdSize50Height
+        return preset
+    }
     public override init() {
+        bannerView = MPAdView(adUnitId: AdIdentifier.banner.rawValue)
+        interstitial = MPInterstitialAdController(forAdUnitId: AdIdentifier.interstitial.rawValue)
+        
         super.init()
-        MPRewardedVideo.setDelegate(self, forAdUnitId: AdIdentifier.reward.rawValue)
-        bannerView?.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50)
-        bannerView?.delegate = self
-        interstitial?.delegate = self
+
+        bannerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: self.bannerAdSize.height)
         
         let config = MPMoPubConfiguration(adUnitIdForAppInitialization: AdIdentifier.banner.rawValue)
         let unitySettings = [AdAdapterValueConstants.gameId.rawValue: "3515410"]
@@ -85,21 +90,36 @@ public class AdManager: NSObject {
         MoPub.sharedInstance().initializeSdk(with: config) {
             print("Initialized MP")
         }
+        
+        interstitial.delegate = self
+        bannerView.delegate = self
+        
+        MPRewardedVideo.setDelegate(self, forAdUnitId: AdIdentifier.reward.rawValue)
+
     }
     
     func fetchAndLoadBanner() {
-        if let _ = bannerView?.superview {
+        if let _ = bannerView.superview {
             print("Fetching and loading when already visible")
         } else {
-            //TODO: Should factor in multi device sizes eventually
             print("Fetching banner ad")
-            bannerView?.loadAd(withMaxAdSize: kMPPresetMaxAdSize50Height)
+            bannerView.loadAd(withMaxAdSize: bannerAdSize)
         }
+    }
+    
+    func stopBannerRefresh() {
+        print("stopping ad refresh")
+        bannerView.stopAutomaticallyRefreshingContents()
+    }
+    
+    func resumeBannerRefresh() {
+        print("resuming ad refresh")
+        bannerView.startAutomaticallyRefreshingContents()
     }
     
     func prefetchInterstitial() {
         print("Fetching interstitial ad")
-        interstitial?.loadAd()
+        interstitial.loadAd()
     }
     
     func prefetchReward() {
@@ -108,9 +128,9 @@ public class AdManager: NSObject {
     }
     
     func showInterstitialAd() {
-        if interstitial?.ready ?? false {
+        if interstitial.ready {
             print("Showing interstitial ad")
-            interstitial?.show(from: rootViewController)
+            interstitial.show(from: rootViewController)
         } else {
             prefetchInterstitial()
         }
@@ -126,6 +146,7 @@ public class AdManager: NSObject {
             print("Showing reward ad")
             MPRewardedVideo.presentAd(forAdUnitID: adId, from: rootViewController, with: mpReward)
         } else {
+            prefetchReward()
             print("Tried to show reward ad, but not fetched")
             rewardStream?(.notFetched)
         }
@@ -140,19 +161,61 @@ extension AdManager: MPAdViewDelegate {
     public func adViewDidLoadAd(_ view: MPAdView!, adSize: CGSize) {
         print("banner did load for id: \(view.adUnitId)")
         
-        if bannerView?.superview == nil {
-            guard let rootView = rootViewController.view else { return }
-            view.frame = CGRect(x: (rootViewController.view.bounds.width - adSize.width)/2, y: rootViewController.view.bounds.height - adSize.height, width: adSize.width, height: adSize.height)
-            rootView.addSubview(view)
-            rootView.layoutIfNeeded()
+        if bannerView.superview == nil {
+            addBannerViewToView(bannerView)
         } else {
             print("banner ad refreshed")
         }
     }
     
+    func addBannerViewToView(_ bannerView: UIView) {
+        guard let rootView = rootViewController.view else { return }
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        rootView.addSubview(bannerView)
+        
+        if #available(iOS 11.0, *) {
+            let guide: UILayoutGuide = rootView.safeAreaLayoutGuide
+            bannerView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
+            bannerView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
+            bannerView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
+            bannerView.heightAnchor.constraint(equalToConstant: bannerView.bounds.size.height).isActive = true
+        } else {
+            let guide: UILayoutGuide = rootView.layoutMarginsGuide
+            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  attribute: .leading,
+                                                  relatedBy: .equal,
+                                                  toItem: guide,
+                                                  attribute: .leading,
+                                                  multiplier: 1,
+                                                  constant: 0))
+            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  attribute: .trailing,
+                                                  relatedBy: .equal,
+                                                  toItem: guide,
+                                                  attribute: .trailing,
+                                                  multiplier: 1,
+                                                  constant: 0))
+            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  attribute: .bottom,
+                                                  relatedBy: .equal,
+                                                  toItem: guide,
+                                                  attribute: .bottom,
+                                                  multiplier: 1,
+                                                  constant: 0))
+            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  attribute: .height,
+                                                  relatedBy: .equal,
+                                                  toItem: nil,
+                                                  attribute: .height,
+                                                  multiplier: 1,
+                                                  constant: bannerView.bounds.size.height))
+      }
+        rootView.layoutIfNeeded()
+    }
+    
     public func adView(_ view: MPAdView!, didFailToLoadAdWithError error: Error!) {
         print("banner failed to load: \(error.localizedDescription)")
-        bannerView?.removeFromSuperview()
+        bannerView.removeFromSuperview()
     }
 }
 
