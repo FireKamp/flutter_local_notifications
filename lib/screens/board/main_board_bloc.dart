@@ -39,23 +39,28 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   ) async* {
     if (event is BoardInitISCalled) {
       yield FetchingLevel();
+
+      if (event.isContinued) _currentTimerValue = event.pausedLevelTime;
       final hintCount = await _getHintCount(event.levelName, event.index);
       yield GetHintVState(val: hintCount);
-      final list =
-          await _readJson(event.context, event.levelName, event.index, false);
+      final list = await _readJson(event.context, event.levelName, event.index,
+          false, event.isContinued);
       yield LevelFetched(boardList: list);
 
-      final listNew =
-          await _readJson(event.context, event.levelName, event.index, false);
+      final listNew = await _readJson(
+          event.context, event.levelName, event.index, false, false);
       yield InitStateFetched(boardList: listNew);
 
-      _solution =
-          await _readJson(event.context, event.levelName, event.index, true);
+      _solution = await _readJson(
+          event.context, event.levelName, event.index, true, false);
     } else if (event is ChangeConflictsCalled) {
       final conflicts = _changeConflicts(event.list);
       final gameFinished = _gameFinished(event.list);
       yield ConflictsChanged(conflicts: conflicts);
       if (gameFinished) {
+        if (event.isContinued) {
+          LocalDB.savePausedBoard(null, null, null, null);
+        }
         final isWon = compareLists(event.list);
         yield GameFinishedState(isWon: isWon, time: _timerText);
       }
@@ -86,8 +91,16 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
           isPaused: _isPaused, isPausedForAd: event.isPausedForAd));
     } else if (event is ResetBoard) {
       MediaPlayer.loadPlayAudio(3);
+
+      LocalDB.setInt(
+          MainBoardBloc.getDBKey(event.levelName.toLowerCase(), event.index),
+          null);
+
+      final hintCount = await _getHintCount(event.levelName, event.index);
+      yield GetHintVState(val: hintCount);
+
       final list = await _readJson(
-          event.buildContext, event.levelName, event.index, false);
+          event.buildContext, event.levelName, event.index, false, false);
       yield ResetState(boardList: list);
     } else if (event is FullScreen) {
       MediaPlayer.loadPlayAudio(4);
@@ -100,7 +113,6 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
         String key = getDBKey(event.levelName, event.index);
 
         hintCount = hintCount - 1;
-
         int value = getHint(event.row, event.col);
 
         if (event.isForFailedAd) {
@@ -125,7 +137,14 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     }
   }
 
+  int getTimerCurrentValue() {
+    return _currentTimerValue;
+  }
+
   Future<int> _getHintCount(String levelName, int index) async {
+    print('levelName: $levelName');
+    print('index: $index');
+
     String key = getDBKey(levelName, index);
     int hintCount = await LocalDB.getInt(key);
 
@@ -145,7 +164,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
     }
   }
 
-  String getDBKey(String levelName, int index) {
+  static String getDBKey(String levelName, int index) {
     String key = '${levelName}_hint_${index + 1}';
     print('key: $key');
     return key;
@@ -206,34 +225,49 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   }
 
 // Read data from JSON File
-  Future<List<List<BoardData>>> _readJson(
-      BuildContext context, String objName, int index, bool isSol) async {
-    String data =
-        await DefaultAssetBundle.of(context).loadString("assets/brain.json");
+  Future<List<List<BoardData>>> _readJson(BuildContext context, String objName,
+      int index, bool isSol, bool isContinued) async {
+    if (isContinued) {
+      List<List<BoardData>> mainBoard = [];
+      LocalDB.getString(LocalDB.keyBoardList).then((value) async {
+        List data = jsonDecode(value);
 
-    var decodedData = jsonDecode(data);
-    List list = decodedData['difficulty'][objName]['level'][index]
-        [isSol == true ? 'solution' : 'board'];
+        for (int i = 0; i < data.length; i++) {
+          List innerList = data[i];
+          List<BoardData> dataList = [];
+          for (int j = 0; j < innerList.length; j++) {
+            BoardData boardData = BoardData.fromJson(innerList[j]);
+            dataList.add(boardData);
+          }
 
-    // just for testing. TODO: remove later just for testing
-//    List list;
-//    if (isSol) {
-//      list = List.from(dummyList1);
-//    } else {
-//      list = List.from(dummyList);
-//    }
+          mainBoard.add(dataList);
+        }
+      });
+      return mainBoard;
+    } else {
+      String data =
+          await DefaultAssetBundle.of(context).loadString("assets/brain.json");
 
-    List<List<BoardData>> test = [];
-    for (int i = 0; i < list.length; i++) {
-      List innerList = list[i];
-      List<BoardData> dataList = [];
-      for (int j = 0; j < innerList.length; j++) {
-        dataList.add(BoardData(value: innerList[j], mode: PlayMode.PLAY));
+      var decodedData = jsonDecode(data);
+      List list = decodedData['difficulty'][objName]['level'][index]
+          [isSol == true ? 'solution' : 'board'];
+
+      List<List<BoardData>> test = [];
+      for (int i = 0; i < list.length; i++) {
+        List innerList = list[i];
+        List<BoardData> dataList = [];
+        for (int j = 0; j < innerList.length; j++) {
+          dataList.add(BoardData(
+              value: innerList[j],
+              mode: EnumValues.getEnum(PlayMode.PLAY),
+              pencilValues: [0, 0, 0, 0, 0, 0, 0, 0, 0]));
+        }
+
+        test.add(dataList);
       }
-      test.add(dataList);
-    }
 
-    return test;
+      return test;
+    }
   }
 
 // Change conflicts

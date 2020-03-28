@@ -1,12 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/services.dart';
 
-enum InterstitialAdStatus {
-  willAppear,
-  didAppear,
-  willDisappear,
-  didDisappear
-}
+enum InterstitialAdStatus { willAppear, didAppear, willDisappear, didDisappear }
 
 enum RewardAdStatus {
   notFetched,
@@ -22,16 +18,22 @@ class AdManager {
   static Function(RewardAdStatus) rewardEvents;
   static Function(InterstitialAdStatus) interstitialEvents;
 
-  static var _methodChannel = MethodChannel('com.matchalagames.sudokubrain/method_channel');
-  static var _rewardStream = EventChannel('com.matchalagames.sudokubrain/reward_stream');
-  static var _interstitialStream = EventChannel('com.matchalagames.sudokubrain/interstitial_stream');
+  static var _methodChannel =
+      MethodChannel('com.matchalagames.sudokubrain/method_channel');
+  static var _rewardStream =
+      EventChannel('com.matchalagames.sudokubrain/reward_stream');
+  static var _interstitialStream =
+      EventChannel('com.matchalagames.sudokubrain/interstitial_stream');
 
   static StreamSubscription interstitialStream;
   static StreamSubscription rewardStream;
 
   static startListening() {
-    rewardStream = _rewardStream.receiveBroadcastStream().listen(_updateRewardFromStream);
-    interstitialStream = _interstitialStream.receiveBroadcastStream().listen(_updateInterstitialFromStream);
+    rewardStream =
+        _rewardStream.receiveBroadcastStream().listen(_updateRewardFromStream);
+    interstitialStream = _interstitialStream
+        .receiveBroadcastStream()
+        .listen(_updateInterstitialFromStream);
   }
 
   static void _updateRewardFromStream(statusValue) {
@@ -49,8 +51,8 @@ class AdManager {
     if (interstitialEvents != null) {
       interstitialEvents(status);
     }
-
   }
+
   static stopListening() {
     if (interstitialStream != null) {
       interstitialStream.cancel();
@@ -72,6 +74,24 @@ class AdManager {
     }
   }
 
+  static stopBannerRefresh() {
+    try {
+      print("Attempting to pause banner ads");
+      _methodChannel.invokeMethod('stopBannerRefresh');
+    } on PlatformException catch (e) {
+      print("Error pausing banner from bridge ${e.message}");
+    }
+  }
+
+  static resumeBannerRefresh() {
+    try {
+      print("Attempting to resume banner ads");
+      _methodChannel.invokeMethod('resumeBannerRefresh');
+    } on PlatformException catch (e) {
+      print("Error resuming banner from bridge ${e.message}");
+    }
+  }
+
   static precacheInterstitialAd() {
     try {
       print("Attempting to show precache interstitial ad");
@@ -82,12 +102,12 @@ class AdManager {
   }
 
   static precacheRewardAd() {
-    try {
-      print("Attempting to show precache reward ad");
-      _methodChannel.invokeMethod('prefetchReward');
-    } on PlatformException catch (e) {
-      print("Error precaching interstitial from bridge ${e.message}");
-    }
+//    try {
+//      print("Attempting to show precache reward ad");
+//      _methodChannel.invokeMethod('prefetchReward');
+//    } on PlatformException catch (e) {
+//      print("Error precaching interstitial from bridge ${e.message}");
+//    }
   }
 
   static showInterstitialAd() {
@@ -107,5 +127,4 @@ class AdManager {
       print("Error showing reward from bridge ${e.message}");
     }
   }
-
 }

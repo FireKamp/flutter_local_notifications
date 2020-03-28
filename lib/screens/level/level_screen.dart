@@ -6,6 +6,7 @@ import 'package:sudoku_brain/components/logo_header.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
@@ -19,7 +20,7 @@ class LevelScreen extends StatefulWidget {
   _LevelScreenState createState() => _LevelScreenState();
 }
 
-class _LevelScreenState extends State<LevelScreen> {
+class _LevelScreenState extends State<LevelScreen> with WidgetsBindingObserver {
   LevelBloc _levelBloc;
   final double sizedBoxHeight = 25.0;
 
@@ -27,6 +28,7 @@ class _LevelScreenState extends State<LevelScreen> {
   void initState() {
     super.initState();
     Analytics.logEvent('screen_levels');
+    WidgetsBinding.instance.addObserver(this);
 
     _levelBloc = BlocProvider.of<LevelBloc>(context);
   }
@@ -97,5 +99,14 @@ class _LevelScreenState extends State<LevelScreen> {
         );
       }),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      AdManager.stopBannerRefresh();
+    } else if (state == AppLifecycleState.resumed) {
+      AdManager.resumeBannerRefresh();
+    }
   }
 }

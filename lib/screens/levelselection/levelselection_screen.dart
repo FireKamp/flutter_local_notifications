@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/logo_header.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
+import 'package:sudoku_brain/screens/board/bloc.dart';
 import 'package:sudoku_brain/screens/board/board_screen.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/bloc.dart';
+import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class LevelSelection extends StatefulWidget {
@@ -18,7 +21,8 @@ class LevelSelection extends StatefulWidget {
   _LevelSelectionState createState() => _LevelSelectionState();
 }
 
-class _LevelSelectionState extends State<LevelSelection> {
+class _LevelSelectionState extends State<LevelSelection>
+    with WidgetsBindingObserver {
   LevelSelectionBloc _levelselectionBloc;
   String _levelName;
   List<bool> _levelList;
@@ -27,6 +31,7 @@ class _LevelSelectionState extends State<LevelSelection> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Analytics.logEvent('screen_level_details');
     _levelselectionBloc = BlocProvider.of<LevelSelectionBloc>(context);
   }
@@ -103,6 +108,10 @@ class _LevelSelectionState extends State<LevelSelection> {
                   onTap: () {
                     MediaPlayer.loadPlayAudio(0);
                     if (items[index]) {
+                      LocalDB.setInt(
+                          MainBoardBloc.getDBKey(
+                              _levelName.toLowerCase(), index),
+                          null);
                       Navigator.pushReplacementNamed(context, GameEndScreen.id,
                           arguments: ScreenArguments(
                               levelName: _levelName.toLowerCase(),
@@ -112,7 +121,8 @@ class _LevelSelectionState extends State<LevelSelection> {
                       Navigator.pushNamed(context, MainBoard.id,
                           arguments: ScreenArguments(
                               levelName: _levelName.toLowerCase(),
-                              index: index));
+                              index: index,
+                              isContinued: false));
                     }
                   },
                   child: Container(
@@ -187,6 +197,15 @@ class _LevelSelectionState extends State<LevelSelection> {
       case 'EXPERT':
         _gradient = kExpertLevelGrad;
         break;
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      AdManager.stopBannerRefresh();
+    } else if (state == AppLifecycleState.resumed) {
+      AdManager.resumeBannerRefresh();
     }
   }
 }

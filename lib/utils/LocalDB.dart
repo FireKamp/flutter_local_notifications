@@ -4,6 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalDB {
   static final keyBoardList = 'keyBoardList';
+  static final keyBoardLevelName = 'keyBoardLevelName';
+  static final keyBoardLevelNumber = 'keyBoardLevelNumber';
+  static final keyBoardLevelTime = 'keyBoardLevelTime';
+
+  static savePausedBoard(
+      String json, String _levelName, int _levelIndex, int timerValue) {
+    LocalDB.setString(LocalDB.keyBoardList, json);
+    LocalDB.setString(LocalDB.keyBoardLevelName, _levelName);
+    LocalDB.setInt(LocalDB.keyBoardLevelNumber, _levelIndex);
+    LocalDB.setInt(LocalDB.keyBoardLevelTime, timerValue);
+  }
 
   // Set Data Methods
   static setString(String key, String value) async {
@@ -28,12 +39,12 @@ class LocalDB {
 
   static setList(String key, List value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key, value.toString());
+    prefs.setStringList(key, value);
   }
 
   static Future<Object> getList(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key);
+    return prefs.getStringList(key);
   }
 
   // Get Data Methods

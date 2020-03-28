@@ -35,6 +35,7 @@ class HelpScreen extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
+              padding: EdgeInsets.only(top: 50.0),
               color: kPrimaryColor,
               child: Column(
                 children: <Widget>[
