@@ -102,12 +102,12 @@ class AdManager {
   }
 
   static precacheRewardAd() {
-//    try {
-//      print("Attempting to show precache reward ad");
-//      _methodChannel.invokeMethod('prefetchReward');
-//    } on PlatformException catch (e) {
-//      print("Error precaching interstitial from bridge ${e.message}");
-//    }
+    try {
+      print("Attempting to show precache reward ad");
+      _methodChannel.invokeMethod('prefetchReward');
+    } on PlatformException catch (e) {
+      print("Error precaching interstitial from bridge ${e.message}");
+    }
   }
 
   static showInterstitialAd() {
