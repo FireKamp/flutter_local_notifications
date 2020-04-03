@@ -108,13 +108,15 @@ public class AdManager: NSObject {
     }
     
     func stopBannerRefresh() {
-        print("stopping ad refresh")
-        bannerView.stopAutomaticallyRefreshingContents()
+//        print("stopping ad refresh")
+        //TODO: kpirwani dont do for now
+//        bannerView.stopAutomaticallyRefreshingContents()
     }
     
     func resumeBannerRefresh() {
-        print("resuming ad refresh")
-        bannerView.startAutomaticallyRefreshingContents()
+//        print("resuming ad refresh")
+        //TODO: kpirwani dont do for now
+//        bannerView.startAutomaticallyRefreshingContents()
     }
     
     func prefetchInterstitial() {
@@ -181,34 +183,40 @@ extension AdManager: MPAdViewDelegate {
             bannerView.heightAnchor.constraint(equalToConstant: bannerView.bounds.size.height).isActive = true
         } else {
             let guide: UILayoutGuide = rootView.layoutMarginsGuide
-            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+            let left = NSLayoutConstraint(item: bannerView,
                                                   attribute: .leading,
                                                   relatedBy: .equal,
                                                   toItem: guide,
                                                   attribute: .leading,
                                                   multiplier: 1,
-                                                  constant: 0))
-            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  constant: 0)
+            let right = NSLayoutConstraint(item: bannerView,
                                                   attribute: .trailing,
                                                   relatedBy: .equal,
                                                   toItem: guide,
                                                   attribute: .trailing,
                                                   multiplier: 1,
-                                                  constant: 0))
-            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  constant: 0)
+            let bottom = NSLayoutConstraint(item: bannerView,
                                                   attribute: .bottom,
                                                   relatedBy: .equal,
                                                   toItem: guide,
                                                   attribute: .bottom,
                                                   multiplier: 1,
-                                                  constant: 0))
-            bannerView.addConstraint(NSLayoutConstraint(item: bannerView,
+                                                  constant: 0)
+            let height = NSLayoutConstraint(item: bannerView,
                                                   attribute: .height,
                                                   relatedBy: .equal,
                                                   toItem: nil,
                                                   attribute: .height,
                                                   multiplier: 1,
-                                                  constant: bannerView.bounds.size.height))
+                                                  constant: bannerView.bounds.size.height)
+            NSLayoutConstraint.activate([
+                left,
+                right,
+                bottom,
+                height
+            ])
       }
         rootView.layoutIfNeeded()
     }
