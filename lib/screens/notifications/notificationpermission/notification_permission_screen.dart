@@ -4,6 +4,7 @@ import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/NotificationManager.dart';
 
 class NotificationPermission extends StatelessWidget {
   static String id = 'notification_permission';
@@ -53,8 +54,7 @@ class NotificationPermission extends StatelessWidget {
                 GestureDetector(
                     onTap: () {
                       LocalDB.setBool(LocalDB.keyNotificationAllowed, true);
-                      Navigator.pushReplacementNamed(
-                          context, NotificationsSettingsScreen.id);
+                      requestPermissions(context);
                     },
                     child: Container(
                       height: 40.0,
@@ -94,5 +94,16 @@ class NotificationPermission extends StatelessWidget {
             )
           ],
         ));
+  }
+
+  void requestPermissions(BuildContext context) async {
+    var permissionGranted = await NotificationManager.requestPermissions();
+    if (permissionGranted) {
+      Navigator.pushReplacementNamed(
+          context, NotificationsSettingsScreen.id);
+    } else {
+      Navigator.pushReplacementNamed(
+          context, HomeScreen.id);
+    }
   }
 }
