@@ -90,7 +90,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "0b3aa8c7f5ac018329738406eb987e06a5544981"
+      resolved-ref: "7145083bff6f01bcb605d8d81bd1d1139132e9a3"
       url: "git@github.com:FireKamp/CustomSwitch.git"
     source: git
     version: "0.0.1"

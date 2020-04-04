@@ -10,6 +10,7 @@ import 'package:sudoku_brain/screens/notifications/notificationsettings/bloc.dar
 import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:sudoku_brain/utils/NotificationManager.dart';
 
 class NotificationsSettingsScreen extends StatefulWidget {
   static final String id = 'noti_settings_screen';
@@ -101,10 +102,15 @@ class _NotificationsSettingsScreenState
                         SettingsItem(
                           defaultValue: _isAllowed,
                           onChanged: (bool value) {
+                            if (value == true) {
+                              NotificationManager.requestPermissions().then((onValue) {
+                                print("Permissions set from settings: $onValue");
+                              });
+                            }
                             updateLocalDB(
                                 LocalDB.keyNotificationAllowed, value);
                           },
-                          text: 'Turn On Noitifications',
+                          text: 'Turn On Notifications',
                         ),
                         SizedBox(
                           height: 25.0,
