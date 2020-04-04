@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalDB {
   static final keyBoardList = 'keyBoardList';
-  static final keyisFirstTime = 'keyBoardList';
+  static final keyisFirstTime = 'keyisFirstTime';
   static final keyBoardLevelName = 'keyBoardLevelName';
   static final keyBoardLevelNumber = 'keyBoardLevelNumber';
   static final keyBoardLevelTime = 'keyBoardLevelTime';
