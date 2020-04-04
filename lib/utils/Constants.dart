@@ -11,6 +11,8 @@ const kPanelBg = 0xFF38356e;
 const transparent = Color(0xca000000);
 const lightBlue = Color(0xFFDCF8FF);
 const lightGreen = Color(0xFFDCFFEA);
+const lightYellow = Color(0xFFFDBF00);
+
 const kBoardCellSelected = Color(0xFF80C3FF);
 const kBorderTest = Color(0x60170D2E);
 

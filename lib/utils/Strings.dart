@@ -17,6 +17,10 @@ const hide_duplicate = 'hide_duplicate';
 const highlight_duplicate = 'highlight_duplicate';
 const mistake_limit = 'mistake_limit';
 
+// Notifications Text
+const kNotiHeader = 'SELECT A TIME';
+const kNotiTextOne = 'What time do you want to be notified?';
+
 // Text Tutorial
 const kTutHeadOne = 'What is Sudoku';
 const kTutHeadTwo = 'How to play Sudoku';
@@ -30,7 +34,7 @@ const kTutorialWITwo =
     'They are stacked nine high and nine wide, making 81 cells total. The puzzle comes with some of the cells (usually less than half of them) already filled in.';
 
 const kTutorialHTPOne =
-    'Look for Easy Opportunities First. Every Sudoku grid, when you start the game, comes with some numbers already placed into their correct spaces. ...';
+    'Look for Easy Opportunities First. Sudoku grid, when you start the game, comes with some numbers already placed into their correct spaces. ...';
 
 const kTutorialHTPTwo =
     'Look to Neighboring Rows. Sudoku is a game of recognizing patterns and spotting opportunities. ...';
@@ -45,3 +49,13 @@ const kLoseText = 'You\'ve lost!';
 const kPauseText = 'PAUSE';
 const kEndText = 'END GAME';
 const kLoseBText = 'PLAY AGAIN';
+
+//==============
+const monday = 'Monday';
+const tuesday = 'Tuesday';
+const wednesday = 'Wednesday';
+const thursday = 'Thursday';
+const friday = 'Friday';
+const saturday = 'Saturday';
+const sunday = 'Sunday';
+const everyday = 'Everyday';

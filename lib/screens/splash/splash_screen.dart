@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
+import 'package:sudoku_brain/screens/notifications/notificationpermission/notification_permission_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
 
 class SplashScreen extends StatefulWidget {
   static String id = 'splasf_screen';
@@ -39,8 +41,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _delay() {
-    Future.delayed(const Duration(milliseconds: 3000), () {
-      Navigator.pushReplacementNamed(context, HomeScreen.id);
+    Future.delayed(const Duration(milliseconds: 3000), () async {
+      bool isFirstTime = await LocalDB.getBool(LocalDB.keyisFirstTime);
+      if (isFirstTime == null) {
+        LocalDB.setBool(LocalDB.keyisFirstTime, true);
+        Navigator.pushReplacementNamed(context, NotificationPermission.id);
+      } else {
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
+      }
     });
   }
 }

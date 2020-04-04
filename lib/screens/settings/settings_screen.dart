@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
+import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/Strings.dart';
@@ -45,6 +47,28 @@ class SettingsScreen extends StatelessWidget {
                       height: spaceBTText,
                     ),
                     HeaderText(
+                      text: 'Notifications',
+                    ),
+                    GradientLine(
+                      gradient: LinearGradient(
+                        colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
+                      ),
+                    ),
+                    SizedBox(
+                      height: spaceBTText,
+                    ),
+                    SettingsItem(
+                      isArrow: true,
+                      onChanged: (bool value) {
+                        Navigator.pushNamed(
+                            context, NotificationsSettingsScreen.id);
+                      },
+                      text: 'Turn on Notifications',
+                    ),
+                    SizedBox(
+                      height: spaceBTText,
+                    ),
+                    HeaderText(
                       text: 'Sounds & Haptics',
                     ),
                     GradientLine(
@@ -56,6 +80,7 @@ class SettingsScreen extends StatelessWidget {
                       height: 10.0,
                     ),
                     SettingsItem(
+                      isArrow: false,
                       onChanged: (bool value) {
                         updateLocalDB(turn_on_sound, value);
                       },
@@ -65,6 +90,7 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      isArrow: false,
                       onChanged: (bool value) {
                         updateLocalDB(turn_on_haptics, value);
                       },
@@ -85,6 +111,7 @@ class SettingsScreen extends StatelessWidget {
                       height: 10.0,
                     ),
                     SettingsItem(
+                      isArrow: false,
                       onChanged: (bool value) {
                         updateLocalDB(hide_duplicate, value);
                       },
@@ -94,6 +121,7 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      isArrow: false,
                       onChanged: (bool value) {
                         updateLocalDB(mistake_limit, value);
                       },
@@ -103,6 +131,7 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      isArrow: false,
                       onChanged: (bool value) {
                         updateLocalDB(highlight_duplicate, value);
                       },
@@ -126,8 +155,10 @@ class SettingsScreen extends StatelessWidget {
 class SettingsItem extends StatelessWidget {
   final String text;
   final Function(bool) onChanged;
+  final bool isArrow;
 
-  SettingsItem({@required this.text, @required this.onChanged});
+  SettingsItem(
+      {@required this.text, @required this.onChanged, @required this.isArrow});
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +168,26 @@ class SettingsItem extends StatelessWidget {
         SmallText(
           text: text,
         ),
-        CustomSwitch(
-          activeColor: Color(0xFF0AB8AD),
-          value: false,
-          onChanged: (value) {
-            onChanged(value);
-          },
+        Spacer(),
+        Visibility(
+          visible: !isArrow,
+          child: CustomSwitch(
+            activeColor: Color(0xFF0AB8AD),
+            value: false,
+            onChanged: (value) {
+              onChanged(value);
+            },
+          ),
         ),
+        Visibility(
+          visible: isArrow,
+          child: GestureDetector(
+            onTap: () {
+              onChanged(true);
+            },
+            child: Icon(Icons.arrow_forward_ios),
+          ),
+        )
       ],
     );
   }
