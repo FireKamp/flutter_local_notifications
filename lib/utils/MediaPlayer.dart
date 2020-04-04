@@ -14,6 +14,6 @@ class MediaPlayer {
 
   static loadPlayAudio(int index) {
     //TODO: Enable once sounds are complete
-      assetsAudioPlayer.open(_assets[index]);
+    assetsAudioPlayer.open(_assets[index]);
   }
 }

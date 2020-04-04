@@ -88,9 +88,11 @@ packages:
   custom_switch:
     dependency: "direct main"
     description:
-      name: custom_switch
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "0b3aa8c7f5ac018329738406eb987e06a5544981"
+      url: "git@github.com:FireKamp/CustomSwitch.git"
+    source: git
     version: "0.0.1"
   enum_to_string:
     dependency: "direct main"
@@ -170,10 +172,19 @@ packages:
   flutter_local_notifications:
     dependency: "direct main"
     description:
+<<<<<<< HEAD
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+=======
+      path: flutter_local_notifications
+      ref: master
+      resolved-ref: "55d42a82dcb14354d08d7c91b598923e77cd78c9"
+      url: "git@github.com:FireKamp/flutter_local_notifications.git"
+    source: git
+    version: "1.4.0"
+>>>>>>> 70682ffe76ed46c7a0cd3d7caf5327dac7f24a56
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:

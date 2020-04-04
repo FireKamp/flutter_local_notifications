@@ -6,7 +6,6 @@ class ScreenArguments {
   String levelName;
   String bestTime;
   int index;
-
   int hour;
   int min;
   int pausedLevelTime;

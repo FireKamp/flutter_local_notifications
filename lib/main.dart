@@ -34,19 +34,18 @@ import 'package:sudoku_brain/screens/tutorial/tutorial_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 
 void main() {
-//  if (kReleaseMode) {
-  Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  if (kReleaseMode) {
+    FlutterError.onError = Crashlytics.instance.recordFlutterError;
     runZoned(() {
       WidgetsFlutterBinding.ensureInitialized();
       SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
-            (_) => runApp(MyApp()),
+        (_) => runApp(MyApp()),
       );
     }, onError: Crashlytics.instance.recordError);
-//  } else {
-//    runApp(MyApp());
-//  }
+  } else {
+    runApp(MyApp());
+  }
 }
 
 class MyApp extends StatelessWidget {
