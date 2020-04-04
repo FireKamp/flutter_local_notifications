@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -53,7 +54,6 @@ class NotificationPermission extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
-                      LocalDB.setBool(LocalDB.keyNotificationAllowed, true);
                       requestPermissions(context);
                     },
                     child: Container(
@@ -78,8 +78,7 @@ class NotificationPermission extends StatelessWidget {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, HomeScreen.id);
-
+                    navigateHome(context);
                   },
                   child: Text(
                     'SKIP',
@@ -97,13 +96,19 @@ class NotificationPermission extends StatelessWidget {
   }
 
   void requestPermissions(BuildContext context) async {
+    await LocalDB.setBool(LocalDB.keyNotificationAllowed, true);
     var permissionGranted = await NotificationManager.requestPermissions();
     if (permissionGranted) {
-      Navigator.pushReplacementNamed(
-          context, NotificationsSettingsScreen.id);
+      Navigator.pushNamed(
+          context, NotificationsSettingsScreen.id,
+          arguments: ScreenArguments(isNotiEnabled: true));
     } else {
-      Navigator.pushReplacementNamed(
-          context, HomeScreen.id);
+      navigateHome(context);
     }
+  }
+
+  void navigateHome(context) {
+    Navigator.pushReplacementNamed(
+        context, HomeScreen.id);
   }
 }
