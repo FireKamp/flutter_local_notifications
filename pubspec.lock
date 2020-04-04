@@ -88,9 +88,11 @@ packages:
   custom_switch:
     dependency: "direct main"
     description:
-      name: custom_switch
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "0b3aa8c7f5ac018329738406eb987e06a5544981"
+      url: "git@github.com:FireKamp/CustomSwitch.git"
+    source: git
     version: "0.0.1"
   enum_to_string:
     dependency: "direct main"
