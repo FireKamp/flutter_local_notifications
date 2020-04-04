@@ -1,7 +1,5 @@
 /// The days of the week.
 class Day {
-  const Day(this.value);
-
   static const Sunday = Day(1);
   static const Monday = Day(2);
   static const Tuesday = Day(3);
@@ -9,13 +7,27 @@ class Day {
   static const Thursday = Day(5);
   static const Friday = Day(6);
   static const Saturday = Day(7);
+  static const Everyday = Day(8);
+
 
   /// All the possible values for the [Day] enumeration.
   static List<Day> get values =>
-      [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
+      [
+        Sunday,
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        Everyday
+      ];
 
   final int value;
+
+  const Day(this.value);
 }
+
 
 /// Used for specifying a time in 24 hour format.
 class Time {
