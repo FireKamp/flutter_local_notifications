@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class TopContainer extends StatelessWidget {
@@ -40,7 +41,7 @@ class TopContainer extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    MediaPlayer.loadPlayAudio(0);
+                    MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
                     if (Navigator.canPop(context)) {
                       Navigator.pop(context);
                     } else {

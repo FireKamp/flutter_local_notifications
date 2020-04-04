@@ -1,24 +1,15 @@
 // Enums
 enum PlayMode { PENCIL, PLAY }
 enum LevelTYPE { EASY, MEDIUM, HARD, EXPERT }
+enum Sounds { BUTTON_TAP, SUCCESS, FAILURE, BG }
 
-enum RepSelection {
-  DUMMY,
-  SUNDAY,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  EVERYDAY
+class SoundValues {
+  static int getEnum(Sounds sound) {
+    return sound.index;
+  }
 }
 
-class SelValues {
-  static int getEnum(RepSelection rep) {
-    return rep.index;
-  }
-}class EnumValues {
+class EnumValues {
   static int getEnum(PlayMode mode) {
     return mode.index;
   }

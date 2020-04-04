@@ -12,6 +12,12 @@ class ScreenArguments {
   int pausedLevelTime;
   bool isPlayed;
   bool isContinued;
+  bool isSoundsOn;
+  bool isHapticsOn;
+  bool isHideDuplicates;
+  bool isMistakeLimit;
+  bool isHighDuplicates;
+  bool isNotiEnabled;
   List<Day> selectedDays;
 
   ScreenArguments(
@@ -24,5 +30,11 @@ class ScreenArguments {
       this.isPlayed,
       this.isContinued,
       this.pausedLevelTime,
-      this.selectedDays});
+      this.selectedDays,
+      this.isHighDuplicates,
+      this.isHideDuplicates,
+      this.isMistakeLimit,
+      this.isHapticsOn,
+      this.isSoundsOn,
+      this.isNotiEnabled});
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
@@ -10,6 +11,7 @@ import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,6 +27,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   HomeBloc _homeBloc;
   bool _isBoardPaused;
+  bool _isSoundsOn;
+  bool _isHapticsOn;
+  bool _isHideDuplicates;
+  bool _isMistakeLimit;
+  bool _isHighDuplicates;
   String _levelName;
   int _levelNumber;
   int _levelTime;
@@ -52,10 +59,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           _levelName = state.levelName;
           _levelNumber = state.levelNumber;
           _levelTime = state.levelTime;
-
-          print('_levelName: $_levelName');
-          print('_levelNumber: $_levelNumber');
-          print('_levelTime: $_levelTime');
+          _isSoundsOn = state.isSoundsOn;
+          _isHapticsOn = state.isHapticsOn;
+          _isMistakeLimit = state.isMistakeLimit;
+          _isHideDuplicates = state.isHideDuplicates;
+          _isHighDuplicates = state.isHighDuplicates;
         }
       },
       child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
@@ -108,6 +116,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           ),
                           shadowColor: Color(0xFF8497FF),
                           onPressed: () {
+                            print('crash');
+                            Crashlytics.instance.crash();
+                            MediaPlayer.loadPlayAudio(
+                                SoundValues.getEnum(Sounds.BUTTON_TAP));
                             Navigator.pushReplacementNamed(
                                 context, MainBoard.id,
                                 arguments: ScreenArguments(
@@ -131,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                         shadowColor: Color(0xFFB9ACFF),
                         onPressed: () {
-                          MediaPlayer.loadPlayAudio(0);
+                          MediaPlayer.loadPlayAudio(
+                              SoundValues.getEnum(Sounds.BUTTON_TAP));
                           Navigator.pushNamed(context, LevelScreen.id);
                         }),
                     SizedBox(
@@ -156,8 +169,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           ),
                           shadowColor: Color(0xFF8DFDC4),
                           onPressed: () {
-                            MediaPlayer.loadPlayAudio(0);
-                            Navigator.pushNamed(context, SettingsScreen.id);
+                            MediaPlayer.loadPlayAudio(
+                                SoundValues.getEnum(Sounds.BUTTON_TAP));
+                            Navigator.pushNamed(context, SettingsScreen.id,
+                                arguments: ScreenArguments(
+                                    isSoundsOn: _isSoundsOn,
+                                    isHapticsOn: _isHapticsOn,
+                                    isMistakeLimit: _isMistakeLimit,
+                                    isHighDuplicates: _isHighDuplicates,
+                                    isHideDuplicates: _isHideDuplicates));
                           }),
                     ),
                     SizedBox(
@@ -174,7 +194,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                         shadowColor: Color(0xFFFFC7E7),
                         onPressed: () {
-                          MediaPlayer.loadPlayAudio(0);
+                          MediaPlayer.loadPlayAudio(
+                              SoundValues.getEnum(Sounds.BUTTON_TAP));
                           Navigator.pushNamed(context, HelpScreen.id);
                         }),
                     SizedBox(

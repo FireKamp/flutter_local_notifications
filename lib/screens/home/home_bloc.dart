@@ -18,12 +18,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var levelName = await _getLevelName();
       var levelNumber = await _getLevelNumberATime(LocalDB.keyBoardLevelNumber);
       var levelTime = await _getLevelNumberATime(LocalDB.keyBoardLevelTime);
+      var isSound = await _getSettings(LocalDB.keyTurnOnSound);
+      var isHaptic = await _getSettings(LocalDB.keyTurnOnHaptics);
+      var isHide = await _getSettings(LocalDB.keyHideDuplicate);
+      var isHighLight = await _getSettings(LocalDB.keyHighDuplicate);
+      var isMistake = await _getSettings(LocalDB.keyMistakeLimit);
 
       yield FetchedPausedState(
           isPaused: isBoardPaused,
           levelName: levelName,
           levelNumber: levelNumber,
-          levelTime: levelTime);
+          levelTime: levelTime,
+          isSoundsOn: isSound,
+          isHapticsOn: isHaptic,
+          isHideDuplicates: isHide,
+          isHighDuplicates: isHighLight,
+          isMistakeLimit: isMistake);
     }
   }
 
@@ -44,6 +54,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<int> _getLevelNumberATime(String key) async {
     int val = await LocalDB.getInt(key);
+    return val;
+  }
+
+  Future<bool> _getSettings(String key) async {
+    bool val = await LocalDB.getBool(key);
     return val;
   }
 }

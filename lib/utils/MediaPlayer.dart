@@ -4,7 +4,7 @@ class MediaPlayer {
   static final assetsAudioPlayer = AssetsAudioPlayer();
 
   static final _assets = <String>[
-    "assets/audios/click.ogg", // -> 0
+    "assets/audios/button_tap.ogg", // -> 0
     "assets/audios/np_error.wav", // -> 1
     "assets/audios/np_success.wav", // -> 2
     "assets/audios/reset_board.wav", // -> 3
@@ -14,6 +14,6 @@ class MediaPlayer {
 
   static loadPlayAudio(int index) {
     //TODO: Enable once sounds are complete
-//      assetsAudioPlayer.open(_assets[index]);
+      assetsAudioPlayer.open(_assets[index]);
   }
 }

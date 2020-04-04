@@ -9,13 +9,6 @@ const kInterstitialAdIDAndroid = 'ca-app-pub-6145080690961844/5182223814';
 const kRewardAddIDiOS = 'ca-app-pub-6145080690961844/1278637826';
 const kRewardAddIDAndroid = 'ca-app-pub-6145080690961844/5901436785';
 
-// DB keys
-
-const turn_on_sound = 'turn_on_sound';
-const turn_on_haptics = 'turn_on_haptics';
-const hide_duplicate = 'hide_duplicate';
-const highlight_duplicate = 'highlight_duplicate';
-const mistake_limit = 'mistake_limit';
 
 // Notifications Text
 const kNotiHeader = 'SELECT A TIME';

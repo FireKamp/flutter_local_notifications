@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class LogoHeader extends StatelessWidget {
@@ -15,7 +16,7 @@ class LogoHeader extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              MediaPlayer.loadPlayAudio(0);
+              MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
               Navigator.pop(context);
             },
             child: Image(

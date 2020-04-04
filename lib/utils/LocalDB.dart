@@ -12,6 +12,11 @@ class LocalDB {
   static final keyNotificationMinutes = 'keyNotificationMinutes';
   static final keyNotificationAllowed = 'keyNotificationAllowed';
   static final keyNotificationRepList = 'keyNotificationRepList';
+  static final keyTurnOnSound = 'keyTurnOnSound';
+  static final keyTurnOnHaptics = 'keyTurnOnHaptics';
+  static final keyHideDuplicate = 'keyHideDuplicate';
+  static final keyHighDuplicate = 'keyHighDuplicate';
+  static final keyMistakeLimit = 'keyMistakeLimit';
 
   static savePausedBoard(
       String json, String _levelName, int _levelIndex, int timerValue) {

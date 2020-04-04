@@ -38,12 +38,11 @@ class _NotificationsSettingsScreenState
   @override
   Widget build(BuildContext context) {
     _settingBloc.add(FetchNotificationData());
+    getData();
     return BlocListener(
       bloc: BlocProvider.of<NotificationSettingBloc>(context),
       listener: (BuildContext context, state) {
         if (state is NotificationDataState) {
-          _isAllowed = state.isAllowed;
-
           if (state.hour != null && state.min != null) {
             _time = '${state.hour}:${state.min}';
 
@@ -99,7 +98,7 @@ class _NotificationsSettingsScreenState
                           height: 10.0,
                         ),
                         SettingsItem(
-                          defaultValue: _isAllowed,
+                          defaultValue: _isAllowed == null ? false : _isAllowed,
                           onChanged: (bool value) {
                             updateLocalDB(
                                 LocalDB.keyNotificationAllowed, value);
@@ -174,6 +173,11 @@ class _NotificationsSettingsScreenState
 
   void updateLocalDB(String key, bool value) {
     LocalDB.setBool(key, value);
+  }
+
+  void getData() {
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    _isAllowed = args.isNotiEnabled;
   }
 }
 

@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1059367218898-djit9q3ps42puk5al4ohqca6s5c9cvhl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.matchalagames.sudokubrain",
+            "certificate_hash": "15fbc34dd40a79521ea19989fcd69cb73be3133e"
+          }
+        },
+        {
+          "client_id": "1059367218898-9m70digdqr6hdpae5hmeo3qh273loim8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.matchalagames.sudokubrain",
+            "certificate_hash": "89624a0b40adcbc41cd168a4a8d0dac81890a8ca"
+          }
+        },
+        {
           "client_id": "1059367218898-o8s9nfk008dm1qme0rmkackf4plq5rpg.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -41,8 +57,7 @@
             }
           ]
         }
-      },
-      "admob_app_id": "ca-app-pub-6145080690961844~7490094473"
+      }
     }
   ],
   "configuration_version": "1"

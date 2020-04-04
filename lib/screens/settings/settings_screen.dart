@@ -3,19 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_brain/components/gradient_line.dart';
 import 'package:sudoku_brain/components/header_text.dart';
 import 'package:sudoku_brain/components/top_container.dart';
+import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
-import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
-import 'package:sudoku_brain/utils/Strings.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   static final String id = 'settings_screen';
 
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   final double spaceBTText = 15.0;
+
+  bool _isSoundsOn;
+  bool _isHapticsOn;
+  bool _isHideDuplicates;
+  bool _isMistakeLimit;
+  bool _isHighDuplicates;
+  bool _isNotificationEnabled;
 
   @override
   Widget build(BuildContext context) {
+    getData();
     return SafeArea(
       child: Column(
         children: <Widget>[
@@ -61,7 +73,9 @@ class SettingsScreen extends StatelessWidget {
                       isArrow: true,
                       onChanged: (bool value) {
                         Navigator.pushNamed(
-                            context, NotificationsSettingsScreen.id);
+                            context, NotificationsSettingsScreen.id,
+                            arguments: ScreenArguments(
+                                isNotiEnabled: _isNotificationEnabled));
                       },
                       text: 'Turn on Notifications',
                     ),
@@ -80,9 +94,10 @@ class SettingsScreen extends StatelessWidget {
                       height: 10.0,
                     ),
                     SettingsItem(
+                      defaultValue: _isSoundsOn,
                       isArrow: false,
                       onChanged: (bool value) {
-                        updateLocalDB(turn_on_sound, value);
+                        updateLocalDB(LocalDB.keyTurnOnSound, value);
                       },
                       text: 'Turn On Sounds',
                     ),
@@ -90,9 +105,10 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      defaultValue: _isHapticsOn,
                       isArrow: false,
                       onChanged: (bool value) {
-                        updateLocalDB(turn_on_haptics, value);
+                        updateLocalDB(LocalDB.keyTurnOnHaptics, value);
                       },
                       text: 'Turn On Haptics',
                     ),
@@ -111,9 +127,10 @@ class SettingsScreen extends StatelessWidget {
                       height: 10.0,
                     ),
                     SettingsItem(
+                      defaultValue: _isHideDuplicates,
                       isArrow: false,
                       onChanged: (bool value) {
-                        updateLocalDB(hide_duplicate, value);
+                        updateLocalDB(LocalDB.keyHideDuplicate, value);
                       },
                       text: 'Hide Duplicates',
                     ),
@@ -121,9 +138,10 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      defaultValue: _isMistakeLimit,
                       isArrow: false,
                       onChanged: (bool value) {
-                        updateLocalDB(mistake_limit, value);
+                        updateLocalDB(LocalDB.keyMistakeLimit, value);
                       },
                       text: 'Mistake Limit',
                     ),
@@ -131,11 +149,15 @@ class SettingsScreen extends StatelessWidget {
                       height: 25.0,
                     ),
                     SettingsItem(
+                      defaultValue: _isHighDuplicates,
                       isArrow: false,
                       onChanged: (bool value) {
-                        updateLocalDB(highlight_duplicate, value);
+                        updateLocalDB(LocalDB.keyHighDuplicate, value);
                       },
                       text: 'Highlight Duplicates',
+                    ),
+                    SizedBox(
+                      height: 60.0,
                     ),
                   ],
                 ),
@@ -150,15 +172,33 @@ class SettingsScreen extends StatelessWidget {
   void updateLocalDB(String key, bool value) {
     LocalDB.setBool(key, value);
   }
+
+  void getData() async {
+    print('getData');
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
+    _isSoundsOn = args.isSoundsOn;
+    _isHapticsOn = args.isHapticsOn;
+    _isMistakeLimit = args.isMistakeLimit;
+    _isHighDuplicates = args.isHighDuplicates;
+    _isHideDuplicates = args.isHideDuplicates;
+
+    _isNotificationEnabled =
+        await LocalDB.getBool(LocalDB.keyNotificationAllowed);
+  }
 }
 
 class SettingsItem extends StatelessWidget {
   final String text;
   final Function(bool) onChanged;
   final bool isArrow;
+  final bool defaultValue;
 
   SettingsItem(
-      {@required this.text, @required this.onChanged, @required this.isArrow});
+      {@required this.text,
+      @required this.onChanged,
+      @required this.isArrow,
+      this.defaultValue});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +213,7 @@ class SettingsItem extends StatelessWidget {
           visible: !isArrow,
           child: CustomSwitch(
             activeColor: Color(0xFF0AB8AD),
-            value: false,
+            value: defaultValue == null ? false : defaultValue,
             onChanged: (value) {
               onChanged(value);
             },

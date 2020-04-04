@@ -11,6 +11,7 @@ import 'package:sudoku_brain/screens/levelselection/bloc.dart';
 import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
+import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
@@ -106,7 +107,7 @@ class _LevelSelectionState extends State<LevelSelection>
               children: List.generate(items.length, (index) {
                 return GestureDetector(
                   onTap: () {
-                    MediaPlayer.loadPlayAudio(0);
+                    MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
                     if (items[index]) {
                       LocalDB.setInt(
                           MainBoardBloc.getDBKey(
