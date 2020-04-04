@@ -250,6 +250,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                                         if (_isContinued)
                                           LocalDB.savePausedBoard(
                                               null, null, null, null);
+                                        Analytics.logEvent('tap_end_game');
+                                        AdManager.showInterstitialAd();
                                         _exitScreen();
                                       } else {
                                         _resetBoard();
@@ -321,7 +323,6 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                             break;
                           case 4:
                             Analytics.logEvent('tap_edit');
-
                             _mainBoardBloc
                                 .add(PencilMode(isPencilMode: isSelected));
                             break;
