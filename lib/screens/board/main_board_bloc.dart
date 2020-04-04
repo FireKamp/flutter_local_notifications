@@ -150,13 +150,15 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
     if (hintCount == null) {
       int value = 0;
-      if (levelName == 'easy') {
-        value = 2;
-      } else if (levelName == 'medium') {
-        value = 1;
-      } else if (levelName == 'hard') {
-        value = 1;
-      }
+      //FOR NOW, MAKING HINTS PAID TOTALLY TO SEE IMPACT
+      //TODO: kpirwani Evaluate and remove
+//      if (levelName == 'easy') {
+//        value = 2;
+//      } else if (levelName == 'medium') {
+//        value = 1;
+//      } else if (levelName == 'hard') {
+//        value = 1;
+//      }
       LocalDB.setInt(key, value);
       return value;
     } else {
