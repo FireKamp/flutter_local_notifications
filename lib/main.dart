@@ -17,6 +17,14 @@ import 'package:sudoku_brain/screens/level/bloc.dart';
 import 'package:sudoku_brain/screens/level/level_screen.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_bloc.dart';
 import 'package:sudoku_brain/screens/levelselection/levelselection_screen.dart';
+import 'package:sudoku_brain/screens/notifications/dayselection/dayselection_screen.dart';
+import 'package:sudoku_brain/screens/notifications/dayselection/notidayselection_bloc.dart';
+import 'package:sudoku_brain/screens/notifications/notificationpermission/bloc.dart';
+import 'package:sudoku_brain/screens/notifications/notificationpermission/notification_permission_screen.dart';
+import 'package:sudoku_brain/screens/notifications/notificationsettings/bloc.dart';
+import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
+import 'package:sudoku_brain/screens/notifications/timeselection/bloc.dart';
+import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
 import 'package:sudoku_brain/screens/settings/bloc.dart';
 import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/screens/splash/bloc.dart';
@@ -86,6 +94,25 @@ class MyApp extends StatelessWidget {
         LevelSelection.id: (context) => BlocProvider<LevelSelectionBloc>(
               create: (BuildContext context) => LevelSelectionBloc(),
               child: LevelSelection(),
+            ),
+        NotificationTimeSelection.id: (context) =>
+            BlocProvider<NotificationTimeSelectionBloc>(
+              create: (BuildContext context) => NotificationTimeSelectionBloc(),
+              child: NotificationTimeSelection(),
+            ),
+        NotificationsSettingsScreen.id: (context) =>
+            BlocProvider<NotificationSettingBloc>(
+              create: (BuildContext context) => NotificationSettingBloc(),
+              child: NotificationsSettingsScreen(),
+            ),
+        DaySelectionScreen.id: (context) => BlocProvider<NotidayselectionBloc>(
+              create: (BuildContext context) => NotidayselectionBloc(),
+              child: DaySelectionScreen(),
+            ),
+        NotificationPermission.id: (context) =>
+            BlocProvider<NotificationPermissionBloc>(
+              create: (BuildContext context) => NotificationPermissionBloc(),
+              child: NotificationPermission(),
             ),
       },
     );

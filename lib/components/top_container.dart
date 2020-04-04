@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 class TopContainer extends StatelessWidget {
@@ -40,7 +41,11 @@ class TopContainer extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     MediaPlayer.loadPlayAudio(0);
-                    Navigator.pop(context);
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pushReplacementNamed(context, HomeScreen.id);
+                    }
                   },
                   child: Container(
                     padding: EdgeInsets.all(20.0),

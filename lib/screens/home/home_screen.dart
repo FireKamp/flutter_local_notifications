@@ -134,8 +134,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           MediaPlayer.loadPlayAudio(0);
                           Navigator.pushNamed(context, LevelScreen.id);
                         }),
+                    SizedBox(
+                      height: _sizedBoxHeight,
+                    ),
                     Visibility(
-                      visible: false,
+                      visible: true,
                       child: RaisedGradientButton(
                           text: 'SETTINGS',
                           icon: 'assets/images/ic_setting_large.png',

@@ -4,9 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalDB {
   static final keyBoardList = 'keyBoardList';
+  static final keyisFirstTime = 'keyBoardList';
   static final keyBoardLevelName = 'keyBoardLevelName';
   static final keyBoardLevelNumber = 'keyBoardLevelNumber';
   static final keyBoardLevelTime = 'keyBoardLevelTime';
+  static final keyNotificationHour = 'keyNotificationHour';
+  static final keyNotificationMinutes = 'keyNotificationMinutes';
+  static final keyNotificationAllowed = 'keyNotificationAllowed';
+  static final keyNotificationRepList = 'keyNotificationRepList';
 
   static savePausedBoard(
       String json, String _levelName, int _levelIndex, int timerValue) {
