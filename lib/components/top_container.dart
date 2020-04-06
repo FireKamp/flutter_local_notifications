@@ -41,7 +41,7 @@ class TopContainer extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                    MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                     if (Navigator.canPop(context)) {
                       Navigator.pop(context);
                     } else {

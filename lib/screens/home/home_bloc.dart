@@ -24,6 +24,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var isHighLight = await _getSettings(LocalDB.keyHighDuplicate);
       var isMistake = await _getSettings(LocalDB.keyMistakeLimit);
 
+      LocalDB.isSoundOn = isSound == null ? false : isSound;
+      LocalDB.isHapticOn = isHaptic == null ? false : isHaptic;
+      LocalDB.isMistakeOn = isMistake == null ? false : isMistake;
+      LocalDB.isHighDupOn = isHighLight == null ? false : isHighLight;
+
       yield FetchedPausedState(
           isPaused: isBoardPaused,
           levelName: levelName,

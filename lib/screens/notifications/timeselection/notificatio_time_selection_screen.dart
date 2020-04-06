@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
+import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/notifications/dayselection/dayselection_screen.dart';
 import 'package:sudoku_brain/screens/notifications/timeselection/bloc.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -19,10 +20,10 @@ class NotificationTimeSelection extends StatefulWidget {
 class _NotificationTimeSelectionState extends State<NotificationTimeSelection> {
   final double sizedBoxHeight = 10.0;
   NotificationTimeSelectionBloc _timeSelectionBloc;
-  int _hours = 0;
-  int _minutes = 0;
+  int _hours = 6;
+  int _minutes = 30;
   bool _isBack = false;
-  List<Day> _list;
+  List<Day> _list = [Day.Everyday];
 
   @override
   void initState() {
@@ -37,7 +38,11 @@ class _NotificationTimeSelectionState extends State<NotificationTimeSelection> {
     _getData();
     return BlocListener(
       bloc: BlocProvider.of<NotificationTimeSelectionBloc>(context),
-      listener: (BuildContext context, state) {},
+      listener: (BuildContext context, state) {
+        if (state is NotiSettingSavedState) {
+          _exitScreen();
+        }
+      },
       child: BlocBuilder<NotificationTimeSelectionBloc,
           NotificatioTimeSelectionState>(builder: (context, state) {
         return Material(
@@ -56,7 +61,7 @@ class _NotificationTimeSelectionState extends State<NotificationTimeSelection> {
                         alignment: Alignment.topLeft,
                         child: MaterialButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            _exitScreen();
                           },
                           child: Text(
                             'Cancel',
@@ -227,8 +232,16 @@ class _NotificationTimeSelectionState extends State<NotificationTimeSelection> {
     if (!_isBack) {
       final ScreenArguments args = ModalRoute.of(context).settings.arguments;
 
-      _hours = args.hour;
-      _minutes = args.min;
+      _hours = args.hour == 0 ? 18 : args.hour;
+      _minutes = args.min == 0 ? 30 : args.min;
+    }
+  }
+
+  void _exitScreen() {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushNamed(context, HomeScreen.id);
     }
   }
 }

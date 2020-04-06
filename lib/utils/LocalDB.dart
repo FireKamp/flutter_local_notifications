@@ -19,6 +19,11 @@ class LocalDB {
   static final keyHighDuplicate = 'keyHighDuplicate';
   static final keyMistakeLimit = 'keyMistakeLimit';
 
+  static bool isSoundOn = false;
+  static bool isHapticOn = false;
+  static bool isMistakeOn = false;
+  static bool isHighDupOn = false;
+
   static savePausedBoard(
       String json, String _levelName, int _levelIndex, int timerValue) {
     LocalDB.setString(LocalDB.keyBoardList, json);

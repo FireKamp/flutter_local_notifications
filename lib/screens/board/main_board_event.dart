@@ -49,8 +49,9 @@ class UpdateCellValue extends MainBoardEvent {
   final int val;
   final int row;
   final int col;
+  final bool isPencilMode;
 
-  UpdateCellValue({this.val, this.row, this.col});
+  UpdateCellValue({this.val, this.row, this.col,this.isPencilMode});
 }
 
 class UpdateRowCol extends MainBoardEvent {
@@ -90,6 +91,7 @@ class ResetBoard extends MainBoardEvent {
 }
 
 class FullScreen extends MainBoardEvent {}
+class ConflictEvent extends MainBoardEvent {}
 
 class AdRewarded extends MainBoardEvent {
   final int index;

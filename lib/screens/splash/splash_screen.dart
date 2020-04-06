@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
 import 'package:sudoku_brain/screens/notifications/notificationpermission/notification_permission_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 
@@ -44,7 +45,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 3000), () async {
       bool isFirstTime = await LocalDB.getBool(LocalDB.keyisFirstTime);
       if (isFirstTime == null) {
+        Analytics.logEvent('screen_notification_prompt');
         LocalDB.setBool(LocalDB.keyisFirstTime, true);
+        LocalDB.setBool(LocalDB.keyHighDuplicate, true);
         Navigator.pushReplacementNamed(context, NotificationPermission.id);
       } else {
         Navigator.pushReplacementNamed(context, HomeScreen.id);

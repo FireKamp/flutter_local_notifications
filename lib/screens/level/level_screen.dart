@@ -56,7 +56,7 @@ class _LevelScreenState extends State<LevelScreen> with WidgetsBindingObserver {
                     text: '${EnumToString.parse(LevelTYPE.EASY)}',
                     gradient: kEasyLevelGrad,
                     onPressed: () {
-                      MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                      MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.EASY));
                     }),
                 SizedBox(
@@ -66,7 +66,7 @@ class _LevelScreenState extends State<LevelScreen> with WidgetsBindingObserver {
                     text: '${EnumToString.parse(LevelTYPE.MEDIUM)}',
                     gradient: kMediumLevelGrad,
                     onPressed: () {
-                      MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                      MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                       _levelBloc
                           .add(LevelSelected(levelTYPE: LevelTYPE.MEDIUM));
                     }),
@@ -77,7 +77,7 @@ class _LevelScreenState extends State<LevelScreen> with WidgetsBindingObserver {
                     text: '${EnumToString.parse(LevelTYPE.HARD)}',
                     gradient: kHardLevelGrad,
                     onPressed: () {
-                      MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                      MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                       _levelBloc.add(LevelSelected(levelTYPE: LevelTYPE.HARD));
                     }),
                 SizedBox(
@@ -87,7 +87,7 @@ class _LevelScreenState extends State<LevelScreen> with WidgetsBindingObserver {
                     text: '${EnumToString.parse(LevelTYPE.EXPERT)}',
                     gradient: kExpertLevelGrad,
                     onPressed: () {
-                      MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                      MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                       _levelBloc
                           .add(LevelSelected(levelTYPE: LevelTYPE.EXPERT));
                     }),

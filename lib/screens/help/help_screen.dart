@@ -46,7 +46,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFFFABB69), Color(0xFFFE3E16)],
                       ),
                       onPressed: () {
-                        MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                        MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                         Navigator.pushNamed(context, TutorialScreen.id);
                       }),
                   SizedBox(
@@ -58,7 +58,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFF82FFF4), Color(0xFF05AB9C)],
                       ),
                       onPressed: () async {
-                        MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                        MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                         Analytics.logEvent('screen_contact_us');
 
                         getVersionName().then((onValue) async {
@@ -80,7 +80,7 @@ class HelpScreen extends StatelessWidget {
                         colors: <Color>[Color(0xFFBEE4FF), Color(0xFF1E9FFE)],
                       ),
                       onPressed: () {
-                        MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                        MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => TermsOfUse()),

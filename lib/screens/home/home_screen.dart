@@ -1,5 +1,6 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku_brain/components/gradient_button.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
@@ -116,8 +117,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           ),
                           shadowColor: Color(0xFF8497FF),
                           onPressed: () {
-                            print('crash');
-                            Crashlytics.instance.crash();
                             MediaPlayer.loadPlayAudio(
                                 SoundValues.getEnum(Sounds.BUTTON_TAP));
                             Navigator.pushReplacementNamed(

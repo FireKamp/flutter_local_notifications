@@ -97,6 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       defaultValue: _isSoundsOn,
                       isArrow: false,
                       onChanged: (bool value) {
+                        LocalDB.isSoundOn = value;
                         updateLocalDB(LocalDB.keyTurnOnSound, value);
                       },
                       text: 'Turn On Sounds',
@@ -108,6 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       defaultValue: _isHapticsOn,
                       isArrow: false,
                       onChanged: (bool value) {
+                        LocalDB.isHapticOn = value;
                         updateLocalDB(LocalDB.keyTurnOnHaptics, value);
                       },
                       text: 'Turn On Haptics',
@@ -123,16 +125,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         colors: <Color>[Color(0xFF8DFDC4), Color(0xFF32C6A2)],
                       ),
                     ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    SettingsItem(
-                      defaultValue: _isHideDuplicates,
-                      isArrow: false,
-                      onChanged: (bool value) {
-                        updateLocalDB(LocalDB.keyHideDuplicate, value);
-                      },
-                      text: 'Hide Duplicates',
+                    Visibility(
+                      visible: false,
+                      child: SettingsItem(
+                        defaultValue: _isHideDuplicates,
+                        isArrow: false,
+                        onChanged: (bool value) {
+                          updateLocalDB(LocalDB.keyHideDuplicate, value);
+                        },
+                        text: 'Hide Duplicates',
+                      ),
                     ),
                     SizedBox(
                       height: 25.0,
@@ -141,6 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       defaultValue: _isMistakeLimit,
                       isArrow: false,
                       onChanged: (bool value) {
+                        LocalDB.isMistakeOn = value;
                         updateLocalDB(LocalDB.keyMistakeLimit, value);
                       },
                       text: 'Mistake Limit',
@@ -152,6 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       defaultValue: _isHighDuplicates,
                       isArrow: false,
                       onChanged: (bool value) {
+                        LocalDB.isHighDupOn = value;
                         updateLocalDB(LocalDB.keyHighDuplicate, value);
                       },
                       text: 'Highlight Duplicates',
@@ -174,7 +178,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void getData() async {
-    print('getData');
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
 
     _isSoundsOn = args.isSoundsOn;
@@ -225,7 +228,10 @@ class SettingsItem extends StatelessWidget {
             onTap: () {
               onChanged(true);
             },
-            child: Icon(Icons.arrow_forward_ios),
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Icon(Icons.arrow_forward_ios),
+            ),
           ),
         )
       ],

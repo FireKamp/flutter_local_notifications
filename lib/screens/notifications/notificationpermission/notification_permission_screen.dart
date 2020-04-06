@@ -2,7 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
-import 'package:sudoku_brain/screens/notifications/notificationsettings/notification_settings_screen.dart';
+import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/NotificationManager.dart';
@@ -54,6 +55,7 @@ class NotificationPermission extends StatelessWidget {
                 ),
                 GestureDetector(
                     onTap: () {
+                      Analytics.logEvent('tap_allow_notification_prompt');
                       requestPermissions(context);
                     },
                     child: Container(
@@ -70,7 +72,7 @@ class NotificationPermission extends StatelessWidget {
                       )),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.0),
-                        color: Colors.tealAccent,
+                        gradient: kEasyLevelGrad,
                       ),
                     )),
                 SizedBox(
@@ -79,6 +81,7 @@ class NotificationPermission extends StatelessWidget {
                 MaterialButton(
                   onPressed: () {
                     navigateHome(context);
+                    Analytics.logEvent('tap_skip_notification_prompt');
                   },
                   child: Text(
                     'SKIP',
@@ -99,16 +102,14 @@ class NotificationPermission extends StatelessWidget {
     await LocalDB.setBool(LocalDB.keyNotificationAllowed, true);
     var permissionGranted = await NotificationManager.requestPermissions();
     if (permissionGranted) {
-      Navigator.pushNamed(
-          context, NotificationsSettingsScreen.id,
-          arguments: ScreenArguments(isNotiEnabled: true));
+      Navigator.pushReplacementNamed(context, NotificationTimeSelection.id,
+          arguments: ScreenArguments(hour: 0, min: 0));
     } else {
       navigateHome(context);
     }
   }
 
   void navigateHome(context) {
-    Navigator.pushReplacementNamed(
-        context, HomeScreen.id);
+    Navigator.pushReplacementNamed(context, HomeScreen.id);
   }
 }

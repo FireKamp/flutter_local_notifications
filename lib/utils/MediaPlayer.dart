@@ -1,19 +1,28 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:sudoku_brain/utils/LocalDB.dart';
+import 'package:vibration/vibration.dart';
 
 class MediaPlayer {
   static final assetsAudioPlayer = AssetsAudioPlayer();
+  static final assetsAudioPlayerBG = AssetsAudioPlayer();
 
   static final _assets = <String>[
     "assets/audios/button_tap.ogg", // -> 0
-    "assets/audios/np_error.wav", // -> 1
-    "assets/audios/np_success.wav", // -> 2
-    "assets/audios/reset_board.wav", // -> 3
-    "assets/audios/full_screen.wav", // -> 4
-    "assets/audios/game_success.wav", // -> 5
+    "assets/audios/panel_click.mp3", // -> 1
+    "assets/audios/gameplay_interactions.mp3", // -> 2
+    "assets/audios/board_bg.mp3", // -> 3
   ];
 
   static loadPlayAudio(int index) {
-    //TODO: Enable once sounds are complete
-    assetsAudioPlayer.open(_assets[index]);
+    if (LocalDB.isHapticOn) Vibration.vibrate(duration: 30);
+
+    if (LocalDB.isSoundOn) assetsAudioPlayer.open(_assets[index]);
+  }
+
+  static playBG(int index) {
+    if (LocalDB.isSoundOn) {
+      assetsAudioPlayerBG.open(_assets[index]);
+      assetsAudioPlayerBG.loop = true;
+    }
   }
 }

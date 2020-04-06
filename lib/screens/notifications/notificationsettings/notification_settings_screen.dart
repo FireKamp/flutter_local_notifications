@@ -8,6 +8,7 @@ import 'package:sudoku_brain/components/top_container.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/notifications/notificationsettings/bloc.dart';
 import 'package:sudoku_brain/screens/notifications/timeselection/notificatio_time_selection_screen.dart';
+import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
 import 'package:sudoku_brain/utils/NotificationManager.dart';
@@ -34,6 +35,7 @@ class _NotificationsSettingsScreenState
   void initState() {
     _settingBloc = BlocProvider.of<NotificationSettingBloc>(context);
     super.initState();
+    Analytics.logEvent('screen_notification_settings');
   }
 
   @override
@@ -45,7 +47,8 @@ class _NotificationsSettingsScreenState
       listener: (BuildContext context, state) {
         if (state is NotificationDataState) {
           if (state.hour != null && state.min != null) {
-            _time = '${state.hour}:${state.min}';
+            _time =
+                '${_getFormattedTime(state.hour)}:${_getFormattedTime(state.min)}';
 
             hour = state.hour;
             min = state.min;
@@ -61,7 +64,7 @@ class _NotificationsSettingsScreenState
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                text: 'NOTIFICATIONS SETTINGS',
+                text: 'NOTIFICATION SETTINGS',
                 imagePath: 'assets/images/ic_bell.png',
                 gradient: LinearGradient(
                   colors: <Color>[Color(0xFFFD746C), Color(0xFFCC2C23)],
@@ -102,14 +105,16 @@ class _NotificationsSettingsScreenState
                           defaultValue: _isAllowed == null ? false : _isAllowed,
                           onChanged: (bool value) {
                             if (value == true) {
-                              NotificationManager.requestPermissions().then((onValue) {
-                                print("Permissions set from settings: $onValue");
+                              NotificationManager.requestPermissions()
+                                  .then((onValue) {
+                                print(
+                                    "Permissions set from settings: $onValue");
                               });
                             }
                             updateLocalDB(
                                 LocalDB.keyNotificationAllowed, value);
                           },
-                          text: 'Turn On Notifications',
+                          text: 'Turn on Notifications',
                         ),
                         SizedBox(
                           height: 25.0,
@@ -184,6 +189,11 @@ class _NotificationsSettingsScreenState
   void getData() {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     _isAllowed = args.isNotiEnabled;
+  }
+
+  String _getFormattedTime(int value) {
+    String stringValue = value.toString();
+    return stringValue.length == 1 ? '0$stringValue' : stringValue;
   }
 }
 

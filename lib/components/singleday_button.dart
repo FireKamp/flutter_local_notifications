@@ -28,16 +28,14 @@ class _SingleButtonState extends State<SingleButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (!widget.isAllDayEnabled) {
-          setState(() {
-            if (widget.defaultValue) {
-              widget.defaultValue = false;
-            } else {
-              widget.defaultValue = true;
-            }
-          });
-          widget.onClick(widget.defaultValue);
-        }
+        setState(() {
+          if (widget.defaultValue) {
+            widget.defaultValue = false;
+          } else {
+            widget.defaultValue = true;
+          }
+        });
+        widget.onClick(widget.defaultValue);
       },
       child: Container(
         color: Color(0xFF71658B),
@@ -54,8 +52,14 @@ class _SingleButtonState extends State<SingleButton> {
             ),
             Spacer(),
             Visibility(
-                visible: widget.defaultValue,
-                child: Icon(Icons.check, size: 30.0))
+              visible: widget.defaultValue,
+              child: Container(
+                margin: EdgeInsets.only(right: 15.0),
+                  child: Icon(
+                Icons.check,
+                size: 30.0,
+              )),
+            )
           ],
         ),
       ),

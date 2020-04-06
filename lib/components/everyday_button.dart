@@ -41,8 +41,12 @@ class _EveryButtonButtonState extends State<EveryButtonButton> {
             ),
             Spacer(),
             Visibility(
-                visible: widget.defaultValue,
-                child: Icon(Icons.check, size: 30.0))
+              visible: widget.defaultValue,
+              child: Container(
+                margin: EdgeInsets.only(right: 15.0),
+                child: Icon(Icons.check, size: 30.0),
+              ),
+            )
           ],
         ),
       ),

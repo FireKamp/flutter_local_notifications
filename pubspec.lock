@@ -88,11 +88,9 @@ packages:
   custom_switch:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: "7145083bff6f01bcb605d8d81bd1d1139132e9a3"
-      url: "git@github.com:FireKamp/CustomSwitch.git"
-    source: git
+      name: custom_switch
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.0.1"
   enum_to_string:
     dependency: "direct main"
@@ -172,11 +170,9 @@ packages:
   flutter_local_notifications:
     dependency: "direct main"
     description:
-      path: flutter_local_notifications
-      ref: master
-      resolved-ref: "55d42a82dcb14354d08d7c91b598923e77cd78c9"
-      url: "git@github.com:FireKamp/flutter_local_notifications.git"
-    source: git
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "1.4.0"
   flutter_local_notifications_platform_interface:
     dependency: transitive
@@ -410,6 +406,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  vibration:
+    dependency: "direct main"
+    description:
+      name: vibration
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.4"
   webview_flutter:
     dependency: "direct main"
     description:

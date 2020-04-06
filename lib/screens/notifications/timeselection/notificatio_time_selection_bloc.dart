@@ -52,6 +52,7 @@ class NotificationTimeSelectionBloc extends Bloc<NotificationTimeSelectionEvent,
       LocalDB.setList(LocalDB.keyNotificationRepList, stringsList);
 
       _showNotification();
+      yield NotiSettingSavedState();
     }
   }
 
@@ -128,7 +129,7 @@ class NotificationTimeSelectionBloc extends Bloc<NotificationTimeSelectionEvent,
       await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
           0,
           'Sudoku Brain Challange',
-          'Can you solve a new puzzle today? Try it!',
+          'Can you solve this puzzle without hints?',
           day,
           time,
           platformChannelSpecifics);

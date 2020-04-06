@@ -16,7 +16,7 @@ class LogoHeader extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+              MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
               Navigator.pop(context);
             },
             child: Image(

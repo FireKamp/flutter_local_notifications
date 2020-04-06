@@ -10,7 +10,6 @@ import 'package:sudoku_brain/models/board_data.dart';
 import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/utils/Enums.dart';
 import 'package:sudoku_brain/utils/LocalDB.dart';
-import 'package:sudoku_brain/utils/MediaPlayer.dart';
 
 import './bloc.dart';
 import '../../utils/Board.dart';
@@ -18,6 +17,7 @@ import '../../utils/Board.dart';
 class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
   Timer _timer;
   int _currentTimerValue = 0;
+  int _mistakeLimit = 3;
   bool _isPaused = false;
   bool _isFullScreen = true;
   List<List<BoardData>> _solution;
@@ -73,9 +73,15 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
 
       int cellVal = getHint(event.row, event.col);
       if (value == cellVal) {
-        MediaPlayer.loadPlayAudio(2);
+//        MediaPlayer.loadPlayAudio(2);
       } else {
-        MediaPlayer.loadPlayAudio(1);
+//        MediaPlayer.loadPlayAudio(1);
+        if (!event.isPencilMode) {
+          _mistakeLimit--;
+          if (_mistakeLimit <= 0) {
+            yield GameFinishedState(isWon: false, time: _timerText);
+          }
+        }
       }
     } else if (event is UpdateRowCol) {
       final list = _changeRowCol(event.row, event.col, event.list);
@@ -90,7 +96,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
       yield (PauseTimerState(
           isPaused: _isPaused, isPausedForAd: event.isPausedForAd));
     } else if (event is ResetBoard) {
-      MediaPlayer.loadPlayAudio(3);
+//      MediaPlayer.loadPlayAudio(Sounds.RESET.index);
 
       LocalDB.setInt(
           MainBoardBloc.getDBKey(event.levelName.toLowerCase(), event.index),
@@ -103,7 +109,7 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
           event.buildContext, event.levelName, event.index, false, false);
       yield ResetState(boardList: list);
     } else if (event is FullScreen) {
-      MediaPlayer.loadPlayAudio(4);
+//      MediaPlayer.loadPlayAudio(4);
       final full = fullScreen();
       yield FullScreenState(isFull: full);
     } else if (event is Hint) {
@@ -122,11 +128,12 @@ class MainBoardBloc extends Bloc<MainBoardEvent, MainBoardState> {
         if (hintCount >= 0) {
           LocalDB.setInt(key, hintCount);
           yield UpdateCellState(val: value);
-          MediaPlayer.loadPlayAudio(2);
+//          MediaPlayer.loadPlayAudio(2);
         }
         if (!event.isForFailedAd) yield GetHintVState(val: hintCount);
       }
     } else if (event is PlayAgain) {
+      _mistakeLimit = 3;
       yield PlayAgainState();
     } else if (event is PencilMode) {
       yield PencilState(isPencilEnabled: event.isPencilMode);

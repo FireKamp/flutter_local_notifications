@@ -14,6 +14,7 @@ import 'package:sudoku_brain/models/row_col.dart';
 import 'package:sudoku_brain/models/screen_arguments.dart';
 import 'package:sudoku_brain/screens/gameend/gameend_screen.dart';
 import 'package:sudoku_brain/screens/home/home_screen.dart';
+import 'package:sudoku_brain/screens/settings/settings_screen.dart';
 import 'package:sudoku_brain/utils/AdManager.dart';
 import 'package:sudoku_brain/utils/Analytics.dart';
 import 'package:sudoku_brain/utils/Constants.dart';
@@ -68,6 +69,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _mainBoardBloc = BlocProvider.of<MainBoardBloc>(context);
     _mainBoardBloc.add(StartTimer());
+
+    MediaPlayer.playBG(Sounds.BOARD_BG.index);
   }
 
   setupAds() {
@@ -153,7 +156,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
         } else if (state is GameFinishedState) {
           AdManager.showInterstitialAd();
           if (state.isWon) {
-            MediaPlayer.loadPlayAudio(5);
+//            MediaPlayer.loadPlayAudio(5);
             Navigator.pushReplacementNamed(context, GameEndScreen.id,
                 arguments: ScreenArguments(
                     levelName: _levelName,
@@ -198,9 +201,18 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                           InkWell(
                               onTap: () {
                                 _saveBoard();
-                                _exitScreen();
+//                                _exitScreen();
+
+                                _stopBGMusic();
+                                Navigator.pushNamed(context, SettingsScreen.id,
+                                    arguments: ScreenArguments(
+                                        isSoundsOn: LocalDB.isSoundOn,
+                                        isHapticsOn: LocalDB.isHapticOn,
+                                        isMistakeLimit: LocalDB.isMistakeOn,
+                                        isHighDuplicates: LocalDB.isHighDupOn,
+                                        isHideDuplicates: false));
                               },
-                              child: Icon(Icons.arrow_back, size: 25.0)),
+                              child: Icon(Icons.settings, size: 25.0)),
                           CounterWidget(mainBoardBloc: _mainBoardBloc),
                           PlayPauseWidget(
                               isTimerPaused: _isTimerPaused,
@@ -299,18 +311,24 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       if (!_isTimerPaused) {
                         switch (segmentValue) {
                           case 0:
+                            _gameMenuTap();
                             Analytics.logEvent('tap_full_screen');
                             _mainBoardBloc.add(FullScreen());
                             break;
                           case 1:
+                            MediaPlayer.loadPlayAudio(
+                                Sounds.GAME_MENU_TAP.index);
+                            _gameMenuTap();
                             Analytics.logEvent('tap_erase');
                             _numPadButtonClick(0);
                             break;
                           case 2:
+                            _gameMenuTap();
                             Analytics.logEvent('tap_undo');
                             _resetBoard();
                             break;
                           case 3:
+                            _gameMenuTap();
                             Analytics.logEvent('tap_hint');
                             _mainBoardBloc.add(Hint(
                                 row: _row,
@@ -322,6 +340,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                                 isForFailedAd: false));
                             break;
                           case 4:
+                            _gameMenuTap();
                             Analytics.logEvent('tap_edit');
                             _mainBoardBloc
                                 .add(PencilMode(isPencilMode: isSelected));
@@ -339,6 +358,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                     marginBottom: 0.0,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     onValueChanged: (int val) {
+                      MediaPlayer.loadPlayAudio(Sounds.PANEL_TAP.index);
+
                       if (!_isTimerPaused) _numPadButtonClick(val);
                     },
                   ),
@@ -351,6 +372,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
                       marginBottom: 0.0,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       onValueChanged: (int val) {
+                        MediaPlayer.loadPlayAudio(Sounds.PANEL_TAP.index);
                         if (!_isTimerPaused) _numPadButtonClick(val);
                       }),
                 ])),
@@ -372,7 +394,8 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       _changeCursor(value);
     }
     if (_row >= 0 && _col >= 0)
-      _mainBoardBloc.add(UpdateCellValue(val: value, row: _row, col: _col));
+      _mainBoardBloc.add(UpdateCellValue(
+          val: value, row: _row, col: _col, isPencilMode: _isPencilON));
   }
 
 //  Methods
@@ -387,6 +410,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
   }
 
   Color _getHighlightColor(int r, int c) {
+    print('LocalDB.isHighDupOn: ${LocalDB.isHighDupOn}');
     if (_boardList.isNotEmpty && _initBoardList.isNotEmpty) {
       bool isConflict = _conflicts.contains(new RowCol(r, c));
       bool isChangeAble = _initBoardList[r][c].value == 0;
@@ -400,21 +424,23 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
       if (r == _row && !isConflict) {
         return lightBlue;
       } else if (r == _row && isConflict) {
-        return Colors.red[100];
+        return LocalDB.isHighDupOn == true ? Colors.red[100] : lightBlue;
       }
 
       if (c == _col && !isConflict) {
         return lightBlue;
       } else if (c == _col && isConflict) {
-        return Colors.red[100];
+        return LocalDB.isHighDupOn == true ? Colors.red[100] : lightBlue;
       }
 
-      if (isConflict && !isChangeAble)
-        return Colors.red[100];
-      else if (isConflict)
+      if (isConflict && !isChangeAble) {
+        return LocalDB.isHighDupOn == true ? Colors.red[100] : lightBlue;
+      } else if (isConflict)
         return kBoardCellEmpty;
       else if (isToHighlight && !_isPencilON)
-        return Color(kBoardPreFilled);
+        return LocalDB.isHighDupOn == true
+            ? Color(kBoardPreFilled)
+            : kBoardCellEmpty;
       else
         return kBoardCellEmpty;
     } else {
@@ -604,6 +630,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('state: $state');
     if (state == AppLifecycleState.paused) {
       _mainBoardBloc.add(PauseTimer(isPausedForAd: false));
       AdManager.stopBannerRefresh();
@@ -640,6 +667,7 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
 
   Future<bool> _onWillPop() async {
     _saveBoard();
+    _stopBGMusic();
     if (_isContinued) {
       Navigator.pushReplacementNamed(context, HomeScreen.id);
       return false;
@@ -648,11 +676,20 @@ class _MainBoardState extends State<MainBoard> with WidgetsBindingObserver {
     }
   }
 
+  void _stopBGMusic() {
+    MediaPlayer.assetsAudioPlayerBG.stop();
+  }
+
   void _exitScreen() {
+    _stopBGMusic();
     if (_isContinued) {
       Navigator.pushReplacementNamed(context, HomeScreen.id);
     } else {
       Navigator.pop(context);
     }
+  }
+
+  void _gameMenuTap() {
+    MediaPlayer.loadPlayAudio(Sounds.GAME_MENU_TAP.index);
   }
 }

@@ -107,7 +107,7 @@ class _LevelSelectionState extends State<LevelSelection>
               children: List.generate(items.length, (index) {
                 return GestureDetector(
                   onTap: () {
-                    MediaPlayer.loadPlayAudio(SoundValues.getEnum(Sounds.BUTTON_TAP));
+                    MediaPlayer.loadPlayAudio(Sounds.BUTTON_TAP.index);
                     if (items[index]) {
                       LocalDB.setInt(
                           MainBoardBloc.getDBKey(

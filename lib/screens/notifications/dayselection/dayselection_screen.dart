@@ -82,8 +82,21 @@ class _DaySelectionScreenState extends State<DaySelectionScreen> {
             }
           }
         } else if (state is EverydayState) {
-          if (state.value) {
+          if (!state.value) {
             selectedDays = [false, false, false, false, false, false, false];
+            _listSelection = [];
+          } else {
+            selectedDays = [true, true, true, true, true, true, true];
+            _listSelection = [
+              Day.Everyday,
+              Day.Monday,
+              Day.Tuesday,
+              Day.Wednesday,
+              Day.Thursday,
+              Day.Friday,
+              Day.Saturday,
+              Day.Sunday
+            ];
           }
           _isEverydayEnabled = state.value;
           _isEverydayDefault = state.value;
@@ -105,6 +118,8 @@ class _DaySelectionScreenState extends State<DaySelectionScreen> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
+                          print('listback: $_listSelection');
+
                           ScreenArguments args = ScreenArguments(
                               selectedDays: _listSelection,
                               hour: _hours,
@@ -214,10 +229,14 @@ class _DaySelectionScreenState extends State<DaySelectionScreen> {
   }
 
   void _updateList(bool isAdd, Day value) {
+    print('_updateList');
     if (isAdd) {
       if (!_listSelection.contains(value)) _listSelection.add(value);
     } else {
       _listSelection.remove(value);
+      if (_listSelection.contains(Day.Everyday)) {
+        _listSelection.remove(Day.Everyday);
+      }
     }
   }
 
